@@ -1,0 +1,48 @@
+﻿ * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+}
+
+#main {
+    background-color: #160E14;
+    height: 100vh;
+    width: 100vw;
+}
+#login {
+   display: block;
+   text-align:center;
+   margin-top:20px;
+}
+
+#main #signin-button {
+    width: 120px;
+    height: 45px;
+    padding: 9px 30px;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    background-color: #EFF6FA;
+    color: #1a1e24;
+    border-radius: 10px;
+    opacity:0.6;
+}
+
+
+#main #signin-button:hover{
+    opacity:1;
+}
+
+
+.svg {
+    margin: 0 auto;
+    display: block;
+}
+
+

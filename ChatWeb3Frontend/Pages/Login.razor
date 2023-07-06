@@ -1,0 +1,61 @@
+﻿@page "/"
+
+<div id="main">
+    <svg class="svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/" x="0px" y="0px" height="500px" viewBox="0 0 600 520" enable-background="new 0 0 601 602" xml:space="preserve">
+    <defs>
+    <!-- Background gradient -->
+    <radialGradient id="bg_gradient" cx="300.5" cy="300.5" r="214.5052" gradientUnits="userSpaceOnUse">
+    <stop offset="0" style="stop-color:#f5f5f5" />
+    <stop offset="0.1921" style="stop-color:#e6e6e6" />
+    <stop offset="0.3989" style="stop-color:#bdb9b9" />
+    <stop offset="0.5906" style="stop-color:#8a8686" />
+    <stop offset="0.7607" style="stop-color:#736f6f" />
+    <stop offset="0.903" style="stop-color:#454040" />
+    <stop offset="1" style="stop-color:#160E14" />
+    </radialGradient>
+
+    <!-- Light gradient -->
+    <radialGradient id="light_gradient" cx="317.255" cy="230.255" r="7.9216" gradientUnits="userSpaceOnUse">
+    <stop offset="0" style="stop-color:#FFFFFF" />
+    <stop offset="0.6237" style="stop-color:#FFFFFF;stop-opacity:0.8" />
+    <stop offset="1" style="stop-color:#FFFFFF;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+
+    <rect x="0.5" y="1.5" fill="url(#bg_gradient)" stroke="none" stroke-miterlimit="10" width="600" height="600" />
+
+  <!-- Fixations -->
+    <g>
+    <path stroke="#000000" stroke-miterlimit="10" d="M334.5,185.167c0,2.393-1.94,4.333-4.333,4.333h-50.333
+                                                     c-2.393,0-4.333-1.94-4.333-4.333v-0.333c0-2.393,1.94-4.333,4.333-4.333h50.333c2.393,0,4.333,1.94,4.333,4.333V185.167z" />
+    <path stroke="#000000" stroke-miterlimit="10" d="M334.5,198.167c0,2.393-1.94,4.333-4.333,4.333h-50.333
+                                                     c-2.393,0-4.333-1.94-4.333-4.333v-0.333c0-2.393,1.94-4.333,4.333-4.333h50.333c2.393,0,4.333,1.94,4.333,4.333V198.167z" />
+    <path stroke="#000000" stroke-miterlimit="10" d="M334.5,211.167c0,2.393-1.94,4.333-4.333,4.333h-50.333
+                                                     c-2.393,0-4.333-1.94-4.333-4.333v-0.333c0-2.393,1.94-4.333,4.333-4.333h50.333c2.393,0,4.333,1.94,4.333,4.333V211.167z" />
+    <path stroke="#000000" stroke-miterlimit="10" d="M305,154c-10.77,0-19.5,9.626-19.5,21.5h39C324.5,163.626,315.77,154,305,154z" />  
+  </g>
+
+  <!-- Bulb -->
+    <path opacity="0.3" fill="#FFFFFF" stroke="#FFFFFF" stroke-miterlimit="10" d="M366.75,319.125c0-16.75-12.125-39.5-18.75-50.75
+                                                                                S339.188,241.5,337.188,230s-8.438-10.5-8.438-10.5H306h-23c0,0-6.5-1-8.5,10.5s-4.25,27.125-10.875,38.375s-19.063,34-19.063,50.75
+                                                                                c0,16.735,13.938,61.045,60.938,61.123v0.252c0,0,0.416,0,0.438,0s-0.438,0-0.438,0v-0.252
+                                                                                C353.5,380.17,366.75,335.86,366.75,319.125z" />
+
+  <!-- Cord -->
+    <line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="305" y1="151" x2="305" y2="0" />
+
+  <!-- Path -->
+    <path id="movementPath" fill="none" stroke="#000000" stroke-width="0.9797" stroke-miterlimit="10" d="M317.338,229.5c0,0,5.367,53.571,14.192,80	c7.096,21.25-3.735,40.25-11.835,21.465c-3.92-9.092-12.115-38.973-2.055-38.514c10.06,0.459,8.504,41.36-4.867,45.954c-13.37,4.595-17.737-46.298-8.747-45.954s10.017,44.703-6.165,48.142c-16.182,3.439-13.87-45.047-7.963-44.015	c5.908,1.032,5.259,52.417-7.109,44.93C263.37,329.75,297.357,266.5,294.182,229.5" />
+
+  <!-- Light -->
+    <circle id="light" fill="url(#light_gradient)" cx="317.255" cy="230.255" r="7.922" />
+</svg>
+ <div id="login">
+     <button id="signin-button">Sign In</button>
+ </div>
+ 
+</div>
+
+@code {
+
+}
