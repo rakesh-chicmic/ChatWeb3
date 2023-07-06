@@ -16,11 +16,11 @@
         public User() { }
         public User(string username, string firstName, string lastName, string pathToProfilePic)
         {
+            id = Guid.NewGuid();
             this.username = username;
             this.firstName = firstName;
             this.lastName = lastName;
             this.pathToProfilePic = pathToProfilePic;
-            id = Guid.NewGuid();
             createdAt = DateTime.Now;
             updatedAt = DateTime.Now;
             isActive = true;
