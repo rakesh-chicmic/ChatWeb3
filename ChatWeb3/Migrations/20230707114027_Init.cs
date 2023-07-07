@@ -86,12 +86,12 @@ namespace ChatWeb3.Migrations
                     username = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     firstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     lastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    createdAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    updatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    createdAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    updatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     isDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    isActive = table.Column<bool>(type: "bit", nullable: false),
+                    lastActive = table.Column<DateTime>(type: "datetime2", nullable: false),
                     isOnline = table.Column<bool>(type: "bit", nullable: false),
-                    pathToProfilePic = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    pathToProfilePic = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

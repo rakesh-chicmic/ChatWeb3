@@ -23,7 +23,6 @@ namespace ChatWeb3.Controllers
             _logger = logger;
         }
 
-        //[HttpPost, DisableRequestSizeLimit, Authorize(Roles = "login")]
         //[HttpPost]
         [HttpPost, DisableRequestSizeLimit, Authorize]
         [Route("/api/v1/uploadFile")]
@@ -36,7 +35,6 @@ namespace ChatWeb3.Controllers
                 string id = User.FindFirstValue(ClaimTypes.PrimarySid)!;                                //extracting email from header token
                 //string? token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();       //getting token from authorization header
                 response = await uploadPicServiceInstance.FileUploadAsync(file,id,type);
-
                 return StatusCode(response.statusCode, response);
             }
             catch (Exception ex)

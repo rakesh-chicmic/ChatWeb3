@@ -12,7 +12,7 @@ namespace ChatWeb3.Models
         public DateTime createdAt { get; set; } = DateTime.MinValue;
         public DateTime updatedAt { get; set; } = DateTime.MinValue;
         public bool isDeleted { get; set; } = false;
-        public bool isActive { get; set; } = false;
+        public DateTime lastActive { get; set; } = DateTime.Now;
         public bool isOnline { get; set; } = false;
         public string pathToProfilePic { get; set; } = string.Empty;
 
@@ -27,9 +27,24 @@ namespace ChatWeb3.Models
             this.pathToProfilePic = pathToProfilePic;
             createdAt = DateTime.Now;
             updatedAt = DateTime.Now;
-            isActive = true;
-            isOnline = true;
+            lastActive = DateTime.Now;
+            isOnline = false;
             isDeleted = false;
+        }
+
+        public User(User user,UpdateUser update)
+        {
+            this.id = user.id;
+            this.accountAddress= user.accountAddress;
+            this.username = update.username;
+            this.firstName = update.firstName;
+            this.lastName = update.lastName;
+            this.pathToProfilePic= update.pathToProfilePic;
+            this.createdAt = user.createdAt;
+            this.updatedAt = DateTime.Now;
+            this.lastActive = DateTime.Now;
+            this.isOnline = false;
+            this.isDeleted = false;
         }
     }
 }

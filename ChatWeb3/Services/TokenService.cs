@@ -55,9 +55,16 @@ namespace ChatWeb3.Services
             {
                 return new Response(400, "Invalid credentials", "registration/login failed", false);
             }
+            List<User> users = DbContext.Users.Where(s=>s.accountAddress== login.signer).ToList();
+            User? user1 = users.FirstOrDefault();
+            if(user1 !=null && user1.isDeleted == true)
+            {
+                response = new Response(400, "Account deleted", "registration/login failed", false);
+                return response;
+            }
             Response result = await Authenticate(login);
-            Console.WriteLine(result.ToString());
-            Console.WriteLine(result.data.ToString());
+            //Console.WriteLine(result.ToString());
+            //Console.WriteLine(result.data.ToString());
             UserRegisterLogin resultData = (UserRegisterLogin)result.data;
             if (result.success == true)
             {
@@ -79,8 +86,18 @@ namespace ChatWeb3.Services
             {
                 // read user from DB or create a new one
                 List<User> users = DbContext.Users.Where(s => s.accountAddress == login.signer.ToLower()).Select(a => a).ToList();
+                User? user1 = users.FirstOrDefault();
+                //if(user1 !=null && user1.isDeleted == true)
+                //{
+                    //this code can be used if you want to recover acc on sign in but then it will be completely illogical to delete acc
+                    //user1.isDeleted = false;
+                    //await DbContext.SaveChangesAsync();
+                //}
+
+                users = users.Where(s=>s.isDeleted == false).ToList();
+
                 UserRegisterLogin data = new UserRegisterLogin();
-                if(users.FirstOrDefault() == null)
+                if(user1 == null)
                 {
                     //user doesn't exist create new
                     User user = new User(login.signer, "username", "firstName", "lastName", "");
@@ -92,8 +109,7 @@ namespace ChatWeb3.Services
                 else
                 {
                     //user already exists
-                    User user = users!.FirstOrDefault()!;
-                    ResponseUser responseUser = new ResponseUser(user);
+                    ResponseUser responseUser = new ResponseUser(user1);
                     data = new UserRegisterLogin(responseUser, true);
                 }
                 response = new Response(200, "Authentication successful", data, true);
