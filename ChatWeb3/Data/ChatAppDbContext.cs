@@ -12,5 +12,6 @@ namespace ChatWeb3.Data
         public DbSet<Group> Groups { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<ChatMappings> ChatMappings { get; set; }
+        public DbSet<AccountMessageMapping> AccountMessagemappings { get; set; }
     }
 }
