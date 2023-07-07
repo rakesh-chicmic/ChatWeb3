@@ -10,39 +10,264 @@ body {
     width: 100%;
 }
 
+#login-page{
+    overflow:hidden;
+}
+
 #main {
     background-color: #160E14;
     height: 100vh;
     width: 100vw;
 }
+
 #login {
    display: block;
    text-align:center;
    margin-top:20px;
 }
 
-#main #signin-button {
-    width: 120px;
+#main #signin-button, #install-metamask {
+    width: 220px;
     height: 45px;
-    padding: 9px 30px;
-    justify-content: center;
-    align-items: center;
+    margin-left: 30px;
     border: none;
-    background-color: #EFF6FA;
-    color: #1a1e24;
-    border-radius: 10px;
-    opacity:0.6;
+    padding-left: 0;
+    background-color: #3e8e41;
+    color: white;
+    border-radius: 7px;
+    animation: fade 2s linear;
+    font-family: 'Agdasima', sans-serif;
+    font-size: 24px;
 }
-
 
 #main #signin-button:hover{
     opacity:1;
 }
 
-
 .svg {
     margin: 0 auto;
     display: block;
 }
+#landing-text{
+    margin-top:200px;
+    margin-left:100px;
+}
+#landing-text h1 {
+    color: white;
+    font-family: 'Agdasima', sans-serif;
+}
+#landing-text h4 {
+    margin-top:30px;
+    color: #FFA41B;
+    font-family: 'Agdasima', sans-serif;
+}
+
+#test {
+    width: 200px;
+    padding: 2em 0;
+    background: #c14545;
+    visibility: hidden;
+}
+
+.slideDown {
+    animation-name: slideDown;
+    -webkit-animation-name: slideDown;
+    animation-duration: 1s;
+    -webkit-animation-duration: 1s;
+    animation-timing-function: ease;
+    -webkit-animation-timing-function: ease;
+    visibility: visible !important;
+}
+
+@keyframes fade {
+    0%,100% {
+        opacity: 0
+    }
+
+    50% {
+        opacity: 0.6
+    }
+}
+
+@keyframes slideDown {
+    0% {
+        transform: translateY(-100%);
+    }
+
+    50% {
+        transform: translateY(8%);
+    }
+
+    65% {
+        transform: translateY(-4%);
+    }
+
+    80% {
+        transform: translateY(4%);
+    }
+
+    95% {
+        transform: translateY(-2%);
+    }
+
+    100% {
+        transform: translateY(0%);
+    }
+}
+
+@-webkit-keyframes slideDown {
+    0% {
+        -webkit-transform: translateY(-100%);
+    }
+
+    50% {
+        -webkit-transform: translateY(8%);
+    }
+
+    65% {
+        -webkit-transform: translateY(-4%);
+    }
+
+    80% {
+        -webkit-transform: translateY(4%);
+    }
+
+    95% {
+        -webkit-transform: translateY(-2%);
+    }
+
+    100% {
+        -webkit-transform: translateY(0%);
+    }
+}
 
 
+.display-button{
+    display:none;
+}
+
+
+#logo h1 {
+    color: hsl(0, 0%, 28%);
+    font-size: 100px;
+    font-weight: bold;
+    font-family: monospace;
+    letter-spacing: 7px;
+    cursor: pointer;
+}
+
+#logo h1 span {
+        transition: 0.5s ease-out;
+    }
+
+
+#logo h1 span:nth-child(1) {
+    color: #fff;
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 40px #fff;
+}
+
+#logo h1:hover span:nth-child(1) {
+    margin-right: 10px;
+    color: hsl(0, 0%, 28%);
+    text-shadow: none;
+}
+#logo h1:hover span:nth-child(2) {
+    color: #fff;
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 40px #fff;
+}
+      
+.floating {
+    animation-name: floating;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;  
+}
+
+@keyframes floating {
+    from {
+        transform: translate(0, 0px);
+    }
+
+    65% {
+        transform: translate(0, 15px);
+    }
+
+    to {
+        transform: translate(0, -0px);
+    }
+}
+
+.footer {
+    z-index: 1;
+    --footer-background: white;
+    display: grid;
+    position: relative;
+    grid-area: footer;
+    width:100vw;
+}
+
+.footer .bubbles {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    filter: url("#blob");
+    width: 93%;
+}
+
+.footer .bubbles .bubble {
+    position: absolute;
+    left: var(--position, 20%);
+    background: #fff;
+    box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 40px #fff;
+    opacity:0.3;
+    -webkit-animation: bubble-size var(--time, 4s) ease-in infinite var(--delay, 0s), bubble-move var(--time, 4s) ease-in infinite var(--delay, 0s);
+    animation: bubble-size var(--time, 4s) ease-in infinite var(--delay, 0s), bubble-move var(--time, 4s) ease-in infinite var(--delay, 0s);
+    transform: translate(-50%, 0);
+}
+
+
+@-webkit-keyframes bubble-size {
+    0%, 75% {
+        width: var(--size, 2rem);
+        height: var(--size, 2rem);
+    }
+
+    100% {
+        width: 0rem;
+        height: 0rem;
+    }
+}
+
+@keyframes bubble-size {
+    0%, 75% {
+        width: var(--size, 2rem);
+        height: var(--size, 2rem);
+    }
+
+    100% {
+        width: 0rem;
+        height: 0rem;
+    }
+}
+
+@-webkit-keyframes bubble-move {
+    0% {
+        bottom: 0rem;
+    }
+
+    100% {
+        bottom: var(--distance, 10rem);
+    }
+}
+
+@keyframes bubble-move {
+    0% {
+        bottom: 0rem;
+    }
+
+    100% {
+        bottom: var(--distance, 10rem);
+    }
+}
