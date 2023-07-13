@@ -10,7 +10,8 @@
         public string firstName { get; set; } = string.Empty;
         public string lastName { get; set; } = string.Empty;
         public DateTime? dateTime { get; set; } = DateTime.Now;
-        public bool isOnline { get; set; }
+        public bool isOnline { get; set; } = false;
+        public string pathToProfilePic { get; set; } = string.Empty;
 
         public OutputChatMappings() { }
         public OutputChatMappings(User receiver, ChatMappings mapping)
@@ -24,6 +25,7 @@
             lastName = receiver.lastName;
             dateTime = mapping.datetime;
             isOnline = receiver.isOnline;
+            pathToProfilePic = receiver.pathToProfilePic;
         }
     }
 }

@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.VisualBasic;
+using Nethereum.Contracts.QueryHandlers.MultiCall;
+using Newtonsoft.Json;
 using System.ComponentModel;
 using System.Configuration;
 using System.Security.Claims;
@@ -88,78 +90,22 @@ namespace ChatWeb3.Hubs
             //await OnlineUsers();
         }
 
-        /*public async Task OnlineUsers()
-        {
-            _logger.LogInformation("OnlineUsers method started");
-            var onlineUsers = GetOnlineUsers();
-            string loggedInUserId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
-            Guid userId = new Guid(loggedInUserId);
-
-            var chatMaps = DbContext.ChatMappings.Where(s => (s.senderId == userId) || (s.receiverId == userId)).OrderByDescending(s => s.datetime).ToList();
-            //chatMaps = chatMaps.Where(s => (s.FirstEmail == loggedInEmail) || (s.SecondEmail == loggedInEmail)).OrderByDescending(s=>s.DateTime).ToList();
-            Console.WriteLine(chatMaps.Count());
-
-            List<string> res = new List<string>();
-
-            Console.WriteLine(res.Count());
-            List<ActiveUsers> activeList = new List<ActiveUsers>();
-            //var users = DbContext.Users.ToList();
-            int len = res.Count();
-            for (int i = 0; i < len; i++)
-            {
-                Console.WriteLine(res[i]);
-                var user = DbContext.Users.Where(s => (s.Email == res[i])).Select(s => s).First();
-                Console.WriteLine(user);
-                *//*if(user != null)
-                {
-                    Console.WriteLine(user.Result.FirstName);
-                }*//*
-                ActiveUsers a = new ActiveUsers
-                {
-                    Email = res[i],
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    IsActive = false,
-                    PathToPic = user.PathToProfilePic
-                };
-
-                if (onlineUsers.Contains(res[i])) { a.IsActive = true; }
-                else { a.IsActive = false; }
-                activeList.Add(a);
-                Console.WriteLine(a);
-            }
-            *//*foreach (var user in activeList)
-            {
-                var id = GetConnectionIdByUser(user.Email);
-                var temp = activeList;
-                if (id == null)
-                {
-                    continue;
-                }
-                temp.Remove(temp.Where(x => x.Email == user.Email).FirstOrDefault());
-                await Clients.Client(id).SendAsync("UpdateOnlineUsers", temp);
-            }*//*
-            activeList.Remove(activeList.Where(x => x.Email == loggedInEmail).FirstOrDefault());
-            await Clients.Caller.SendAsync("UpdateOnlineUsers", activeList);
-
-            //return activeList;
-        }*/
         public async Task SendMessage(InputMessage msg)
         {
             _logger.LogInformation("SendMessage method started ");
-            if (msg.senderId == string.Empty || msg.chatId == string.Empty || msg.senderId == null || msg.chatId == null)
+            string senderId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
+            Guid senderGuid = new Guid(senderId);
+            if (senderId == string.Empty || msg.chatId == string.Empty || senderId == null || msg.chatId == null)
             {
                 return;
             }
-            string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
-            Guid userGuid = new Guid(userId);
 
             //Console.WriteLine(msg);
-            Message message = new Message(msg);
+            Message message = new Message(msg,senderGuid);
             _logger.LogInformation(message.ToString());
 
             await DbContext.Messages.AddAsync(message);
-            User? user = DbContext.Users.Find(userGuid);
+            User? user = DbContext.Users.Find(senderGuid);
             if (user != null)
             {
                 user.lastActive = DateTime.Now;
@@ -167,7 +113,8 @@ namespace ChatWeb3.Hubs
             }
             if(msg.isGroup)
             {
-                List<Guid> receivers = DbContext.ChatMappings.Where(s => s.receiverId == new Guid(msg.chatId.ToLower())).Select(s => s.senderId).ToList();
+                Guid groupId = DbContext.ChatMappings.Find(new Guid(msg.chatId.ToLower()))!.receiverId;
+                List<Guid> receivers = DbContext.ChatMappings.Where(s => s.receiverId == groupId).Select(s => s.senderId).ToList();
                 List<User> grpMembers =  DbContext.Users.Where(s => receivers.Contains(s.id)).ToList();
                 foreach (var member in grpMembers)
                 {
@@ -176,6 +123,8 @@ namespace ChatWeb3.Hubs
                     await DbContext.SaveChangesAsync();
                     await SendMessageHelper(message, member.id);
                 }
+                await DbContext.SaveChangesAsync();
+                return;
             }
             var chatmap = DbContext.ChatMappings.Find(new Guid(msg.chatId.ToLower()))!;
             if(chatmap != null)
@@ -183,7 +132,7 @@ namespace ChatWeb3.Hubs
                 chatmap.datetime = DateTime.Now;
                 await DbContext.SaveChangesAsync();
                 //ChatMappings chat = DbContext.ChatMappings.Find(msg.chatId)!;
-                Guid receiverId = (chatmap.receiverId != new Guid(msg.senderId))?chatmap.receiverId:chatmap.senderId;
+                Guid receiverId = (chatmap.receiverId != new Guid(senderId))?chatmap.receiverId:chatmap.senderId;
                 await SendMessageHelper(message, receiverId);
             }
             return;
@@ -196,7 +145,7 @@ namespace ChatWeb3.Hubs
 
             OutputMessage sendMsg = new OutputMessage(message);
 
-            await Clients.Caller.SendAsync("ReceivedMessage", sendMsg);
+            //await Clients.Caller.SendAsync("ReceivedMessage", sendMsg);
             if (receiverConnectionId != null)
             {
                 await Clients.Client(receiverConnectionId).SendAsync("ReceivedMessage", sendMsg);
@@ -268,11 +217,21 @@ namespace ChatWeb3.Hubs
 
         public Response GetGroups(int pageNumber = 1, int skipLimit = 30)
         {
-            _logger.LogInformation("GetGropus fxn called");
+            _logger.LogInformation("GetGroups fxn called");
             string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
             var res = GetGroupsService(userId, pageNumber, skipLimit);
             string Id = GetConnectionIdByUser(userId);
             Clients.Client(Id).SendAsync("RecievedGroups", res);
+            return res;
+        }
+
+        public Response GetGroupInfo(string groupId)
+        {
+            _logger.LogInformation("Get Group info fxn called");
+            string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
+            var res = GetGroupInfoService(userId,groupId);
+            string Id = GetConnectionIdByUser(userId);
+            Clients.Client(Id).SendAsync("RecievedGroupInfo", res);
             return res;
         }
 
@@ -296,6 +255,30 @@ namespace ChatWeb3.Hubs
             return res;
         }
 
+        public async Task UpdateGroup(string groupId,string name, string description, string pathToPic)
+        {
+            Console.WriteLine("updateGroup fxn called");
+            string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
+
+            var res = await UpdateGroupService(userId, groupId,name, description, pathToPic);
+            //await Clients.Client(ReceiverId).SendAsync("GroupCreated", res);
+            await Clients.Caller.SendAsync("GroupUpdated", res);
+        }
+
+        public async Task DeleteGroup(string groupId)
+        {
+            Console.WriteLine("deleteGroup fxn called");
+            string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
+
+            var res = await DeleteGroupService(userId, groupId);
+            if (res.statusCode != 200)
+            {
+                await Clients.Caller.SendAsync("GroupDeleted", res);
+            }
+
+            return;
+            //await Clients.Caller.SendAsync("GroupDeleted", res);
+        }
 
         public bool AddUserToList(string userToAdd, string connectionId)
         {
@@ -313,17 +296,6 @@ namespace ChatWeb3.Hubs
                 return true;
             }
         }
-
-        /*public void AddUserConnectinId(string user, string connectionId)
-        {
-            lock (Users)
-            {
-                if (Users.ContainsKey(user))
-                {
-                    Users[user] = connectionId;
-                }
-            }
-        }*/
 
         public string GetUserByConnectionId(string connectionId)
         {
@@ -426,19 +398,77 @@ namespace ChatWeb3.Hubs
             return response;
         }
 
+        public async Task<Response> UpdateGroupService(string userId, string groupId,string name, string description, string pathToPic)
+        {
+            Guid userGuid = new Guid(userId);
+            Guid groupGuid = new Guid(groupId);
+
+            Group? grp = await DbContext.Groups.FindAsync(groupGuid);
+            ResponseGroup output = new ResponseGroup();
+            if (grp != null)
+            {
+                if (grp.adminId != userGuid)
+                {
+                    response = new Response(400, "Not authorized", "", true);
+                    return response;
+                }
+                grp.name = name;
+                grp.description = description;
+                grp.pathToProfilePic = pathToPic;
+                output = new ResponseGroup(grp);
+            }
+
+            await DbContext.SaveChangesAsync();
+            response = new Response(200, "Group updated", output, true);
+            return response;
+        }
+
+        public async Task<Response> DeleteGroupService(string userId, string groupId)
+        {
+            Guid userGuid = new Guid(userId);
+            Guid groupGuid = new Guid(groupId);
+            Group? grp = await DbContext.Groups.FindAsync(groupGuid);
+            if (grp != null)
+            {
+                if (grp.adminId != userGuid)
+                {
+                    response = new Response(400, "Not authorized", "", true);
+                    return response;
+                }
+                grp.isDeleted = true;
+                
+                var chatMaps = DbContext.ChatMappings.Where(s => s.isGroup == true && s.receiverId == groupGuid).ToList();
+                response = new Response(200, "Group Deleted", groupId, true);
+                foreach ( var chatMap in chatMaps )
+                {
+                    DbContext.ChatMappings.Remove(chatMap);
+                    string temp = GetConnectionIdByUser(chatMap.senderId.ToString().ToLower());
+                    await Clients.Client(temp).SendAsync("GroupDeleted", response);
+                }
+            }
+            await DbContext.SaveChangesAsync();
+            return response;
+        }
+
         public async Task<Response> AddUserToGroup(string adminId, string groupId, string userId)
         {
             Guid userGuid = new Guid(userId);
             Guid groupGuid = new Guid(groupId);
             Guid adminGuid = new Guid(adminId);
             
+            User? user = DbContext.Users.Find(userGuid);
+            if(user == null)
+            {
+                response = new Response(400, "User doesn't exist", "", false);
+                return response;
+            }
 
             Group? grp = await DbContext.Groups.FindAsync(groupGuid);
             if(grp != null)
             {
                 if(grp.adminId != adminGuid)
                 {
-                    response = new Response(400, "Not authorized", "", true);
+                    response = new Response(400, "Not authorized", "", false);
                     return response;
                 }
                 //check if already exist
@@ -549,6 +579,22 @@ namespace ChatWeb3.Hubs
             list = list.Skip((pageNumber - 1) * skipLimit).Take(skipLimit).ToList();
             PaginationCountList<OutputGroups> result = new PaginationCountList<OutputGroups>(totalCount, list);
             response = new Response(200,"Groups list fetched",result,true);
+            return response;
+        }
+
+        public Response GetGroupInfoService(string id, string groupId)
+        {
+            Guid userId = new Guid(id);
+            Guid groupGuid = new Guid(groupId);
+            var chatMap = DbContext.ChatMappings.Where(s=>s.isGroup  == true && s.senderId==userId && s.receiverId == groupGuid).FirstOrDefault();
+            if(chatMap == null)
+            {
+                response = new Response(403, "Not authorized", new Group(), true);
+                return response;
+            }
+            Group? grp = DbContext.Groups.Find(groupGuid);
+            ResponseGroup result = new ResponseGroup(grp!);
+            response = new Response(200, "Group info fetched", result, true);
             return response;
         }
 

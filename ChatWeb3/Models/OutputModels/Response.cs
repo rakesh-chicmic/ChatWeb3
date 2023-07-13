@@ -4,7 +4,7 @@
     {
         public int statusCode { get; set; } = 200;
         public string message { get; set; } = "Ok";
-        public Object data { get; set; } = new Object();
+        public object data { get; set; } = new object();
         public bool success { get; set; } = true;
 
         public Response() { }

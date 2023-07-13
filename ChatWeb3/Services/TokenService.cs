@@ -60,7 +60,7 @@ namespace ChatWeb3.Services
             {
                 return new Response(400, "Invalid credentials", "registration/login failed", false);
             }
-            List<User> users = DbContext.Users.Where(s=>s.accountAddress== login.signer).ToList();
+            List<User> users = DbContext.Users.Where(s=>s.accountAddress == login.signer).ToList();
             User? user1 = users.FirstOrDefault();
             if(user1 !=null && user1.isDeleted == true)
             {
@@ -105,7 +105,9 @@ namespace ChatWeb3.Services
                 if(user1 == null)
                 {
                     //user doesn't exist create new
-                    User user = new User(login.signer, "username", "firstName", "lastName", "");
+                    var random = new Random();
+                    string msg = random.Next(100000, 999999).ToString();
+                    User user = new User(login.signer, $"username{msg}", "firstName", "lastName", "");
                     DbContext.Users.Add(user);
                     await DbContext.SaveChangesAsync();
                     ResponseUser responseUser = new ResponseUser(user);
