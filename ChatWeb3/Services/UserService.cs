@@ -1,6 +1,7 @@
 ﻿using ChatWeb3.Controllers;
 using ChatWeb3.Data;
 using ChatWeb3.Models;
+using ChatWeb3.Models.OutputModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -136,6 +137,37 @@ namespace ChatWeb3.Services
                 ResponseUser data = new ResponseUser(userLoggedIn);
                 response = new Response(200,"User Updated Successfully",data,true);
                 return response;
+            }
+            else
+            {
+                response = new Response(404, "User not found", "", false);
+                return response;
+            }
+        }
+        public Response ValidateUsername(string id, string username)
+        {
+            Guid guid = new Guid(id);
+            User? userLoggedIn = DbContext.Users.FindAsync(guid).Result;
+
+            if (userLoggedIn != null && userLoggedIn.isDeleted == false)
+            {
+                var users = DbContext.Users.Where(s => s.username == username).Select(s => s).ToList();
+                ValidateUsernameModel result;
+                if (users.Any())
+                {
+                    var rand = new Random();
+                    string msg = rand.Next(100000,999999).ToString();
+                    username = username.Trim();
+                    result = new ValidateUsernameModel(username, false, $"{username}{msg}");
+                    response = new Response(200, "Username already taken", result, true);
+                    return response;
+                }
+                else
+                {
+                    result = new ValidateUsernameModel(username, true, username);
+                    response = new Response(200, "Username available", result, true);
+                    return response;
+                }
             }
             else
             {

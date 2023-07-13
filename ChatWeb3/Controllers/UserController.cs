@@ -61,14 +61,32 @@ namespace ChatWeb3.Controllers
         }
 
         [HttpPut ,Authorize]
-        [Route("/api/v1/users/update")]
-        public IActionResult UpdateStudent(UpdateUser update)
+        [Route("/api/v1/users/registerUpdate")]
+        public IActionResult RegisterUpdateStudent(UpdateUser update)
         {
             _logger.LogInformation("Update user method started");
             try
             {
                 string id = User.FindFirstValue(ClaimTypes.PrimarySid)!;
                 response = _userService.UpdateUser(id,update).Result;
+                return StatusCode(response.statusCode, response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Internal server error ", ex.Message);
+                return StatusCode(500, $"Internal server error: {ex}"); ;
+            }
+        }
+
+        [HttpPut, Authorize]
+        [Route("/api/v1/users/validateUsername")]
+        public IActionResult ValidateUsername(string username)
+        {
+            _logger.LogInformation("Validate username method started");
+            try
+            {
+                string id = User.FindFirstValue(ClaimTypes.PrimarySid)!;
+                response = _userService.ValidateUsername(id, username);
                 return StatusCode(response.statusCode, response);
             }
             catch (Exception ex)

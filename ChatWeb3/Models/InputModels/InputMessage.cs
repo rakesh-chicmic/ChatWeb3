@@ -2,7 +2,7 @@
 {
     public class InputMessage
     {
-        public string senderId { get; set; } = string.Empty;
+        //public string senderId { get; set; } = string.Empty;
         public string chatId { get; set; } = string.Empty;
         public string content { get; set; } = string.Empty;
         public int type { get; set; } = 1;  //type-1 = file   type-2 = image
