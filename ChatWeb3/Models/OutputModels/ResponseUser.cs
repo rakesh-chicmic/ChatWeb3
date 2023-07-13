@@ -10,6 +10,7 @@
         public DateTime? createdAt { get; set; } = DateTime.MinValue;
         public DateTime? updatedAt { get; set; } = DateTime.MinValue;
         public string? pathToProfilePic { get; set; } = string.Empty;
+        public bool isOnline { get; set; } = false;
 
         public ResponseUser() { }
 
@@ -23,6 +24,7 @@
             id = user.id;
             createdAt = user.createdAt;
             updatedAt = user.updatedAt;
+            isOnline = user.isOnline;
         }
         public ResponseUser(Guid id, string username, string accountAddress, string firstName, string lastName, string pathToProfilePic, DateTime createdAt, DateTime updatedAt)
         {

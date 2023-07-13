@@ -9,6 +9,7 @@
         public DateTime? createdAt { get; set; } = DateTime.MinValue;
         public int type { get; set; } = 1;  //type-1 = file   type-2 = image
         public string? pathToFileAttachment { get; set; } = string.Empty;
+        public bool isSeen { get; set; } = false;
         public OutputMessage() { }
         public OutputMessage(Message msg)
         {
@@ -19,6 +20,7 @@
             type = msg.type;
             pathToFileAttachment = msg.pathToFileAttachment;
             createdAt = msg.createdAt;
+            isSeen = msg.isSeen;
         }
     }
 }

@@ -232,11 +232,11 @@ namespace ChatWeb3.Hubs
         {
             Console.WriteLine("add user to grp fxn called");
             string adminId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
-            Guid adminGuid = Guid.Parse(adminId);
+            //Guid adminGuid = Guid.Parse(adminId);
             var res = await AddUserToGroup(adminId, groupId, userToAdd);
             if (res.statusCode == 200)
             {
-                string ReceiverId = GetConnectionIdByUser(userToAdd);
+                string ReceiverId = GetConnectionIdByUser(userToAdd.ToLower());
                 await Clients.Client(ReceiverId).SendAsync("UserAddedToGroup", res);
             }
             await Clients.Caller.SendAsync("UserAddedToGroup", res);
@@ -250,13 +250,13 @@ namespace ChatWeb3.Hubs
             var res = await RemoveUserFromGroup(adminId, groupId, userToRemove);
             if (res.statusCode == 200)
             {
-                string ReceiverId = GetConnectionIdByUser(userToRemove);
+                string ReceiverId = GetConnectionIdByUser(userToRemove.ToLower());
                 await Clients.Client(ReceiverId).SendAsync("UserRemovedFromGroup", res);
             }
             await Clients.Caller.SendAsync("UserRemovedFromGroup", res);
         }
 
-        public PaginationCountList<OutputChatMappings> GetChats(int pageNumber, int skipLimit = 30)
+        public Response GetChats(int pageNumber = 1, int skipLimit = 30)
         {
             _logger.LogInformation("GetChats fxn called");
             string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
@@ -266,7 +266,7 @@ namespace ChatWeb3.Hubs
             return res;
         }
 
-        public PaginationCountList<OutputGroups> GetGroups(int pageNumber, int skipLimit = 30)
+        public Response GetGroups(int pageNumber = 1, int skipLimit = 30)
         {
             _logger.LogInformation("GetGropus fxn called");
             string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
@@ -276,26 +276,25 @@ namespace ChatWeb3.Hubs
             return res;
         }
 
-        public PaginationCountList<User> GetGroupMembers(string groupId, int pageNumber, int skipLimit = 30)
+        public Response GetGroupMembers(string groupId, int pageNumber = 1, int skipLimit = 30)
         {
             _logger.LogInformation("GetGroup members fxn called");
             string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
-            var res = GetGroupMemberList(groupId, pageNumber, skipLimit);
+            var res = GetGroupMemberList(groupId, pageNumber, skipLimit).Result;
             string Id = GetConnectionIdByUser(userId);
             Clients.Client(Id).SendAsync("RecievedGroupMembers", res);
-            return res.Result;
+            return res;
         }
 
-        public PaginationCountList<OutputMessage> GetChatMessages(string chatId, int pageNumber,int skipLimit = 30)
+        public Response GetChatMessages(string chatId, int pageNumber,int skipLimit = 30)
         {
             _logger.LogInformation("GetChatMessages fxn called");
-            PaginationCountList<OutputMessage> res = GetChatMessagesService(chatId, pageNumber, skipLimit);
+            var res = GetChatMessagesService(chatId, pageNumber, skipLimit);
             //string ReceiverId = GetConnectionIdByUser(OtherMail);
             Clients.Caller.SendAsync("RecievedChatMessages", res);
             //Clients.Client(ReceiverId).SendAsync("RecievedChatMessages", res);
             return res;
         }
-
 
 
         public bool AddUserToList(string userToAdd, string connectionId)
@@ -407,7 +406,7 @@ namespace ChatWeb3.Hubs
                 /* response.Data = output;*/
             }
 
-            OutputChatMappings output = new OutputChatMappings(user1!, user2, chats);
+            OutputChatMappings output = new OutputChatMappings( user2, chats);
 
             response = new Response(200,"Chat created/ fetched",output,true);
             return response;
@@ -440,10 +439,21 @@ namespace ChatWeb3.Hubs
                 if(grp.adminId != adminGuid)
                 {
                     response = new Response(400, "Not authorized", "", true);
+                    return response;
                 }
-                grp.noOfParticipants++;
-                ChatMappings map = new ChatMappings(userGuid,grp.id,true);
-                await DbContext.ChatMappings.AddAsync(map);
+                //check if already exist
+                ChatMappings? map = DbContext.ChatMappings.Where(s => s.senderId == userGuid && s.receiverId == groupGuid).FirstOrDefault();
+                if(map == null)
+                {
+                    map = new ChatMappings(userGuid,grp.id,true);
+                    await DbContext.ChatMappings.AddAsync(map);
+                    grp.noOfParticipants++;
+                }
+                else
+                {
+                    response = new Response(400, "User already exists in group", "", true);
+                    return response;
+                }
             }
 
             ResponseGroup output = new ResponseGroup(grp!);
@@ -464,10 +474,19 @@ namespace ChatWeb3.Hubs
                 if (grp.adminId != adminGuid)
                 {
                     response = new Response(400, "Not authorized", "", true);
+                    return response;
                 }
-                grp.noOfParticipants--;
                 ChatMappings? map =  DbContext.ChatMappings.Where(s => s.senderId == userGuid && s.receiverId == groupGuid).FirstOrDefault();
-                DbContext.ChatMappings.Remove(map!);
+                if(map != null)
+                {
+                    grp.noOfParticipants--;
+                    DbContext.ChatMappings.Remove(map);
+                }
+                else
+                {
+                    response = new Response(400, "User doesn't exists in group", "", true);
+                    return response;
+                }
             }
 
             ResponseGroup output = new ResponseGroup(grp!);
@@ -477,7 +496,7 @@ namespace ChatWeb3.Hubs
         }
 
         //function invoked to get all chat mappings created for a particular user
-        public PaginationCountList<OutputChatMappings> GetChatsService(string id, int pageNumber, int skipLimit)
+        public Response GetChatsService(string id, int pageNumber, int skipLimit)
         { 
             var chatMaps = DbContext.ChatMappings.ToList();
             Guid userId = new Guid(id);
@@ -490,8 +509,14 @@ namespace ChatWeb3.Hubs
             {
                 var user1 = DbContext.Users.Find(cm.senderId);
                 var user2 = DbContext.Users.Find(cm.receiverId);
-
-                output = new OutputChatMappings(user1!, user2!, cm);
+                if(user1 != null && user1.id != userId)
+                {
+                    output = new OutputChatMappings(user1, cm);
+                }
+                else
+                {
+                    output = new OutputChatMappings(user2!, cm);
+                }
                 list.Add(output);
             }
 
@@ -500,10 +525,11 @@ namespace ChatWeb3.Hubs
             list = list.OrderByDescending(x => x.dateTime).ToList();
             list = list.Skip((pageNumber - 1) * skipLimit).Take(skipLimit).ToList();
             PaginationCountList<OutputChatMappings> result  = new PaginationCountList<OutputChatMappings>(totalCount,list);
-            return result;
+            response = new Response(200, "Chat list fetched", result, true);
+            return response;
         }
 
-        public PaginationCountList<OutputGroups> GetGroupsService(string id, int pageNumber, int skipLimit)
+        public Response GetGroupsService(string id, int pageNumber, int skipLimit)
         {
             var chatMaps = DbContext.ChatMappings.ToList();
             Guid userId = new Guid(id);
@@ -522,29 +548,38 @@ namespace ChatWeb3.Hubs
             list = list.OrderByDescending(x => x.datetime).ToList();
             list = list.Skip((pageNumber - 1) * skipLimit).Take(skipLimit).ToList();
             PaginationCountList<OutputGroups> result = new PaginationCountList<OutputGroups>(totalCount, list);
-            return result;
+            response = new Response(200,"Groups list fetched",result,true);
+            return response;
         }
 
-        public async Task<PaginationCountList<User>> GetGroupMemberList(string groupId, int pageNumber, int skipLimit)
+        public async Task<Response> GetGroupMemberList(string groupId, int pageNumber, int skipLimit)
         {
             Guid groupGuid = new Guid(groupId);
             Group? grp = await DbContext.Groups.FindAsync(groupGuid);
             if(grp == null)
             {
-                return new PaginationCountList<User>();
+                return new Response(200, "This Group doesn't exists", "", true);
             }
             List<Guid> userIds =  DbContext.ChatMappings.Where(s => s.isGroup==true && s.receiverId== groupGuid).Select(s=>s.senderId).ToList();
-            List<User> list = DbContext.Users.Where(s=>userIds.Contains(s.id)).ToList();
+            List<User> listUser = DbContext.Users.Where(s=>userIds.Contains(s.id)).ToList();
+            List<ResponseUser> list = new List<ResponseUser>();
+
+            foreach(User user in listUser)
+            {
+                ResponseUser responseUser = new ResponseUser(user);
+                list.Add(responseUser);
+            }
             int totalCount = list.Count;
             Console.WriteLine(totalCount);
             list = list.OrderByDescending(x => x.username).ToList();
             list = list.Skip((pageNumber - 1) * skipLimit).Take(skipLimit).ToList();
-            PaginationCountList<User> result = new PaginationCountList<User>(totalCount, list);
-            return result;
+            PaginationCountList<ResponseUser> result = new PaginationCountList<ResponseUser>(totalCount, list);
+            response = new Response(200, "Members list", result, true);
+            return response;
         }
 
         // function invoked to get previous chat between two users
-        public PaginationCountList<OutputMessage> GetChatMessagesService(string chatId, int pageNumber, int skipLimit)
+        public Response GetChatMessagesService(string chatId, int pageNumber, int skipLimit)
         {
             var messages = DbContext.Messages.ToList();
             Guid chatGuid = new Guid(chatId);
@@ -563,7 +598,8 @@ namespace ChatWeb3.Hubs
             }
             //res.Reverse();
             PaginationCountList<OutputMessage> result = new PaginationCountList<OutputMessage>(totalCount,res);
-            return result;
+            response = new Response(200,"Chat messages fetched",result, true);
+            return response;
         }
         //-----------------------------------------------------------------------------------------------------------------//
 }
