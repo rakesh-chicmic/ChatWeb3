@@ -80,6 +80,8 @@ policy =>
 
 //adding services for dependecy injection
 builder.Services.AddScoped<IUploadPicService, UploadPicService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

@@ -23,11 +23,8 @@ namespace ChatWeb3.Services
         }
 
         //type of file = type 1 -> files  type 2 -> images
-        public async Task<object> FileUploadAsync(IFormFile file,string id,int type)
+        public async Task<Response> FileUploadAsync(IFormFile file,string id,int type)
         {
-            //Guid guid = new Guid(id);
-            //User? user = await DbContext.Users.FindAsync(guid);
-
             if (file == null)
             {
                 response = new Response(400, "Please provide a file for successful upload", string.Empty, false);
@@ -65,8 +62,7 @@ namespace ChatWeb3.Services
             return response;
         }
 
-
-        public async Task<object> ProfilePicUploadAsync(IFormFile file, string id)
+        public async Task<Response> ProfilePicUploadAsync(IFormFile file, string id)
         {
             Guid guid = new Guid(id);
             User? user = await DbContext.Users.FindAsync(guid);
@@ -89,12 +85,12 @@ namespace ChatWeb3.Services
 
                 var fullPath = Path.Combine(pathToSave, fileName);
 
-                using (var stream = System.IO.File.Create(fullPath))
-                {
-                    await file.CopyToAsync(stream);
-                }
                 if (user!=null)
                 {
+                    using (var stream = System.IO.File.Create(fullPath))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
                     user.pathToProfilePic = Path.Combine(folderName, fileName);
                     await DbContext.SaveChangesAsync(); 
                     ResponseUser responseUser = new ResponseUser(user);

@@ -16,7 +16,6 @@ namespace ChatWeb3.Controllers
     {
         IUploadPicService uploadPicServiceInstance;      //service dependency
         private readonly ILogger<UploadFileController> _logger;
-        object result = new object();
         Response response = new Response();
         public UploadFileController(ILogger<UploadFileController> logger, IConfiguration configuration, ChatAppDbContext dbContext)
         {
@@ -24,9 +23,8 @@ namespace ChatWeb3.Controllers
             _logger = logger;
         }
 
-        //[HttpPost, DisableRequestSizeLimit, Authorize(Roles = "login")]
-        //[HttpPost, DisableRequestSizeLimit, Authorize]
-        [HttpPost]
+        //[HttpPost]
+        [HttpPost, DisableRequestSizeLimit, Authorize]
         [Route("/api/v1/uploadFile")]
         public async Task<IActionResult> FileUploadAsync(int type, IFormFile file)
         {
@@ -36,9 +34,8 @@ namespace ChatWeb3.Controllers
             {
                 string id = User.FindFirstValue(ClaimTypes.PrimarySid)!;                                //extracting email from header token
                 //string? token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();       //getting token from authorization header
-                result = await uploadPicServiceInstance.FileUploadAsync(file,id,type);
-
-                return Ok(result);
+                response = await uploadPicServiceInstance.FileUploadAsync(file,id,type);
+                return StatusCode(response.statusCode, response);
             }
             catch (Exception ex)
             {
@@ -48,8 +45,7 @@ namespace ChatWeb3.Controllers
         }
 
 
-        //[HttpPost, DisableRequestSizeLimit, Authorize(Roles = "login")]
-        [HttpPost]
+        [HttpPost, DisableRequestSizeLimit, Authorize]
         [Route("/api/v1/uploadProfilePic")]
         public async Task<IActionResult> ProfilePicUploadAsync(IFormFile file)                //[FromForm] FileUpload File
         {
@@ -57,8 +53,8 @@ namespace ChatWeb3.Controllers
             try
             {
                 string id = User.FindFirstValue(ClaimTypes.PrimarySid)!;
-                result = await uploadPicServiceInstance.ProfilePicUploadAsync(file, id);
-                return Ok(result);
+                response = await uploadPicServiceInstance.ProfilePicUploadAsync(file, id);
+                return StatusCode(response.statusCode, response);
             }
             catch (Exception ex)
             {
