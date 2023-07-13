@@ -14,7 +14,7 @@ using System.Threading.Tasks.Dataflow;
 
 namespace ChatWeb3.Hubs
 {
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ChatHub : Hub
     {
         // to keep track of online users dict key-value pair
@@ -47,7 +47,7 @@ namespace ChatWeb3.Hubs
                     user.lastActive = DateTime.Now;
                     await DbContext.SaveChangesAsync();
                 }
-                await refresh();
+                //await refresh();
                 AddUserConnectionId(userId);                                                // add user to dictionary of connected users
             }
             catch (Exception ex)
@@ -63,7 +63,7 @@ namespace ChatWeb3.Hubs
             _logger.LogInformation("user disconnected");
             string? userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid);
             RemoveUserFromList(userId!);                    //remove user from connected users dictionary
-            await refresh();
+            //await refresh();
             Guid id = new Guid(userId!);
             User? user = await DbContext.Users.FindAsync(id);
             if (user != null)
@@ -83,7 +83,7 @@ namespace ChatWeb3.Hubs
         }
 
         //public async Task AddUserConnectionId(string userId)
-        public void AddUserConnectionId(string userId)
+        private void AddUserConnectionId(string userId)
         {
             _logger.LogInformation("User added to online dictionary ", userId);
             AddUserToList(userId.ToLower(), Context.ConnectionId);
@@ -211,7 +211,7 @@ namespace ChatWeb3.Hubs
             string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
             var res = GetChatsService(userId,pageNumber,skipLimit);
             string Id = GetConnectionIdByUser(userId);
-            Clients.Client(Id).SendAsync("RecievedChats", res);
+            Clients.Client(Id).SendAsync("ReceivedChats", res);
             return res;
         }
 
@@ -221,7 +221,7 @@ namespace ChatWeb3.Hubs
             string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
             var res = GetGroupsService(userId, pageNumber, skipLimit);
             string Id = GetConnectionIdByUser(userId);
-            Clients.Client(Id).SendAsync("RecievedGroups", res);
+            Clients.Client(Id).SendAsync("ReceivedGroups", res);
             return res;
         }
 
@@ -231,7 +231,7 @@ namespace ChatWeb3.Hubs
             string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
             var res = GetGroupInfoService(userId,groupId);
             string Id = GetConnectionIdByUser(userId);
-            Clients.Client(Id).SendAsync("RecievedGroupInfo", res);
+            Clients.Client(Id).SendAsync("ReceivedGroupInfo", res);
             return res;
         }
 
@@ -250,17 +250,27 @@ namespace ChatWeb3.Hubs
             _logger.LogInformation("GetChatMessages fxn called");
             var res = GetChatMessagesService(chatId, pageNumber, skipLimit);
             //string ReceiverId = GetConnectionIdByUser(OtherMail);
-            Clients.Caller.SendAsync("RecievedChatMessages", res);
+            Clients.Caller.SendAsync("ReceivedChatMessages", res);
             //Clients.Client(ReceiverId).SendAsync("RecievedChatMessages", res);
             return res;
         }
 
-        public async Task UpdateGroup(string groupId,string name, string description, string pathToPic)
+        public async Task SeenMessage(string chatId,string messageId)
+        {
+            Console.WriteLine("Seen Message fxn called");
+            string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
+
+            var res = await SeenMessageService(userId, chatId, messageId);
+            //await Clients.Client(ReceiverId).SendAsync("GroupCreated", res);
+            await Clients.Caller.SendAsync("SeenMessage", res);
+        }
+
+        public async Task UpdateGroup(string groupId, string name, string description, string pathToPic)
         {
             Console.WriteLine("updateGroup fxn called");
             string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
 
-            var res = await UpdateGroupService(userId, groupId,name, description, pathToPic);
+            var res = await UpdateGroupService(userId, groupId, name, description, pathToPic);
             //await Clients.Client(ReceiverId).SendAsync("GroupCreated", res);
             await Clients.Caller.SendAsync("GroupUpdated", res);
         }
@@ -395,6 +405,42 @@ namespace ChatWeb3.Hubs
             ResponseGroup output = new ResponseGroup(group);
             response = new Response(200, "Group created", output, true);
             await DbContext.SaveChangesAsync();
+            return response;
+        }
+
+        public async Task<Response> SeenMessageService(string userId, string chatId, string messageId)
+        {
+            Guid userGuid = new Guid(userId);
+            Guid chatGuid = new Guid(chatId);
+            Guid messageGuid = new Guid(messageId);
+
+            Message? msg = DbContext.Messages.Find(messageGuid);
+            ChatMappings? chatMap = DbContext.ChatMappings.Find(chatGuid);
+            if(msg != null)
+            {
+                msg.isSeen = true;
+            }
+            else
+            {
+                msg = new Message();
+            }
+            await DbContext.SaveChangesAsync();
+            response = new Response(200, "Message Seen", msg, true);
+
+            if(chatMap != null)
+            {
+                if(chatMap.isGroup)
+                {
+                    Guid groupId = chatMap.receiverId;
+                    
+                }
+                else
+                {
+                    Guid receiverId = (chatMap.receiverId != new Guid(userId)) ? chatMap.receiverId : chatMap.senderId;
+                    string temp = GetConnectionIdByUser(receiverId.ToString());
+                    await Clients.Client(temp).SendAsync("SeenMessage", response);
+                }
+            }
             return response;
         }
 

@@ -8,3 +8,5 @@
         public string hash { get; set; } = string.Empty; // The prefixed and sha3 hashed message 
     }
 }
+
+//dto while logging/ signing in through metamsk for authentication

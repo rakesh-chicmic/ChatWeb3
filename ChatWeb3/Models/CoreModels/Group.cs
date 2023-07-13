@@ -27,3 +27,4 @@
         }
     }
 }
+// entity to create groups and stores basic group details

@@ -10,15 +10,19 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
+//app builder starts here
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 //builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, AuthorizationMiddlewareResultHandlerService>();
+
+//added logging support
 builder.Logging.ClearProviders();
 builder.Logging.AddLog4Net();
-
+//add controllers
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+//add swagger controls
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme

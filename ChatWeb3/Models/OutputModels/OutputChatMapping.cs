@@ -3,9 +3,6 @@
     public class OutputChatMappings
     {
         public Guid chatId { get; set; }
-        //public string senderId { get; set; } = string.Empty;
-        //public string senderFirstName { get; set; } = string.Empty;
-        //public string senderLastName { get; set; } = string.Empty;
         public string id { get; set; } = string.Empty;
         public string firstName { get; set; } = string.Empty;
         public string lastName { get; set; } = string.Empty;
@@ -17,9 +14,6 @@
         public OutputChatMappings(User receiver, ChatMappings mapping)
         {
             chatId = mapping.id;
-            //senderId = sender.id.ToString();
-            //senderFirstName = sender.firstName;
-            //senderLastName = sender.lastName;
             id = receiver.id.ToString();
             firstName = receiver.firstName;
             lastName = receiver.lastName;
@@ -29,3 +23,5 @@
         }
     }
 }
+
+// response data for list of chats a user is engaged with
