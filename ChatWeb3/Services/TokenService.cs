@@ -29,6 +29,11 @@ namespace ChatWeb3.Services
 
         public async Task<Response> GetVerificationMessage(string address)
         {
+            if(address == null || address == string.Empty)
+            {
+                response = new Response(400, "Value cannot be null","", true);
+                return response;
+            }
             var random = new Random();
             string message = "To authenticate you need to sign this message " + random.Next(100000,999999);
             AccountMessageMapping newMap = new AccountMessageMapping(address,message);

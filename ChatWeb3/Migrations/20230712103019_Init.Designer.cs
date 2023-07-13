@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatWeb3.Migrations
 {
     [DbContext(typeof(ChatAppDbContext))]
-    [Migration("20230707114027_Init")]
+    [Migration("20230712103019_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -50,7 +50,7 @@ namespace ChatWeb3.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("createdAt")
+                    b.Property<DateTime?>("datetime")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("isDeleted")
@@ -124,6 +124,9 @@ namespace ChatWeb3.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("isDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("isSeen")
                         .HasColumnType("bit");
 
                     b.Property<string>("pathToFileAttachment")

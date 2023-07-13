@@ -31,7 +31,7 @@ namespace ChatWeb3.Migrations
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     senderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     receiverId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    createdAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    datetime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     isGroup = table.Column<bool>(type: "bit", nullable: false),
                     isDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -70,6 +70,7 @@ namespace ChatWeb3.Migrations
                     createdAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     type = table.Column<int>(type: "int", nullable: false),
                     isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    isSeen = table.Column<bool>(type: "bit", nullable: false),
                     pathToFileAttachment = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>

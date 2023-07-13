@@ -47,7 +47,7 @@ namespace ChatWeb3.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("createdAt")
+                    b.Property<DateTime?>("datetime")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("isDeleted")
@@ -121,6 +121,9 @@ namespace ChatWeb3.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("isDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("isSeen")
                         .HasColumnType("bit");
 
                     b.Property<string>("pathToFileAttachment")

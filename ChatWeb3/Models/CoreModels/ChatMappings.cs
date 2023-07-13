@@ -5,7 +5,7 @@
         public Guid id { get; set; } = Guid.Empty;
         public Guid senderId { get; set; } = Guid.Empty;
         public Guid receiverId { get; set; } = Guid.Empty;
-        public DateTime? createdAt { get; set; } = DateTime.MinValue;
+        public DateTime? datetime { get; set; } = DateTime.MinValue;
         public bool isGroup { get; set; } = false;
         public bool isDeleted { get; set; } = false;
 
@@ -16,8 +16,10 @@
             this.senderId = senderId;
             this.receiverId = recevierId;
             this.isGroup = isGroup;
-            createdAt = DateTime.Now;
+            datetime = DateTime.Now;
             isDeleted = false;
         }
     }
 }
+//mapping b/w diff users or b/w user and group 
+// receiverId can be another user or groupId
