@@ -1,10 +1,32 @@
-﻿@page "/home"
+﻿@page "/profile"
+@inherits EditProfileBase
 @inject HttpClient client
 @inject IFileReaderService fileReader
-<div>hello</div>
-<input type="file" @ref="elementReference" @onchange="async () => await OpenFileAsync()" />
-<button @onclick="async () => await UploadFileAsync()">Upload File</button>
-<img src="@imagePath" alt="...">
+
+<div id="edit-profile">
+    <div id="main">
+        <div class="text-center" id="profile-image">
+            <img src="@UpdateUser.PathToProfilePic" alt="...">
+        </div>
+        <form>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" @bind-value="@UpdateUser.Username" val required disabled>
+            <label for="profileImage">Profile Image:</label>
+            <input type="file" id="profileImage" name="profileImage" accept="image/*" @bind-value="@UpdateUser.PathToProfilePic" required>
+           @* <input type="file" @ref="elementReference" @onchange="async () => await OpenFileAsync()" />
+            <button @onclick="async () => await UploadFileAsync()">Upload File</button>
+*@
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" @bind-value="@UpdateUser.FirstName" required>@userResponse.firstName</input>
+
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" @bind-value="@UpdateUser.LastName">@userResponse.lastName</input>
+
+            <input type="submit" value="Continue" @onclick="()=>(UpdateUser_Click(UpdateUser))" />
+        </form>
+    </div>
+</div>
+
 @code {
     ElementReference elementReference;
     string message = string.Empty;
@@ -33,11 +55,11 @@
     {
         string token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3ByaW1hcnlzaWQiOiJiYTRkNjBkZC0wMmJhLTQxODAtYjQ3Yy1jNjBlMDFiN2FjMjgiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiZmlyc3ROYW1lIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvc2lkIjoiMHg2ZDc2MzY0ODZiMERkMmIxYTM0QmY5OEFkNDA3OEFjQzE3NDFmQzcyIiwiZXhwIjoxNjg5MzI3MzIyfQ.Tb7L2n_xjlc6EKyxXiMB7mfRCjY4LOvlm2ZFxo0L00wqVxUOPoBUM42zUjFS7f98a0QJYFEKkBvtKdBlui01LQ";
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+    
         var content = new MultipartFormDataContent();
         content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data");
         content.Add(new StreamContent(fileStream, (int)fileStream.Length), "image", fileName);
         var response = await client.PostAsync("api/v1/uploadProfilePic", content);
-        //var response = await client.PostAsync("api/v1/uploadProfilePic", content);
         message = " Upload Success";
     }
 }

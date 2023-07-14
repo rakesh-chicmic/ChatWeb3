@@ -1,0 +1,23 @@
+﻿@page "/details"
+@inherits UserDetailsBase
+<div id="details-page">
+    <div id="main">
+        <h1>Fill Your Details</h1>
+        <form>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" @bind-value="@UpdateUser.Username" required>
+
+            <label for="profileImage">Profile Image:</label>
+            <input type="file" id="profileImage" name="profileImage" accept="image/*" @bind-value="@UpdateUser.PathToProfilePic" required>
+
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" @bind-value="@UpdateUser.FirstName" required>
+
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" @bind-value="@UpdateUser.LastName">
+
+            <input type="submit" value="Continue" @onclick="()=>(UpdateUser_Click(UpdateUser))" />
+        </form>
+    </div>
+</div>
+

@@ -45,7 +45,7 @@ namespace ChatWeb3Frontend.Pages
             {
                 InitializeMsg = ex.ToString();
             }
-            NavigationManager.NavigateTo("/home");
+            NavigationManager.NavigateTo("/details");
         }
 
         public async Task GetSelectedAddress()

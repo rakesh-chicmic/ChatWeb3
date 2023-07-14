@@ -1,0 +1,118 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+}
+
+#details-page {
+    overflow: hidden;
+}
+
+#main {
+    font-family: 'Agdasima', sans-serif;
+    background-color: #116149;
+    /*background-image: url('https://img.freepik.com/free-photo/medium-shot-man-wearing-vr-glasses_23-2149126949.jpg?w=1380&t=st=1689226413~exp=1689227013~hmac=3dab9d47a60107f7dea6346662fa753fc815f9aeb7f742a98d73a703e0b17175');*/
+    width: 100vw;
+    height: 100vh;
+   /* background-size: cover; 
+    background-position: center;*/
+}
+
+
+h1 {
+    text-align: center;
+}
+
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 0px 30px 0px 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #f7f7f7;
+    font-size: 24px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    input[type="submit"]:hover {
+        background-color: #45a049;
+    }
+
+/* Animation effect */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+form {
+    animation: fadeIn 0.5s ease-in;
+    margin-top: 50px;
+}
+
+#profile-image img {
+    height: 120px;
+    width: 120px;
+    color: red;
+    border-radius: 50%;
+    margin-top: 10px;
+    object-fit: cover;
+}
+
+#profile-image {
+    margin-bottom: -100px;
+}
+
+    #profile-image img:hover {
+        animation: spin 1s infinite;
+        transition: transform 0.2s;
+    }
+
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+
+    100% {
+        transform: rotate(360deg) scale(1.1);
+        
+    }
+}
