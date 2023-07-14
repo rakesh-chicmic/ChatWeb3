@@ -9,9 +9,10 @@
         public DateTime? dateTime { get; set; } = DateTime.Now;
         public bool isOnline { get; set; } = false;
         public string pathToProfilePic { get; set; } = string.Empty;
+        public int countOfUnseen { get; set; } = 0;
 
         public OutputChatMappings() { }
-        public OutputChatMappings(User receiver, ChatMappings mapping)
+        public OutputChatMappings(User receiver, ChatMappings mapping, int countOfUnseen)
         {
             chatId = mapping.id;
             id = receiver.id.ToString();
@@ -20,6 +21,7 @@
             dateTime = mapping.datetime;
             isOnline = receiver.isOnline;
             pathToProfilePic = receiver.pathToProfilePic;
+            this.countOfUnseen = countOfUnseen;
         }
     }
 }
