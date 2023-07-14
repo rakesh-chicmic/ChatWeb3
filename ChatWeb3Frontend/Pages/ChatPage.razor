@@ -1,0 +1,94 @@
+﻿@page "/chatpage"
+
+<div class="row">
+    <div class="column left">
+        <div class="sideBar">
+            <div class="body">
+                <img src="./logo.png" class="sideBarGroupPic"/>
+            </div>
+            <div class="sideBarGroup" >
+                <img src="./icons8-settings-512.png" class="imageicon" style="margin:10px; margin-bottom: 0px;" />
+                <img src="./icons8-logout-96.png" class="imageicon" style="margin:10px; margin-left:13px; margin-bottom: 0px;" />
+                <img src="./logo.png" class="sideBarGroupPic" />
+            </div>
+
+        </div>
+    </div>
+    <div class="column middle">
+        <div>
+            <div class="chatlistHeader">
+                    <div class="searchbox">
+                            <input class="textbox" type="text" placeholder="Search" />
+                            <img src="./icons8-search-480.png" class="imageicon" onclick="" />
+                    </div>
+                <div class="tab">
+                    <div class="choosentab">
+                        Chats
+                    </div>
+                    <div class="normaltab">
+                        Groups
+                    </div>
+                </div>
+            </div>
+            <div class="chatlist">
+                <div class="chatlist-item active">
+                    <div class="sendbuttonLogo">
+                        <img src="./logo.png" class="selfPicture" />
+                        John Doe
+                    </div>
+                    <span class="unread-badge"></span>
+                </div>
+                <div class="chatlist-item">
+                    <div class="sendbuttonLogo">
+                        <img src="./logo.png" class="selfPicture" />
+                        Samantha
+                    </div>
+                </div>
+                <div class="chatlist-item">
+                    <div class="sendbuttonLogo">
+                        <img src="./logo.png" class="selfPicture" />
+                        Michael Johnson
+                    </div>
+                </div>
+                <!-- More chat list items -->
+            </div>
+        </div>
+        <div>
+
+        </div>
+    </div>
+    <div class="column right">
+        <div class="chatbox">
+            <div class="header">
+                <div class="tab">
+                    <img src="./logo.png" class="chatPicture" />
+                    test subject
+                </div>
+                <div>
+                    <img src="./icons8-menu-vertical-96.png" class="imageicon" />
+                </div>
+            </div>
+                <div class ="messagebox">
+                    <div class="message">Hello! How can I assist you?</div>
+                    <div class="message user">I have a question about your products.</div>
+                    <div class="message">Sure, feel free to ask.</div>
+                </div>
+            <div class="chatboxFooter">
+                <div class="input-box">
+                    <input class="textbox" type="text" placeholder="message" />
+                    <img src="./icons8-attach-90.png" class="imageicon" onclick=""/>
+                    <img src="./icons8-image-96.png" class="imageicon" onclick="" />
+                    <img src="./icons8-microphone-96.png" class="imageicon" onclick="" />
+                </div>
+                <button class="sendbutton" onclick=""><img src="./Sendbutton.png" class="sendbuttonLogo" /></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    public void sendMessaege()
+    {
+        
+    }
+}

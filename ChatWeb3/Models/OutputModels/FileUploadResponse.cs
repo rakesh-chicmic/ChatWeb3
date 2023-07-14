@@ -1,0 +1,14 @@
+﻿namespace ChatWeb3.Models
+{
+    public class FileUploadResponse
+    {
+        public string fileName { get; set; } = string.Empty;
+        public string pathToFile { get; set; } = string.Empty;
+
+        public FileUploadResponse(string fileName, string pathToFile)
+        {
+            this.fileName = fileName;
+            this.pathToFile = pathToFile;
+        }
+    }
+}
