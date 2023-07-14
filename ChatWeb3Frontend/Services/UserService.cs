@@ -18,10 +18,10 @@ namespace ChatWeb3Frontend.Services
         public UserService(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
-        public async Task<APIResponse> GetYourselfAsync()
+        public async Task<APIResponse> GetAsync()
         {
             try
             {           
@@ -40,31 +40,18 @@ namespace ChatWeb3Frontend.Services
             {
                 var requestMessage = new HttpRequestMessage(HttpMethod.Put, "http://192.180.0.192:4545/api/v1/users/registerUpdate");
                 requestMessage.Content = new StringContent(JsonSerializer.Serialize(update), Encoding.UTF8, "application/json");
-                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", token);
+                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
                 var result = await _httpClient.SendAsync(requestMessage);
 
                 if (!result.IsSuccessStatusCode)
                 {
-                    var errorResponseContent = await result.Content.ReadFromJsonAsync<APIResponse>();
-                    return new APIResponse { statusCode = 0, message = errorResponseContent!.message };
+                    var message = await result.Content.ReadFromJsonAsync<APIResponse>();
+                    return new APIResponse { StatusCode = 0, Message = message!.Message };
                 }
                 var resultContent = await result.Content.ReadFromJsonAsync<APIResponse>();
                 Console.WriteLine(resultContent.ToString());
                 return resultContent!;
-                //var response = await _httpClient.PostAsJsonAsync("api/v1/users/registerUpdate", update);
-                //if (response.IsSuccessStatusCode)
-                //{
-                //    var res = JsonSerializer.Serialize(response);
-                //    var apiResponse = JsonSerializer.Deserialize<APIResponse>(res);
-                //    Console.WriteLine(apiResponse);
-                //    return apiResponse;
-                //}
-                //else
-                //{
-                //    var message = await response.Content.ReadAsStringAsync();
-                //    throw new Exception($"Http status:{response.StatusCode} Message -{message}");
-                //}
             }
             catch (Exception)
             {

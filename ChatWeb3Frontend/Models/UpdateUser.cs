@@ -2,9 +2,9 @@
 {
     public class UpdateUser
     {
-        public string username { get; set; } 
-        public string firstName { get; set; }
-        public string lastName { get; set; } 
-        public string pathToProfilePic { get; set; } 
+        public string Username { get; set; } 
+        public string FirstName { get; set; }
+        public string LastName { get; set; } 
+        public string PathToProfilePic { get; set; } 
     }
 }

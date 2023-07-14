@@ -20,13 +20,13 @@ namespace ChatWeb3Frontend.Pages
         public APIResponse response = new APIResponse();
         protected override async Task OnInitializedAsync()
         {      
-             response = await UserService.GetYourselfAsync();
-             var resData = JsonSerializer.Serialize(response.data);
+             response = await UserService.GetAsync();
+             var resData = JsonSerializer.Serialize(response.Data);
              userResponse = JsonSerializer.Deserialize<UserResponse>(resData);
-             updateUser.username = userResponse.username;
-             updateUser.firstName = userResponse.firstName;
-             updateUser.lastName = userResponse.lastName;
-             updateUser.pathToProfilePic = userResponse.pathToProfilePic;
+             updateUser.Username = userResponse.Username;
+             updateUser.FirstName = userResponse.FirstName;
+             updateUser.LastName = userResponse.LastName;
+             updateUser.PathToProfilePic = userResponse.PathToProfilePic;
         }
 
         protected async Task UpdateUser_Click(UpdateUser update)

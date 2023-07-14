@@ -2,9 +2,9 @@
 {
     public class APIResponse
     {
-        public int statusCode { get; set; } = 200;
-        public string message { get; set; } = "Ok";
-        public object data { get; set; }
-        public bool success { get; set; } = true;
+        public int StatusCode { get; set; } 
+        public string Message { get; set; } 
+        public object Data { get; set; }
+        public bool Success { get; set; } 
     }
 }
