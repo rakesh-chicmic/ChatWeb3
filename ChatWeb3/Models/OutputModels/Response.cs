@@ -17,3 +17,5 @@
         }
     }
 }
+
+// global response model

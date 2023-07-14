@@ -14,7 +14,7 @@ using System.Threading.Tasks.Dataflow;
 
 namespace ChatWeb3.Hubs
 {
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ChatHub : Hub
     {
         // to keep track of online users dict key-value pair
@@ -47,7 +47,7 @@ namespace ChatWeb3.Hubs
                     user.lastActive = DateTime.Now;
                     await DbContext.SaveChangesAsync();
                 }
-                await refresh();
+                //await refresh();
                 AddUserConnectionId(userId);                                                // add user to dictionary of connected users
             }
             catch (Exception ex)
@@ -63,7 +63,7 @@ namespace ChatWeb3.Hubs
             _logger.LogInformation("user disconnected");
             string? userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid);
             RemoveUserFromList(userId!);                    //remove user from connected users dictionary
-            await refresh();
+            //await refresh();
             Guid id = new Guid(userId!);
             User? user = await DbContext.Users.FindAsync(id);
             if (user != null)
@@ -83,7 +83,7 @@ namespace ChatWeb3.Hubs
         }
 
         //public async Task AddUserConnectionId(string userId)
-        public void AddUserConnectionId(string userId)
+        private void AddUserConnectionId(string userId)
         {
             _logger.LogInformation("User added to online dictionary ", userId);
             AddUserToList(userId.ToLower(), Context.ConnectionId);
@@ -121,7 +121,8 @@ namespace ChatWeb3.Hubs
                     ChatMappings chat = DbContext.ChatMappings.Where(s => s.senderId == member.id).FirstOrDefault()!;
                     chat.datetime = DateTime.Now;
                     await DbContext.SaveChangesAsync();
-                    await SendMessageHelper(message, member.id);
+                    OutputMessage sendMsg = new OutputMessage(message);
+                    await SendMessageHelper(sendMsg, member.id);
                 }
                 await DbContext.SaveChangesAsync();
                 return;
@@ -133,22 +134,22 @@ namespace ChatWeb3.Hubs
                 await DbContext.SaveChangesAsync();
                 //ChatMappings chat = DbContext.ChatMappings.Find(msg.chatId)!;
                 Guid receiverId = (chatmap.receiverId != new Guid(senderId))?chatmap.receiverId:chatmap.senderId;
-                await SendMessageHelper(message, receiverId);
+                OutputMessage sendMsg = new OutputMessage(message);
+                await Clients.Caller.SendAsync("ReceivedMessage", sendMsg);
+                await SendMessageHelper(sendMsg, receiverId);
             }
             return;
         }
 
-        private async Task SendMessageHelper(Message message,Guid receiverId)
+        private async Task SendMessageHelper(OutputMessage message,Guid receiverId)
         {
             string receiverConnectionId = GetConnectionIdByUser(receiverId.ToString().ToLower());
             var fileName = message.pathToFileAttachment!.Split("/").Last();
 
-            OutputMessage sendMsg = new OutputMessage(message);
-
             //await Clients.Caller.SendAsync("ReceivedMessage", sendMsg);
             if (receiverConnectionId != null)
             {
-                await Clients.Client(receiverConnectionId).SendAsync("ReceivedMessage", sendMsg);
+                await Clients.Client(receiverConnectionId).SendAsync("ReceivedMessage", message);
             }
             //await refresh();
         }
@@ -211,7 +212,7 @@ namespace ChatWeb3.Hubs
             string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
             var res = GetChatsService(userId,pageNumber,skipLimit);
             string Id = GetConnectionIdByUser(userId);
-            Clients.Client(Id).SendAsync("RecievedChats", res);
+            Clients.Client(Id).SendAsync("ReceivedChats", res);
             return res;
         }
 
@@ -221,7 +222,7 @@ namespace ChatWeb3.Hubs
             string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
             var res = GetGroupsService(userId, pageNumber, skipLimit);
             string Id = GetConnectionIdByUser(userId);
-            Clients.Client(Id).SendAsync("RecievedGroups", res);
+            Clients.Client(Id).SendAsync("ReceivedGroups", res);
             return res;
         }
 
@@ -231,7 +232,7 @@ namespace ChatWeb3.Hubs
             string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
             var res = GetGroupInfoService(userId,groupId);
             string Id = GetConnectionIdByUser(userId);
-            Clients.Client(Id).SendAsync("RecievedGroupInfo", res);
+            Clients.Client(Id).SendAsync("ReceivedGroupInfo", res);
             return res;
         }
 
@@ -250,17 +251,27 @@ namespace ChatWeb3.Hubs
             _logger.LogInformation("GetChatMessages fxn called");
             var res = GetChatMessagesService(chatId, pageNumber, skipLimit);
             //string ReceiverId = GetConnectionIdByUser(OtherMail);
-            Clients.Caller.SendAsync("RecievedChatMessages", res);
+            Clients.Caller.SendAsync("ReceivedChatMessages", res);
             //Clients.Client(ReceiverId).SendAsync("RecievedChatMessages", res);
             return res;
         }
 
-        public async Task UpdateGroup(string groupId,string name, string description, string pathToPic)
+        public async Task SeenMessage(string chatId,string messageId)
+        {
+            Console.WriteLine("Seen Message fxn called");
+            string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
+
+            var res = await SeenMessageService(userId, chatId, messageId);
+            //await Clients.Client(ReceiverId).SendAsync("GroupCreated", res);
+            //await Clients.Caller.SendAsync("SeenMessage", res);
+        }
+
+        public async Task UpdateGroup(string groupId, string name, string description, string pathToPic)
         {
             Console.WriteLine("updateGroup fxn called");
             string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
 
-            var res = await UpdateGroupService(userId, groupId,name, description, pathToPic);
+            var res = await UpdateGroupService(userId, groupId, name, description, pathToPic);
             //await Clients.Client(ReceiverId).SendAsync("GroupCreated", res);
             await Clients.Caller.SendAsync("GroupUpdated", res);
         }
@@ -378,7 +389,7 @@ namespace ChatWeb3.Hubs
                 /* response.Data = output;*/
             }
 
-            OutputChatMappings output = new OutputChatMappings( user2, chats);
+            OutputChatMappings output = new OutputChatMappings( user2, chats,0);
 
             response = new Response(200,"Chat created/ fetched",output,true);
             return response;
@@ -395,6 +406,67 @@ namespace ChatWeb3.Hubs
             ResponseGroup output = new ResponseGroup(group);
             response = new Response(200, "Group created", output, true);
             await DbContext.SaveChangesAsync();
+            return response;
+        }
+
+        public async Task<Response> SeenMessageService(string userId, string chatId, string messageId)
+        {
+            Guid userGuid = new Guid(userId);
+            Guid chatGuid = new Guid(chatId);
+            Guid messageGuid = new Guid(messageId);
+
+            Message? msg = DbContext.Messages.Find(messageGuid);
+            ChatMappings? chatMap = DbContext.ChatMappings.Find(chatGuid);
+            
+            if(chatMap != null)
+            {
+                if(chatMap.isGroup)
+                {
+                    Guid groupId = chatMap.receiverId;
+                    var exists = DbContext.GroupSeenMessageMappings.Where(s => (s.groupId == groupId && s.userId == userGuid && s.messageId == messageGuid)).FirstOrDefault();
+                    if(exists == null)
+                    {
+                        GroupSeenMessageMappings seenMapping = new GroupSeenMessageMappings(messageGuid, groupId, userGuid);
+                        await DbContext.GroupSeenMessageMappings.AddAsync(seenMapping);
+                        await DbContext.SaveChangesAsync();
+                    }
+                    var listOfSeens = DbContext.GroupSeenMessageMappings.Where(s => (s.groupId == groupId && s.messageId==messageGuid)).ToList();
+                    int countOfSeen = listOfSeens.Count();
+                    Group? grp = DbContext.Groups.Find(groupId);
+                    if (grp != null && msg != null && grp.noOfParticipants<=(countOfSeen+1))
+                    {
+                        msg.isSeen = true;
+                        response = new Response(200, "Message Seen", msg, true);
+                        foreach(var item in listOfSeens)
+                        {
+                            Guid receiverId = item.userId;
+                            string temp = GetConnectionIdByUser(receiverId.ToString());
+                            await Clients.Client(temp).SendAsync("SeenMessage", response);
+                            DbContext.GroupSeenMessageMappings.Remove(item);
+                        }
+                        await DbContext.SaveChangesAsync();
+                        Guid senderId = msg.senderId;
+                        string tempId = GetConnectionIdByUser(senderId.ToString());
+                        await Clients.Client(tempId).SendAsync("SeenMessage", response);
+                    }
+                }
+                else
+                {
+                    if (msg != null)
+                    {
+                        msg.isSeen = true;
+                    }
+                    else
+                    {
+                        msg = new Message();
+                    }
+                    await DbContext.SaveChangesAsync();
+                    response = new Response(200, "Message Seen", msg, true);
+                    Guid receiverId = (chatMap.receiverId != new Guid(userId)) ? chatMap.receiverId : chatMap.senderId;
+                    string temp = GetConnectionIdByUser(receiverId.ToString());
+                    await Clients.Client(temp).SendAsync("SeenMessage", response);
+                }
+            }
             return response;
         }
 
@@ -541,11 +613,13 @@ namespace ChatWeb3.Hubs
                 var user2 = DbContext.Users.Find(cm.receiverId);
                 if(user1 != null && user1.id != userId)
                 {
-                    output = new OutputChatMappings(user1, cm);
+                    int countOfUnseen = DbContext.Messages.Where(s => (s.chatId == cm.id && s.senderId == user1.id && s.isSeen == false)).Count();
+                    output = new OutputChatMappings(user1, cm, countOfUnseen);
                 }
                 else
                 {
-                    output = new OutputChatMappings(user2!, cm);
+                    int countOfUnseen = DbContext.Messages.Where(s => (s.chatId == cm.id && s.senderId == user2!.id && s.isSeen == false)).Count();
+                    output = new OutputChatMappings(user2!, cm, countOfUnseen);
                 }
                 list.Add(output);
             }
@@ -570,8 +644,16 @@ namespace ChatWeb3.Hubs
             foreach (var cm in chatMaps)
             {
                 Group gr = DbContext.Groups.Find(cm.receiverId)!;
-                OutputGroups output = new OutputGroups(gr,cm.datetime);
-                list .Add(output);
+                var grpChatMappings = DbContext.ChatMappings.Where(s => s.receiverId == gr.id).Select(s=>s.id).ToList();
+                //gets total unseen by all and the ones seen by user among those then subtratcts later from former to get final unseen count
+                int unseenGroupMessages  = DbContext.Messages.Where(s => (grpChatMappings.Contains(s.chatId) && s.isSeen==false && s.senderId!=userId)).Count();
+                int userSeenAmongUnseen  = DbContext.GroupSeenMessageMappings.Where(s => s.groupId == gr.id && s.userId == userId).Count();
+                int answerUnseen = unseenGroupMessages - userSeenAmongUnseen;
+
+                answerUnseen = (answerUnseen > 0) ? answerUnseen : 0;
+
+                OutputGroups output = new OutputGroups(gr,cm,unseenGroupMessages);
+                list.Add(output);
             }
             int totalCount = list.Count;
             Console.WriteLine(totalCount);

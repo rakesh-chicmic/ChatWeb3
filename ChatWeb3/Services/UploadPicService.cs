@@ -11,17 +11,18 @@ namespace ChatWeb3.Services
 {
     public class UploadPicService:IUploadPicService
     {
-        Response response;
-        private readonly ChatAppDbContext DbContext;
-        private readonly IConfiguration _configuration;
+        Response response;          //response model
+        private readonly ChatAppDbContext DbContext;        //dbcontext injected
+        private readonly IConfiguration _configuration;     //config settings
 
+        //-------------------------- Constructor --------------------------------------------//
         public UploadPicService(IConfiguration configuration, ChatAppDbContext dbContext)
         {
             response = new Response();
             this._configuration = configuration;
             DbContext = dbContext;
         }
-
+        //-------------------------- service func to upload a file b/w chats --------------------------------------------//
         //type of file = type 1 -> files  type 2 -> images
         public async Task<Response> FileUploadAsync(IFormFile file,string id,int type)
         {
@@ -33,11 +34,11 @@ namespace ChatWeb3.Services
             if (file.Length > 0)
             {
                 string folderName;
-                if (type == 2)
+                if (type == 2)  //type 2 is for images
                 {
                     folderName = Path.Combine("Assets", "Images"); 
                 }
-                else
+                else // type 1 or any other int corres. to files type
                 {
                     folderName = Path.Combine("Assets", "Files");
                 }
@@ -49,7 +50,7 @@ namespace ChatWeb3.Services
                                     );
 
                 var fullPath = Path.Combine(pathToSave, fileName);
-
+                //save file
                 using (var stream = System.IO.File.Create(fullPath))
                 {
                     await file.CopyToAsync(stream);
@@ -62,6 +63,7 @@ namespace ChatWeb3.Services
             return response;
         }
 
+        //-------------------------- service func to upload user profile pic and update db --------------------------------------------//
         public async Task<Response> ProfilePicUploadAsync(IFormFile file, string id)
         {
             Guid guid = new Guid(id);

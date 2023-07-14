@@ -15,15 +15,17 @@ namespace ChatWeb3.Controllers
     public class UploadFileController : ControllerBase
     {
         IUploadPicService uploadPicServiceInstance;      //service dependency
-        private readonly ILogger<UploadFileController> _logger;
-        Response response = new Response();
+        private readonly ILogger<UploadFileController> _logger;     //logger instance
+        Response response = new Response();             //response model
+
+        //-------------------------- Constructor --------------------------------------------//
         public UploadFileController(ILogger<UploadFileController> logger, IConfiguration configuration, ChatAppDbContext dbContext)
         {
             uploadPicServiceInstance = new UploadPicService(configuration, dbContext);
             _logger = logger;
         }
 
-        //[HttpPost]
+        //-------------------------- upload file with type to send in b/w chats --------------------------------------------//
         [HttpPost, DisableRequestSizeLimit, Authorize]
         [Route("/api/v1/uploadFile")]
         public async Task<IActionResult> FileUploadAsync(int type, IFormFile file)
@@ -44,7 +46,7 @@ namespace ChatWeb3.Controllers
             }
         }
 
-
+        //-------------------------- upload profile pic and change in user db --------------------------------------------//
         [HttpPost, DisableRequestSizeLimit, Authorize]
         [Route("/api/v1/uploadProfilePic")]
         public async Task<IActionResult> ProfilePicUploadAsync(IFormFile file)                //[FromForm] FileUpload File

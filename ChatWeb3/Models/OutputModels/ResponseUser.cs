@@ -39,3 +39,5 @@
         }
     }
 }
+
+/// response data for sending user details in order to hide security/ inner user details

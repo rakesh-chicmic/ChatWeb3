@@ -11,3 +11,5 @@
         public InputMessage() { }
     }
 }
+
+//input model to receive new incoming message into system
