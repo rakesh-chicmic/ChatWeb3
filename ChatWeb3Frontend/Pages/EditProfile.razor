@@ -1,4 +1,5 @@
 ﻿@page "/profile"
+@using System.Text.Json;
 @inherits EditProfileBase
 @inject HttpClient client
 @inject IFileReaderService fileReader
@@ -10,15 +11,15 @@
         </div>
         <form>
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" @bind-value="@updateUser.Username" val required disabled>
+            <input type="text" id="username" name="username" @bind-value="@updateUser.username" val required disabled>
             <label for="profileImage">Profile Image:</label>
             <input type="file" id="profileImage" name="profileImage" accept="image/*" @ref="elementReference" @onchange="async () => await OpenFileAsync()" required>
 
             <label for="firstName">First Name:</label>
-            <input type="text" id="firstName" name="firstName" @bind-value="@updateUser.FirstName" required>
+            <input type="text" id="firstName" name="firstName" @bind-value="@updateUser.firstName" required>
 
             <label for="lastName">Last Name:</label>
-            <input type="text" id="lastName" name="lastName" @bind-value="@updateUser.LastName">
+            <input type="text" id="lastName" name="lastName" @bind-value="@updateUser.lastName">
 
             <input type="submit" value="Continue" @onclick:preventDefault=true @onclick="()=>(UpdateUser_Click(updateUser))" />
         </form>
@@ -28,7 +29,7 @@
 @code {
     ElementReference elementReference;
     string message = string.Empty;
-    string imagePath = null;
+    
     string fileName = string.Empty;
     string type = string.Empty;
     string size = string.Empty;
@@ -59,10 +60,10 @@
         content.Add(new StreamContent(fileStream, (int)fileStream.Length), "file", fileName);
         var response = await client.PostAsync("api/v1/uploadProfilePic", content);
         var apiResponse = await response.Content.ReadFromJsonAsync<APIResponse>();
-        var resData = JsonSerializer.Serialize(apiResponse.Data);
+        var resData = JsonSerializer.Serialize(apiResponse.data);
         fileUpload = JsonSerializer.Deserialize<FileResponseData>(resData);
-        updateUser.PathToProfilePic = fileUpload.PathToPic;
-        imagePath = $"http://192.180.0.192:4545/{fileUpload.PathToPic}";
+        updateUser.pathToProfilePic = fileUpload.pathToPic;
+        imagePath = $"http://192.180.0.192:4545/{updateUser.pathToProfilePic}";
         Console.WriteLine(imagePath);
         message = "Upload Success";
     }

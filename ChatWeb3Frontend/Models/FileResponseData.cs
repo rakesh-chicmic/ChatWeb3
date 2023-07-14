@@ -2,9 +2,9 @@
 {
     public class FileResponseData
     {
-        public UserResponse User { get; set; }
-        public string FileName { get; set; } 
-        public string PathToPic { get; set; }
+        public UserResponse user { get; set; }
+        public string fileName { get; set; } = string.Empty;
+        public string pathToPic { get; set; } = string.Empty;
 
     }
 }

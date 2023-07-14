@@ -2,14 +2,14 @@
 {
     public class UserResponse
     {
-        public Guid Id { get; set; }
-        public string AccountAddress { get; set; }
-        public string Username { get; set; } 
-        public string FirstName { get; set; } 
-        public string LastName { get; set; } 
-        public DateTime? CreatedAt { get; set; } 
-        public DateTime? UpdatedAt { get; set; }
-        public string? PathToProfilePic { get; set; } 
-        public bool IsOnline { get; set; } 
+        public Guid id { get; set; } = Guid.Empty;
+        public string accountAddress { get; set; } = string.Empty;
+        public string username { get; set; } = string.Empty;
+        public string firstName { get; set; } = string.Empty;
+        public string lastName { get; set; } = string.Empty;
+        public DateTime? createdAt { get; set; } = DateTime.MinValue;
+        public DateTime? updatedAt { get; set; } = DateTime.MinValue;
+        public string? pathToProfilePic { get; set; } = string.Empty;
+        public bool isOnline { get; set; } = false;
     }
 }

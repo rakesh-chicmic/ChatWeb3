@@ -8,16 +8,16 @@
         <h1>Fill Your Details</h1>
         <form>
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" @bind-value="@updateUser.Username" required>
+            <input type="text" id="username" name="username" @bind-value="@updateUser.username" required>
 
             <label for="profileImage">Profile Image:</label>
             <input type="file" id="profileImage" name="profileImage" accept="image/*" @ref="elementReference" @onchange="async () => await OpenFileAsync()" required>
 
             <label for="firstName">First Name:</label>
-            <input type="text" id="firstName" name="firstName" @bind-value="@updateUser.FirstName" required>
+            <input type="text" id="firstName" name="firstName" @bind-value="@updateUser.firstName" required>
 
             <label for="lastName">Last Name:</label>
-            <input type="text" id="lastName" name="lastName" @bind-value="@updateUser.LastName">
+            <input type="text" id="lastName" name="lastName" @bind-value="@updateUser.lastName">
 
             <input type="submit" value="Continue" @onclick:preventDefault=true @onclick="()=>(UpdateUser_Click(updateUser))" />
         </form>
@@ -27,7 +27,6 @@
 @code {
     ElementReference elementReference;
     string message = string.Empty;
-    string imagePath = null;
     string fileName = string.Empty;
     string type = string.Empty;
     string size = string.Empty;
@@ -58,11 +57,9 @@
         content.Add(new StreamContent(fileStream, (int)fileStream.Length), "file", fileName);
         var response = await client.PostAsync("api/v1/uploadProfilePic", content);
         var apiResponse = await response.Content.ReadFromJsonAsync<APIResponse>();
-        var resData = JsonSerializer.Serialize(apiResponse.Data);
+        var resData = JsonSerializer.Serialize(apiResponse.data);
         fileUpload = JsonSerializer.Deserialize<FileResponseData>(resData);
-        updateUser.PathToProfilePic = fileUpload.PathToPic;
-        imagePath = $"http://192.180.0.192:4545/{fileUpload.PathToPic}";
-        Console.WriteLine(imagePath);
+        updateUser.pathToProfilePic = fileUpload.pathToPic;
         message = "Upload Success";
     }
 }

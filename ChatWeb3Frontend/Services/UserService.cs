@@ -18,7 +18,7 @@ namespace ChatWeb3Frontend.Services
         public UserService(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
         }
 
         public async Task<APIResponse> GetAsync()
@@ -40,14 +40,14 @@ namespace ChatWeb3Frontend.Services
             {
                 var requestMessage = new HttpRequestMessage(HttpMethod.Put, "http://192.180.0.192:4545/api/v1/users/registerUpdate");
                 requestMessage.Content = new StringContent(JsonSerializer.Serialize(update), Encoding.UTF8, "application/json");
-                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", token);
 
                 var result = await _httpClient.SendAsync(requestMessage);
 
                 if (!result.IsSuccessStatusCode)
                 {
                     var message = await result.Content.ReadFromJsonAsync<APIResponse>();
-                    return new APIResponse { StatusCode = 0, Message = message!.Message };
+                    return new APIResponse { statusCode = 0, message = message!.message };
                 }
                 var resultContent = await result.Content.ReadFromJsonAsync<APIResponse>();
                 Console.WriteLine(resultContent.ToString());

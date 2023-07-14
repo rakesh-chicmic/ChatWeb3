@@ -18,15 +18,17 @@ namespace ChatWeb3Frontend.Pages
         public UpdateUser updateUser= new UpdateUser();
         public UserResponse userResponse = new UserResponse();
         public APIResponse response = new APIResponse();
+        public string imagePath = null;
         protected override async Task OnInitializedAsync()
         {      
              response = await UserService.GetAsync();
-             var resData = JsonSerializer.Serialize(response.Data);
+             var resData = JsonSerializer.Serialize(response.data);
              userResponse = JsonSerializer.Deserialize<UserResponse>(resData);
-             updateUser.Username = userResponse.Username;
-             updateUser.FirstName = userResponse.FirstName;
-             updateUser.LastName = userResponse.LastName;
-             updateUser.PathToProfilePic = userResponse.PathToProfilePic;
+             updateUser.username = userResponse.username;
+             updateUser.firstName = userResponse.firstName;
+             updateUser.lastName = userResponse.lastName;
+             updateUser.pathToProfilePic = userResponse.pathToProfilePic;
+             imagePath = $"http://192.180.0.192:4545/{updateUser.pathToProfilePic}";
         }
 
         protected async Task UpdateUser_Click(UpdateUser update)
