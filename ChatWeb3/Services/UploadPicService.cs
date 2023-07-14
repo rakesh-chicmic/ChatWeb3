@@ -24,7 +24,7 @@ namespace ChatWeb3.Services
         }
         //-------------------------- service func to upload a file b/w chats --------------------------------------------//
         //type of file = type 1 -> files  type 2 -> images
-        public async Task<Response> FileUploadAsync(IFormFile file,string id,int type)
+        public async Task<Response> FileUploadAsync(IFormFile? file,string id,int type)
         {
             if (file == null)
             {
@@ -36,10 +36,20 @@ namespace ChatWeb3.Services
                 string folderName;
                 if (type == 2)  //type 2 is for images
                 {
+                    string path = Path.Combine(Directory.GetCurrentDirectory(), "Assets","Images");
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
                     folderName = Path.Combine("Assets", "Images"); 
                 }
                 else // type 1 or any other int corres. to files type
                 {
+                    string path = Path.Combine(Directory.GetCurrentDirectory(), "Assets","Files");
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
                     folderName = Path.Combine("Assets", "Files");
                 }
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
@@ -64,13 +74,16 @@ namespace ChatWeb3.Services
         }
 
         //-------------------------- service func to upload user profile pic and update db --------------------------------------------//
-        public async Task<Response> ProfilePicUploadAsync(IFormFile file, string id)
+        public async Task<Response> ProfilePicUploadAsync(IFormFile? file, string id)
         {
             Guid guid = new Guid(id);
             User? user = await DbContext.Users.FindAsync(guid);
             var folderName = Path.Combine("Assets", "ProfilePics");
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-
+            if (!Directory.Exists(pathToSave))
+            {
+                Directory.CreateDirectory(pathToSave);
+            }
             if (file == null)
             {
                 response = new Response(400, "Please provide a file for successful upload", string.Empty, false);
