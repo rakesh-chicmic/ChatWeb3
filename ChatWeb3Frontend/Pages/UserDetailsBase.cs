@@ -8,16 +8,21 @@ namespace ChatWeb3Frontend.Pages
     {
         [Inject]
         public IUserService UserService { get; set; }
-        public UpdateUser UpdateUser = new UpdateUser();
-        public APIResponse Response = new APIResponse();
-        protected override void OnInitialized()
-        {
-        }
+
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+
+        public UpdateUser updateUser = new UpdateUser();
+        public APIResponse response = new APIResponse();
         protected async Task UpdateUser_Click(UpdateUser update)
         {
             try
             {
-                Response = await UserService.UpdateAsync(update);
+                response = await UserService.UpdateAsync(update);
+                if (response.Success)
+                {
+                    NavigationManager.NavigateTo("/home");
+                }
             }
             catch (Exception)
             {

@@ -6,23 +6,21 @@
 <div id="edit-profile">
     <div id="main">
         <div class="text-center" id="profile-image">
-            <img src="@UpdateUser.PathToProfilePic" alt="...">
+            <img src=@imagePath alt="...">
         </div>
         <form>
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" @bind-value="@UpdateUser.Username" val required disabled>
+            <input type="text" id="username" name="username" @bind-value="@updateUser.username" val required disabled>
             <label for="profileImage">Profile Image:</label>
-            <input type="file" id="profileImage" name="profileImage" accept="image/*" @bind-value="@UpdateUser.PathToProfilePic" required>
-           @* <input type="file" @ref="elementReference" @onchange="async () => await OpenFileAsync()" />
-            <button @onclick="async () => await UploadFileAsync()">Upload File</button>
-*@
+            <input type="file" id="profileImage" name="profileImage" accept="image/*" @ref="elementReference" @onchange="async () => await OpenFileAsync()" required>
+
             <label for="firstName">First Name:</label>
-            <input type="text" id="firstName" name="firstName" @bind-value="@UpdateUser.FirstName" required>@userResponse.firstName</input>
+            <input type="text" id="firstName" name="firstName" @bind-value="@updateUser.firstName" required>@userResponse.firstName</input>
 
             <label for="lastName">Last Name:</label>
-            <input type="text" id="lastName" name="lastName" @bind-value="@UpdateUser.LastName">@userResponse.lastName</input>
+            <input type="text" id="lastName" name="lastName" @bind-value="@updateUser.lastName">@userResponse.lastName</input>
 
-            <input type="submit" value="Continue" @onclick="()=>(UpdateUser_Click(UpdateUser))" />
+            <input type="submit" value="Continue" @onclick:preventDefault=true @onclick="()=>(UpdateUser_Click(updateUser))" />
         </form>
     </div>
 </div>
@@ -35,6 +33,7 @@
     string type = string.Empty;
     string size = string.Empty;
     Stream fileStream = null;
+    FileResponseData fileUpload;
     async Task OpenFileAsync()
     {
         var file = (await fileReader.CreateReference(elementReference).EnumerateFilesAsync()).FirstOrDefault();
@@ -48,18 +47,23 @@
         {
             fileStream = new MemoryStream(memoryStream.ToArray());
         }
-
+        await UploadFileAsync();
     }
 
     async Task UploadFileAsync()
     {
-        string token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3ByaW1hcnlzaWQiOiJiYTRkNjBkZC0wMmJhLTQxODAtYjQ3Yy1jNjBlMDFiN2FjMjgiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiZmlyc3ROYW1lIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvc2lkIjoiMHg2ZDc2MzY0ODZiMERkMmIxYTM0QmY5OEFkNDA3OEFjQzE3NDFmQzcyIiwiZXhwIjoxNjg5MzI3MzIyfQ.Tb7L2n_xjlc6EKyxXiMB7mfRCjY4LOvlm2ZFxo0L00wqVxUOPoBUM42zUjFS7f98a0QJYFEKkBvtKdBlui01LQ";
+        string token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3ByaW1hcnlzaWQiOiJhOTk3NDE5OC0zNzVmLTQ5YTAtYmQxMy1kYTVlYTQxYzQyM2EiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiUmFrZXNoIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvc2lkIjoiMHhkQjc2RjgwM0FCOWYzNTBGOTI4QUQ1MzM1ZkI4YzA5RThhMzYyMjVhIiwiZXhwIjoxNjg5NDAyMTAzfQ.M_8yvrcfhuLplhMEKFRh1FyxODm2R4TSX9SN3NwPW8D6przcrEhtl8XQa_Q9HknCRCyqlkB0ZmaX_m4QeDTfdw";
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-    
         var content = new MultipartFormDataContent();
         content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data");
-        content.Add(new StreamContent(fileStream, (int)fileStream.Length), "image", fileName);
+        content.Add(new StreamContent(fileStream, (int)fileStream.Length), "file", fileName);
         var response = await client.PostAsync("api/v1/uploadProfilePic", content);
-        message = " Upload Success";
+        var apiResponse = await response.Content.ReadFromJsonAsync<APIResponse>();
+        var resData = JsonSerializer.Serialize(apiResponse.data);
+        fileUpload = JsonSerializer.Deserialize<FileResponseData>(resData);
+        updateUser.pathToProfilePic = fileUpload.pathToPic;
+        imagePath = $"http://192.180.0.192:4545/{fileUpload.pathToPic}";
+        Console.WriteLine(imagePath);
+        message = "Upload Success";
     }
 }
