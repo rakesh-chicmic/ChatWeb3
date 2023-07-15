@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using NBitcoin.Secp256k1;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Signer;
 using Nethereum.Util;
@@ -19,10 +20,11 @@ namespace ChatWeb3.Controllers
     public class TokenController : Controller
     {
         ITokenService _tokenService;      //service dependency
-        private readonly ILogger<TokenController> _logger;
-        Response response = new Response();
-        private IConfiguration _config;
+        private readonly ILogger<TokenController> _logger;      //logger instance
+        Response response = new Response();             //response model
+        private IConfiguration _config;         // configuration settings
 
+        //-------------------------- Constructor --------------------------------------------//
         public TokenController(IConfiguration config, ITokenService tokenService, ILogger<TokenController> logger)
         {
             _tokenService = tokenService;
@@ -30,6 +32,7 @@ namespace ChatWeb3.Controllers
             _logger = logger;
         }
 
+        //--------------- get verification message for generating and storing random message in db to authenticate via metamask -----------------------------//
         [AllowAnonymous]
         [HttpGet]
         [Route("/api/v1/getMessage")]
@@ -48,6 +51,7 @@ namespace ChatWeb3.Controllers
             }
         }
 
+        //-------------------------- verify signature takes hash, signature , msg and account address to validate a user login/signin----------------------------------------//
         [AllowAnonymous]
         [HttpPost]
         [Route("/api/v1/verifySignature")]

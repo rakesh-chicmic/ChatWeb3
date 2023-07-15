@@ -1,6 +1,7 @@
 ﻿using ChatWeb3.Controllers;
 using ChatWeb3.Data;
 using ChatWeb3.Models;
+using ChatWeb3.Models.OutputModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -9,16 +10,17 @@ namespace ChatWeb3.Services
 {
     public class UserService: IUserService
     {
-        Response response = new Response();
-        private readonly ChatAppDbContext DbContext;
-        private readonly IConfiguration _configuration;
+        Response response = new Response();         //response model
+        private readonly ChatAppDbContext DbContext;    //orm 
+        private readonly IConfiguration _configuration;     //config settings
 
+        //-------------------------- Constructor --------------------------------------------//
         public UserService(IConfiguration configuration, ChatAppDbContext dbContext, ILogger<UserController> logger)
         {
             this._configuration = configuration;
             DbContext = dbContext;
         }
-
+        //-------------------------- Service func to get user's own details for profie details --------------------------------------------//
         public Response GetYourself(string id)
         {
             Guid guid = new Guid(id);
@@ -34,6 +36,7 @@ namespace ChatWeb3.Services
             response = new Response(200, "User details fetched",res,true);
             return response;
         }
+        //-------------------------- get other users details with filteration and pagination--------------------------------------------//
         public Response GetUsers(string userId, string? searchString = null, string? accountAddress = null, string? id = null, string OrderBy = "username", int SortOrder = 1, int RecordsPerPage = 20, int PageNumber = 0)          // sort order   ===   e1 for ascending   -1 for descending
         {
             //get logged in user from database
@@ -105,7 +108,7 @@ namespace ChatWeb3.Services
 
             return response;
         }
-
+        //-------------------------- update user details--------------------------------------------//
         public async Task<Response> UpdateUser(string id, UpdateUser update)
         {
             Guid guid = new Guid(id);
@@ -115,6 +118,12 @@ namespace ChatWeb3.Services
             {
                 if (update.username != "string" && update.username != string.Empty)
                 {
+                    User? user = DbContext.Users.Where(s => (s.username == update.username && s.id != userLoggedIn.id)).FirstOrDefault();
+                    if (user != null)
+                    {
+                        response = new Response(400, "Username already taken", "", false);
+                        return response;
+                    }
                     userLoggedIn.username = update.username;
                 }
                 if (update.firstName != "string" && update.firstName != string.Empty)
@@ -143,7 +152,39 @@ namespace ChatWeb3.Services
                 return response;
             }
         }
+        //-------------------------- func to help user choose an unique username--------------------------------------------//
+        public Response ValidateUsername(string id, string username)
+        {
+            Guid guid = new Guid(id);
+            User? userLoggedIn = DbContext.Users.FindAsync(guid).Result;
 
+            if (userLoggedIn != null && userLoggedIn.isDeleted == false)
+            {
+                var users = DbContext.Users.Where(s => s.username == username).Select(s => s).ToList();
+                ValidateUsernameModel result;
+                if (users.Any())
+                {
+                    var rand = new Random();
+                    string msg = rand.Next(100000,999999).ToString();
+                    username = username.Trim();
+                    result = new ValidateUsernameModel(username, false, $"{username}{msg}");
+                    response = new Response(200, "Username already taken", result, true);
+                    return response;
+                }
+                else
+                {
+                    result = new ValidateUsernameModel(username, true, username);
+                    response = new Response(200, "Username available", result, true);
+                    return response;
+                }
+            }
+            else
+            {
+                response = new Response(404, "User not found", "", false);
+                return response;
+            }
+        }
+        //-------------------------- delete user account (soft delete) --------------------------------------------//
         public async Task<Response> DeleteUser(string id)
         {
             Guid guid = new Guid(id);

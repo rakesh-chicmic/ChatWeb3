@@ -12,3 +12,5 @@
         }
     }
 }
+
+// response data after uploading a new profile pic

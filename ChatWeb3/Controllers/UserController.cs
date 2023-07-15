@@ -14,15 +14,17 @@ namespace ChatWeb3.Controllers
     {
         //controller for user details, updating user and deleting user
         IUserService _userService;                   //service dependency
-        Response response = new Response();
-        private readonly ILogger<UserController> _logger;
+        Response response = new Response();         //response model
+        private readonly ILogger<UserController> _logger;   //logger instance
 
+        //-------------------------- Constructor --------------------------------------------//
         public UserController(IConfiguration configuration, ChatAppDbContext dbContext, ILogger<UserController> logger, IUserService userService)
         {
             _userService = userService;
             _logger = logger;
         }
 
+        //-------------------------- get your self details --------------------------------------------//
         [HttpGet, Authorize]
         [Route("/api/v1/users/getYourself")]
         public IActionResult GetYourself()                  // api for user to get data of himself for proifile details
@@ -42,6 +44,7 @@ namespace ChatWeb3.Controllers
         }
 
         //getusers api to get list of other users and details
+        //-------------------------- get other users with filtration pagination --------------------------------------------//
         [HttpGet, Authorize]
         [Route("/api/v1/users/get")]
         public IActionResult GetUsers(string? searchString = null, string? accountAddress = null, string ? id = null, String OrderBy = "username", int SortOrder = 1, int RecordsPerPage = 20, int PageNumber = 0)          // sort order   ===   e1 for ascending  -1 for descending
@@ -60,9 +63,10 @@ namespace ChatWeb3.Controllers
             }
         }
 
+        //-------------------------- api used to register and update user data --------------------------------------------//
         [HttpPut ,Authorize]
-        [Route("/api/v1/users/update")]
-        public IActionResult UpdateStudent(UpdateUser update)
+        [Route("/api/v1/users/registerUpdate")]
+        public IActionResult RegisterUpdateStudent(UpdateUser update)
         {
             _logger.LogInformation("Update user method started");
             try
@@ -78,6 +82,26 @@ namespace ChatWeb3.Controllers
             }
         }
 
+        //-------------------------- to test for unique usernames while registring a new user --------------------------------------------//
+        [HttpPut, Authorize]
+        [Route("/api/v1/users/validateUsername")]
+        public IActionResult ValidateUsername(string username)
+        {
+            _logger.LogInformation("Validate username method started");
+            try
+            {
+                string id = User.FindFirstValue(ClaimTypes.PrimarySid)!;
+                response = _userService.ValidateUsername(id, username);
+                return StatusCode(response.statusCode, response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Internal server error ", ex.Message);
+                return StatusCode(500, $"Internal server error: {ex}"); ;
+            }
+        }
+
+        //-------------------------- To Delete your account --------------------------------------------//
         [HttpDelete, Authorize]
         [Route("/api/v1/user/delete")]
         public IActionResult DeleteUserAccount()
