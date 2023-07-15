@@ -25,3 +25,5 @@
         }
     }
 }
+
+// response data for fetching a particular group details

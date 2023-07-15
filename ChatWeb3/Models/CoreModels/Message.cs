@@ -6,7 +6,7 @@
         public Guid senderId { get; set; } = Guid.Empty;
         public Guid chatId { get; set; } = Guid.Empty;
         public string content { get; set; } = string.Empty;
-        public DateTime? createdAt { get; set; } = DateTime.MinValue;
+        public DateTime createdAt { get; set; } = DateTime.MinValue;
         public int type { get; set; } = 1;  //type-1 = file   type-2 = image
         public bool isDeleted { get; set; } = false;
         public bool isSeen { get; set; } = false;

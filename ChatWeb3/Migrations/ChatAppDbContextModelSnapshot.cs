@@ -104,6 +104,26 @@ namespace ChatWeb3.Migrations
                     b.ToTable("Groups");
                 });
 
+            modelBuilder.Entity("ChatWeb3.Models.GroupSeenMessageMappings", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("groupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("messageId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("userId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("id");
+
+                    b.ToTable("GroupSeenMessageMappings");
+                });
+
             modelBuilder.Entity("ChatWeb3.Models.Message", b =>
                 {
                     b.Property<Guid>("id")

@@ -1,5 +1,5 @@
-﻿@inherits LayoutComponentBase
-
+﻿@using Microsoft.AspNetCore.SignalR.Client;
+@inherits LayoutComponentBase
 <div class="page">
     @*<div class="sidebar">
         <NavMenu />
@@ -16,6 +16,7 @@
     </main>
 </div>
 
+
 <BlazoredToasts Position="ToastPosition.TopRight" 
     Timeout="3" 
     SuccessClass="success-toast-override"
@@ -24,3 +25,7 @@
     InfoIcon="fa fa-info"
     WarningIcon="fa fa-warning"
     />
+
+@code{
+}
+

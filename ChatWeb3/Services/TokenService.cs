@@ -16,10 +16,11 @@ namespace ChatWeb3.Services
 {
     public class TokenService:ITokenService
     {
-        Response response;
-        private readonly ChatAppDbContext DbContext;
-        private readonly IConfiguration _configuration;
+        Response response;      //resonse model
+        private readonly ChatAppDbContext DbContext;    //ORM db context injected
+        private readonly IConfiguration _configuration;     //configuration settings injected
 
+        //-------------------------- Constructor --------------------------------------------//
         public TokenService(IConfiguration configuration, ChatAppDbContext dbContext)
         {
             response = new Response();
@@ -27,6 +28,7 @@ namespace ChatWeb3.Services
             DbContext = dbContext;
         }
 
+        //-------------------------- generate verification message for auth --------------------------------------------//
         public async Task<Response> GetVerificationMessage(string address)
         {
             if(address == null || address == string.Empty)
@@ -53,6 +55,7 @@ namespace ChatWeb3.Services
             return response;
         }
 
+        //-------------------------- verify auth details --------------------------------------------//
         public async Task<Response> VerifySignature(LoginDTO login)
         {
             var temp = DbContext.AccountMessagemappings.Where(a => a.accountAddress == login.signer).Select(a => a);
@@ -68,8 +71,7 @@ namespace ChatWeb3.Services
                 return response;
             }
             Response result = await Authenticate(login);
-            //Console.WriteLine(result.ToString());
-            //Console.WriteLine(result.data.ToString());
+
             UserRegisterLogin resultData = (UserRegisterLogin)result.data;
             if (result.success == true)
             {
@@ -82,6 +84,7 @@ namespace ChatWeb3.Services
             return result;
         }
 
+        //-------------------------- helper function --------------------------------------------//
         private async Task<Response> Authenticate(LoginDTO login)
         {
             var signer = new Nethereum.Signer.MessageSigner();
@@ -126,6 +129,7 @@ namespace ChatWeb3.Services
             return response;
         }
 
+        //-------------------------- helper function to create token --------------------------------------------//
         private string CreateToken(ResponseUser user)
         {
             List<Claim> claims = new List<Claim>

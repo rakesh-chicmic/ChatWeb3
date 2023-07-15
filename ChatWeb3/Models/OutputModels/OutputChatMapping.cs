@@ -3,29 +3,29 @@
     public class OutputChatMappings
     {
         public Guid chatId { get; set; }
-        //public string senderId { get; set; } = string.Empty;
-        //public string senderFirstName { get; set; } = string.Empty;
-        //public string senderLastName { get; set; } = string.Empty;
         public string id { get; set; } = string.Empty;
+        public string username { get; set; } = string.Empty;
         public string firstName { get; set; } = string.Empty;
         public string lastName { get; set; } = string.Empty;
         public DateTime? dateTime { get; set; } = DateTime.Now;
         public bool isOnline { get; set; } = false;
         public string pathToProfilePic { get; set; } = string.Empty;
+        public int countOfUnseen { get; set; } = 0;
 
         public OutputChatMappings() { }
-        public OutputChatMappings(User receiver, ChatMappings mapping)
+        public OutputChatMappings(User receiver, ChatMappings mapping, int countOfUnseen)
         {
             chatId = mapping.id;
-            //senderId = sender.id.ToString();
-            //senderFirstName = sender.firstName;
-            //senderLastName = sender.lastName;
+            username = receiver.username;
             id = receiver.id.ToString();
             firstName = receiver.firstName;
             lastName = receiver.lastName;
             dateTime = mapping.datetime;
             isOnline = receiver.isOnline;
             pathToProfilePic = receiver.pathToProfilePic;
+            this.countOfUnseen = countOfUnseen;
         }
     }
 }
+
+// response data for list of chats a user is engaged with

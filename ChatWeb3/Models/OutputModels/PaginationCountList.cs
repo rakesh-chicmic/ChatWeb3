@@ -12,3 +12,5 @@
         }
     }
 }
+
+// generic model for various response models that involves pagination
