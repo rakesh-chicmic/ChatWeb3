@@ -1,4 +1,6 @@
 ﻿@page "/chatpage"
+@using Microsoft.AspNetCore.SignalR.Client;
+@inject IJSRuntime JsRuntime
 
 <div class="row">
     <div class="column left">
@@ -8,8 +10,8 @@
             </div>
             <div class="sideBarGroup" >
                 <img src="./icons8-settings-512.png" class="imageicon" style="margin:10px; margin-bottom: 0px;" />
-                <img src="./icons8-logout-96.png" class="imageicon" style="margin:10px; margin-left:13px; margin-bottom: 0px;" />
-                <img src="./logo.png" class="sideBarGroupPic" />
+                <img src="./icons8-logout-96.png" class="imageicon" style="margin:10px; margin-left:10px; margin-bottom: 0px;" />
+                <img src="./logo.png" class="sideBarGroupPic" @onclick="()=>{showProfile();}" />
             </div>
 
         </div>
@@ -22,39 +24,53 @@
                             <img src="./icons8-search-480.png" class="imageicon" onclick="" />
                     </div>
                 <div class="tab">
-                    <div class="choosentab">
+                    <div class="@getChatTabClass()" @onclick="() => {isGroups=false;}">
                         Chats
                     </div>
-                    <div class="normaltab">
+                    <div class="@getGroupTabClass()" @onclick="() => {OnClickGroup();}">
                         Groups
                     </div>
                 </div>
             </div>
             <div class="chatlist">
-                <div class="chatlist-item active">
-                    <div class="sendbuttonLogo">
-                        <img src="./logo.png" class="selfPicture" />
-                        John Doe
-                    </div>
-                    <span class="unread-badge"></span>
+                <div class="scrollable-element">
+                    @if (!isGroups)
+                    {
+                        foreach (OutputChatMapping chat in ChatList)
+                        {
+                            <div class="@GetClass(chat.chatId)" @onclick="() => {OnClickChatList(chat.chatId);}">
+                                <span class="message-badge"> 2 </span>
+                                <div class="sendbuttonLogo">
+                                    <img src="./logo.png" class="selfPicture" />
+                                    @chat.firstName @chat.lastName
+                                </div>
+                                    @if (chat.isOnline)
+                                    {
+                                        <span class="unread-badge"></span>
+                                    }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        foreach (OutputGroups group in GroupList)
+                        {
+                            <div class="@GetClass(group.id)" @onclick="() => {OnClickChatList(group.id);}">
+                                <div class="sendbuttonLogo">
+                                    <img src="./logo.png" class="selfPicture" />
+                                    @group.name
+                                </div>
+                            </div>
+                        }
+                        @if (isGroups)
+                        {
+                            <div class="addGroupbutton">
+                                <img src="./icons8-plus-90.png" class="imageicon" onclick="" />
+                            </div>
+                        }
+                    }
                 </div>
-                <div class="chatlist-item">
-                    <div class="sendbuttonLogo">
-                        <img src="./logo.png" class="selfPicture" />
-                        Samantha
-                    </div>
-                </div>
-                <div class="chatlist-item">
-                    <div class="sendbuttonLogo">
-                        <img src="./logo.png" class="selfPicture" />
-                        Michael Johnson
-                    </div>
-                </div>
-                <!-- More chat list items -->
             </div>
-        </div>
-        <div>
-
         </div>
     </div>
     <div class="column right">
@@ -68,27 +84,244 @@
                     <img src="./icons8-menu-vertical-96.png" class="imageicon" />
                 </div>
             </div>
-                <div class ="messagebox">
-                    <div class="message">Hello! How can I assist you?</div>
-                    <div class="message user">I have a question about your products.</div>
-                    <div class="message">Sure, feel free to ask.</div>
-                </div>
+            
+            <div class="messagebox" >
+                <div class="scrollable-element">
+                    <div style="display:flex; flex-direction:column; justify-content:flex-end; ">
+                        @foreach (OutputMessage message in messages)
+                        {
+                            if (message.senderId == myId)
+                            {
+                                <div class="messageParent">
+                                    <div class="message user">
+                                        <div>
+                                            @message.content
+                                        </div>
+                                        @if (message.isSeen)
+                                        {
+                                            <div class="seen-badge">
+                                                <img src="./icons8-done-208.png" style="height:14px; width:18px" onclick="" />
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="messageInfo">
+                                        @GetTime(message.createdAt);
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="messageParent2">
+                                    <div class="message">
+                                        <div>
+                                            @message.content
+                                        </div>
+                                    </div>
+                                    <div class="messageInfo2">
+                                        @GetTime(message.createdAt);
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>  
+            </div>
             <div class="chatboxFooter">
                 <div class="input-box">
-                    <input class="textbox" type="text" placeholder="message" />
+                    <input class="textbox" type="text" @bind="@textBoxValue" placeholder="message" @onkeyup="pressEnter" />
                     <img src="./icons8-attach-90.png" class="imageicon" onclick=""/>
                     <img src="./icons8-image-96.png" class="imageicon" onclick="" />
                     <img src="./icons8-microphone-96.png" class="imageicon" onclick="" />
                 </div>
-                <button class="sendbutton" onclick=""><img src="./Sendbutton.png" class="sendbuttonLogo" /></button>
+                <button class="sendbutton" @onclick="() => {sendbuttonEvent();}"><img src="./Sendbutton.png" class="sendbuttonLogo" /></button>
             </div>
         </div>
     </div>
+    @if (sidePanel)
+    {
+        <div class="sidePanel">
+            <div style=" padding: 10px;">
+                <img src="./icons8-close-480.png" class="imageicon" @onclick="()=>{collapseSidePanel();}" />
+            </div>
+            <div class="sidePanel-rowDiv">
+                <img src="./icon-192.png" class="sidePanel-ProfilePic" onclick="">
+                <div class="buttonPosition">
+                    <div class="editButton">
+                        <img src="./icons8-edit-480.png" class="imageicon" onclick="" />
+                    </div>
+                </div>
+            </div>
+            <div class="sidePanel-rowDiv" style="align-items: center">
+                <div>
+                    @if (editPermission)
+                    {
+
+                        <input class="sidepanel-Username" type="text" @bind="@sidePanelUsername" placeholder="" @onkeyup="pressEnter" />
+                    }
+                    else
+                    {
+                        <input class="sidepanel-Username" type="text" @bind="@sidePanelUsername" disabled placeholder="" @onkeyup="pressEnter" />
+                    }
+                    <img src="./icons8-edit-480.png" class="imageicon" onclick="" />
+                </div>
+            </div>
+        </div>
+    }
 </div>
 
 @code {
+    static HubConnection? hub;
+    bool sidePanel = false;
+    bool editPermission = false;
+    string sidePanelUsername = "test";
+    private ElementReference containerRef;
+    Guid currChatId = new Guid();
+    string textBoxValue = string.Empty;
+    Guid myId = new Guid();
+    bool isGroups = false;
+    Guid tempGuid = Guid.Empty;
+    string chatListClass = "chatlist-item";
+    public OutputChatMapping chat = new OutputChatMapping();
+    public OutputChatMapping chat2 = new OutputChatMapping();
+    List<OutputChatMapping> ChatList = new List<OutputChatMapping>();
+    List<OutputGroups> GroupList = new List<OutputGroups>();
+    List<OutputMessage> messages = new List<OutputMessage>();
+
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        hub = socket.GetHubConnection();
+        if (hub == null)
+        {
+            await socket.Connect();
+            hub = socket.GetHubConnection();
+        }
+        await Task.Delay(1000);
+
+        chat.chatId = Guid.NewGuid();
+        chat.isOnline = true;
+        chat.firstName = "ajay";
+        chat.lastName = "joshi";
+        ChatList.Add(chat);
+        chat2.chatId = Guid.NewGuid();
+        chat2.isOnline = false;
+        chat2.firstName = "test";
+        chat2.lastName = "Subject";
+        ChatList.Add(chat2);
+        await socketFxn();
+        return;
+    }
+
+
+    public async Task socketFxn()
+    {
+        hub = socket.GetHubConnection();
+        if (hub == null)
+        {
+            await socket.Connect();
+        }
+        hub!.On("RecievedChats", (Response a) =>
+        {
+            Console.WriteLine(a.message);
+            Console.WriteLine(a.data);
+        });
+    }
+
+
+
+
+
+
+
+
     public void sendMessaege()
     {
+
+    }
+
+    public void GetChatList()
+    {
+        var response = hub!.InvokeAsync<Response>("GetChats",1,20);
+    }
+
+    private string getChatTabClass()
+    {
+        if (isGroups)
+        {
+            return "normaltab" ;
+        }
+        return "choosentab";
+    }
+
+    private string getGroupTabClass()
+    {
+        if (isGroups)
+        {
+            return "choosentab";
+        }
+        return "normaltab";
+    }
+
+    private void OnClickChatList(Guid chatId)
+    {
+        tempGuid = chatId;
         
+    }
+    private void OnClickGroup()
+    {
+        isGroups = true;
+        GetChatList();
+    }
+    /// <summary>
+    /// A function to get the class of Chat entity div (after selecting a chat it is used to change selected div's class)
+    /// </summary>
+    /// <param name="chatId"></param>
+    /// <returns> string </returns>
+    public string GetClass(Guid chatId)
+    {
+        if(chatId == tempGuid)
+        {
+            return "chatlist-item-active";
+        }
+        return chatListClass;
+    }
+
+    public void sendbuttonEvent()
+    {
+        Console.WriteLine("textboxvalue = " + textBoxValue);
+        if (textBoxValue != string.Empty)
+        {
+            OutputMessage newMessage = new OutputMessage();
+            newMessage.content = textBoxValue;
+            newMessage.senderId = myId;
+            newMessage.chatId = currChatId;
+            newMessage.createdAt = DateTime.Now;
+            newMessage.isSeen = false;
+            messages.Add(newMessage);
+            textBoxValue = string.Empty;
+        }
+    }
+    private void pressEnter(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            sendbuttonEvent();
+        }
+    }
+
+    private string GetTime(DateTime time)
+    {
+        TimeSpan t = time.TimeOfDay;
+
+        return time.ToString("hh\\:mm tt");
+    }
+    public void showProfile()
+    {
+        sidePanel = true;
+    }
+    public void collapseSidePanel()
+    {
+        sidePanel = false;
     }
 }
