@@ -1,12 +1,15 @@
 ﻿using MetaMask.Blazor;
 using MetaMask.Blazor.Exceptions;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
+
 
 namespace ChatWeb3Frontend.Pages
 {
     public class LoginBase : ComponentBase
     {
+        //[Inject]
+        //public Microsoft.JSInterop.JSRuntime jsRuntime { get; set; }
+
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
@@ -33,9 +36,10 @@ namespace ChatWeb3Frontend.Pages
         {
             try
             {
-                await MetaMaskService.ConnectMetaMask();
-
-                await GetSelectedAddress();
+                //var res = await jsRuntime.InvokeAsync<object>("web3Login", null);
+                //await MetaMaskService.ConnectMetaMask();
+                //Console.WriteLine(res);
+                //await GetSelectedAddress();
             }
             catch (UserDeniedException)
             {
