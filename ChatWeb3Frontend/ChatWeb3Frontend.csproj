@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\Images\astronaut.svg" />
+    <None Include="wwwroot\Images\planet.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MetaMask.Blazor" Version="1.9.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.9" PrivateAssets="all" />
