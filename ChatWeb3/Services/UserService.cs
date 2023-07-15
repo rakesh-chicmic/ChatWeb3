@@ -118,7 +118,7 @@ namespace ChatWeb3.Services
             {
                 if (update.username != "string" && update.username != string.Empty)
                 {
-                    User? user = DbContext.Users.Where(s => s.username == update.username).FirstOrDefault();
+                    User? user = DbContext.Users.Where(s => (s.username == update.username && s.id != userLoggedIn.id)).FirstOrDefault();
                     if (user != null)
                     {
                         response = new Response(400, "Username already taken", "", false);

@@ -28,7 +28,7 @@ namespace ChatWeb3.Controllers
         //-------------------------- upload file with type to send in b/w chats --------------------------------------------//
         [HttpPost, DisableRequestSizeLimit, Authorize]
         [Route("/api/v1/uploadFile")]
-        public async Task<IActionResult> FileUploadAsync(int type, IFormFile file)
+        public async Task<IActionResult> FileUploadAsync(int type, IFormFile? file)
         {
             //type 2 is for image and save in images folder and type 2 is for file to save in files folder
             _logger.LogInformation("File/Image Upload method started");
@@ -36,7 +36,7 @@ namespace ChatWeb3.Controllers
             {
                 string id = User.FindFirstValue(ClaimTypes.PrimarySid)!;                                //extracting email from header token
                 //string? token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();       //getting token from authorization header
-                response = await uploadPicServiceInstance.FileUploadAsync(file,id,type);
+                response = await uploadPicServiceInstance.FileUploadAsync(file, id, type);
                 return StatusCode(response.statusCode, response);
             }
             catch (Exception ex)
@@ -49,7 +49,7 @@ namespace ChatWeb3.Controllers
         //-------------------------- upload profile pic and change in user db --------------------------------------------//
         [HttpPost, DisableRequestSizeLimit, Authorize]
         [Route("/api/v1/uploadProfilePic")]
-        public async Task<IActionResult> ProfilePicUploadAsync(IFormFile file)                //[FromForm] FileUpload File
+        public async Task<IActionResult> ProfilePicUploadAsync(IFormFile? file)                //[FromForm] FileUpload File
         {
             _logger.LogInformation("Pic Upload method started");
             try

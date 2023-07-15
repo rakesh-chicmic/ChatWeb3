@@ -86,6 +86,7 @@ policy =>
 builder.Services.AddScoped<IUploadPicService, UploadPicService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IHubService, HubService>();
 
 var app = builder.Build();
 

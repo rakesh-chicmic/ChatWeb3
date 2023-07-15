@@ -4,6 +4,7 @@
     {
         public Guid chatId { get; set; }
         public string id { get; set; } = string.Empty;
+        public string username { get; set; } = string.Empty;
         public string firstName { get; set; } = string.Empty;
         public string lastName { get; set; } = string.Empty;
         public DateTime? dateTime { get; set; } = DateTime.Now;
@@ -15,6 +16,7 @@
         public OutputChatMappings(User receiver, ChatMappings mapping, int countOfUnseen)
         {
             chatId = mapping.id;
+            username = receiver.username;
             id = receiver.id.ToString();
             firstName = receiver.firstName;
             lastName = receiver.lastName;
