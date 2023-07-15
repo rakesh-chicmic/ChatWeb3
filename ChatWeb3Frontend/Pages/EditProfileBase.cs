@@ -1,4 +1,5 @@
-﻿using ChatWeb3Frontend.Models;
+﻿using Blazored.Toast.Services;
+using ChatWeb3Frontend.Models;
 using ChatWeb3Frontend.Services.Contracts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -15,6 +16,10 @@ namespace ChatWeb3Frontend.Pages
     {
         [Inject]
         public IUserService UserService { get; set; }
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+        [Inject]
+        public IToastService Toast { get; set; }
         public UpdateUser updateUser= new UpdateUser();
         public UserResponse userResponse = new UserResponse();
         public APIResponse response = new APIResponse();
@@ -36,6 +41,10 @@ namespace ChatWeb3Frontend.Pages
             try
             {
                 response = await UserService.UpdateAsync(update);
+                if (response.success)
+                {
+                    Toast.ShowSuccess("Profile Updated");
+                }
             }
             catch (Exception)
             {

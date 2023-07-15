@@ -7,13 +7,14 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ChatWeb3Frontend.Services
 {
     public class UserService : IUserService
     {
         private readonly HttpClient _httpClient;
-        string token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3ByaW1hcnlzaWQiOiJhOTk3NDE5OC0zNzVmLTQ5YTAtYmQxMy1kYTVlYTQxYzQyM2EiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiUmFrZXNoIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvc2lkIjoiMHhkQjc2RjgwM0FCOWYzNTBGOTI4QUQ1MzM1ZkI4YzA5RThhMzYyMjVhIiwiZXhwIjoxNjg5NDAyMTAzfQ.M_8yvrcfhuLplhMEKFRh1FyxODm2R4TSX9SN3NwPW8D6przcrEhtl8XQa_Q9HknCRCyqlkB0ZmaX_m4QeDTfdw";
+        string token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3ByaW1hcnlzaWQiOiJiYTRkNjBkZC0wMmJhLTQxODAtYjQ3Yy1jNjBlMDFiN2FjMjgiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoic2RzYSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3NpZCI6IjB4NmQ3NjM2NDg2YjBEZDJiMWEzNEJmOThBZDQwNzhBY0MxNzQxZkM3MiIsImV4cCI6MTY4OTQ4Mjg2Nn0.u7wconC_82oPBSypie2P3ZnrpRNvv-u70aZbVMtCDkLqgavRMdnf4qCwQGoT31SMFTR1jKF0ueigo9rf4I-tdA";
         
         public UserService(HttpClient httpClient)
         {
@@ -52,6 +53,19 @@ namespace ChatWeb3Frontend.Services
                 var resultContent = await result.Content.ReadFromJsonAsync<APIResponse>();
                 Console.WriteLine(resultContent.ToString());
                 return resultContent!;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async  Task<APIResponse> ValidateUsernameAsync(string username)
+        {
+            try
+            {
+                var apiResponse = await _httpClient.GetFromJsonAsync<APIResponse>($"api/v1/users/validateUsername/?username={username}");
+                return apiResponse;
             }
             catch (Exception)
             {

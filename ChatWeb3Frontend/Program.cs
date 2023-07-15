@@ -1,3 +1,4 @@
+using Blazored.Toast;
 using ChatWeb3Frontend;
 using ChatWeb3Frontend.Services;
 using ChatWeb3Frontend.Services.Contracts;
@@ -13,6 +14,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://192.180.0.192:4545/") });
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddMetaMaskBlazor();
+builder.Services.AddBlazoredToast();
 builder.Services.AddFileReaderService();
 builder.Services.AddScoped<IUserService, UserService>();
 await builder.Build().RunAsync();
+

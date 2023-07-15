@@ -6,5 +6,6 @@ namespace ChatWeb3Frontend.Services.Contracts
     {
         Task<APIResponse> UpdateAsync(UpdateUser update);
         Task<APIResponse> GetAsync();
+        Task<APIResponse> ValidateUsernameAsync(string username);
     }
 }
