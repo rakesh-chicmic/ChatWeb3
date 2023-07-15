@@ -1,6 +1,11 @@
-﻿using ChatWeb3Frontend.Models;
+﻿using Blazored.Toast.Services;
+using ChatWeb3Frontend.Models;
 using ChatWeb3Frontend.Services.Contracts;
 using Microsoft.AspNetCore.Components;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Net.WebRequestMethods;
 
 namespace ChatWeb3Frontend.Pages
 {
@@ -11,16 +16,58 @@ namespace ChatWeb3Frontend.Pages
 
         [Inject]
         public NavigationManager NavigationManager { get; set; }
+        [Inject]
+        public IToastService Toast {  get ; set; }
 
         public UpdateUser updateUser = new UpdateUser();
         public APIResponse response = new APIResponse();
+        public ValidateUsernameModel validateUsername = new ValidateUsernameModel();
+
+        public Action<ChangeEventArgs> onInputDebounced;
+
+        protected override void OnInitialized()
+        {
+            onInputDebounced = DebounceEvent<ChangeEventArgs>(e => updateUser.username = (string)e.Value, TimeSpan.FromSeconds(1));
+            base.OnInitialized();
+        }
+        Action<T> DebounceEvent<T>(Action<T> action, TimeSpan interval)
+        {
+            return Debounce<T>(arg =>
+            {
+                InvokeAsync(async () =>
+                {
+                    action(arg);
+                    await ValidateUsername_Click(updateUser.username);
+                    StateHasChanged();
+                });
+            }, interval);
+        }
+
+        Action<T> Debounce<T>(Action<T> action, TimeSpan interval)
+        {
+            if (action == null) throw new ArgumentNullException(nameof(action));
+
+            var last = 0;
+            return arg =>
+            {
+                var current = System.Threading.Interlocked.Increment(ref last);
+                Task.Delay(interval).ContinueWith(task =>
+                {
+                    if (current == last)
+                    {
+                        action(arg);
+                    }
+                });
+            };
+        }
         protected async Task UpdateUser_Click(UpdateUser update)
         {
             try
             {
                 response = await UserService.UpdateAsync(update);
-                if (response.Success)
+                if (response.success)
                 {
+                    Toast.ShowSuccess("User Details Updated");
                     NavigationManager.NavigateTo("/home");
                 }
             }
@@ -28,6 +75,30 @@ namespace ChatWeb3Frontend.Pages
             {
                 throw;
             }
+        }
+
+        protected async Task ValidateUsername_Click(string username)
+        {
+            if (!string.IsNullOrWhiteSpace(username))
+            {
+                try
+                {
+                    response = await UserService.ValidateUsernameAsync(username);
+                    var resData = JsonSerializer.Serialize(response.data);
+                    validateUsername = JsonSerializer.Deserialize<ValidateUsernameModel>(resData);
+                    if (!validateUsername.isAvailable)
+                    {
+                        Toast.ShowInfo($"Username already exist. Suggested:{validateUsername.suggestedUsername}");
+                    }
+                    await InvokeAsync(StateHasChanged);
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+
         }
     }
 }
