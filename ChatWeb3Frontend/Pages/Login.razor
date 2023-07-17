@@ -1,5 +1,7 @@
 ﻿@page "/"
+@using Newtonsoft.Json;
 @inherits LoginBase
+@inject IToastService Toast
 <div id="login-page">
 
 <div id="main">  
@@ -15,7 +17,7 @@
         </div>
        
         <div class="col">
-                <div class="test @((isAnimating) ? "slideDown" : "")" @onclick="()=>setAnimating(isAnimating)">
+                <div class="test @((isAnimating) ? "slideDown" : "")">
                     <svg class="svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/" x="0px" y="0px" height="500px" viewBox="0 0 600 520" enable-background="new 0 0 601 602" xml:space="preserve">
                 <defs>
                 <!-- Background gradient -->
@@ -71,9 +73,9 @@
 
                             <button id="install-metamask" class="@((isAnimating) ? "display-button" : "")"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/512px-MetaMask_Fox.svg.png?20220831120339" style="object-fit:cover;width:40px;height:40px;" /> <a href="https://metamask.io" style="text-decoration:none;color:white" target="_blank">Add MetaMask</a></button>
                   }
-                  else if (string.IsNullOrEmpty(SelectedAddress)){
+                  else{
 
-                        <button id="signin-button" class="@((isAnimating) ? "display-button" : "")" @onclick="(()=>ConnectMetaMask())"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/512px-MetaMask_Fox.svg.png?20220831120339" style="object-fit:cover;width:40px;height:40px;" />Login With MetaMask</button>
+                        <button id="signin-button" class="@((isAnimating) ? "display-button" : "")" @onclick="(()=>LoginWithMetamask())"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/512px-MetaMask_Fox.svg.png?20220831120339" style="object-fit:cover;width:40px;height:40px;" />Login With MetaMask</button>
                   }
               </div>
             </div>
@@ -217,6 +219,7 @@
 @code{
     private bool isAnimating = false;
 
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -226,7 +229,7 @@
             isAnimating = true;
             StateHasChanged();
 
-            await Task.Delay(2000); // Animation duration
+            await Task.Delay(1000); // Animation duration
 
             // Comment out the line below to keep the second column in place
             isAnimating = false;
@@ -234,15 +237,20 @@
         }
     }
 
-    protected void  setAnimating(bool value)
+    protected async Task LoginWithMetamask()
     {
-        if (value == true)
+        var res = await jsRuntime.InvokeAsync<object>("web3Login", null);
+        var response = JsonConvert.DeserializeObject<Response>(res.ToString());
+        if(response.statusCode == 400)
         {
-            isAnimating = false;
+            Toast.ShowWarning(response.message);
+            return;
         }
         else
         {
-            isAnimating = true;
+            Toast.ShowSuccess(response.message);
+            
         }
+        //Console.WriteLine(res);
     }
 }

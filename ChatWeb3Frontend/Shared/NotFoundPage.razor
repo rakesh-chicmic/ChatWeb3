@@ -1,0 +1,21 @@
+﻿
+<div class="permission_denied">
+    <div id="tsparticles">
+        <canvas data-generated="true" style="width: 100% !important; height: 100% !important; position: fixed !important; z-index: 0 !important; top: 0px !important; left: 0px !important; pointer-events: initial;" width="1920" height="969"></canvas>
+    </div>
+    <div class="denied__wrapper">
+        <h1>404</h1>
+        <h3>LOST IN <span>SPACE</span> TYPE-IT? Hmm, looks like that page doesn't exist.</h3>
+        <img id="astronaut" src="images/astronaut.svg" />
+        <img id="planet" src="images/planet.svg" />
+        <button class="denied__link" @onclick="Navigate">Go Home</button>
+    </div>
+</div>
+
+
+@code {
+    public void Navigate()
+    {
+        _navMgr.NavigateTo("/");
+    }
+}
