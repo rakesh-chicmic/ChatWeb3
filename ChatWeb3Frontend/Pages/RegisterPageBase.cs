@@ -9,7 +9,7 @@ using static System.Net.WebRequestMethods;
 
 namespace ChatWeb3Frontend.Pages
 {
-    public class UserDetailsBase : ComponentBase
+    public class RegisterPageBase : ComponentBase
     {
         [Inject]
         public IUserService UserService { get; set; }
@@ -20,7 +20,7 @@ namespace ChatWeb3Frontend.Pages
         public IToastService Toast {  get ; set; }
 
         public UpdateUser updateUser = new UpdateUser();
-        public APIResponse response = new APIResponse();
+        public Response response = new Response();
         public ValidateUsernameModel validateUsername = new ValidateUsernameModel();
 
         public Action<ChangeEventArgs> onInputDebounced;

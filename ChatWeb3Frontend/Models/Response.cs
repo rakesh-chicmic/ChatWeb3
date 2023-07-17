@@ -1,6 +1,6 @@
 ﻿namespace ChatWeb3Frontend.Models
 {
-    public class APIResponse
+    public class Response
     {
         public int statusCode { get; set; } 
         public string message { get; set; } 

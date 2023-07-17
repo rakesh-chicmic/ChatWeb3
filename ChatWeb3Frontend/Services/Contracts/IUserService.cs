@@ -4,8 +4,8 @@ namespace ChatWeb3Frontend.Services.Contracts
 {
     public interface IUserService
     {
-        Task<APIResponse> UpdateAsync(UpdateUser update);
-        Task<APIResponse> GetAsync();
-        Task<APIResponse> ValidateUsernameAsync(string username);
+        Task<Response> UpdateAsync(UpdateUser update);
+        Task<Response> GetAsync();
+        Task<Response> ValidateUsernameAsync(string username);
     }
 }

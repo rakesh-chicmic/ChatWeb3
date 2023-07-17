@@ -1,6 +1,6 @@
-﻿@page "/profile"
+﻿@page "/updateProfile"
 @using System.Text.Json;
-@inherits EditProfileBase
+@inherits UpdateProfileBase
 @inject HttpClient client
 @inject IFileReaderService fileReader
 
@@ -58,7 +58,7 @@
         content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data");
         content.Add(new StreamContent(fileStream, (int)fileStream.Length), "file", fileName);
         var response = await client.PostAsync("api/v1/uploadProfilePic", content);
-        var apiResponse = await response.Content.ReadFromJsonAsync<APIResponse>();
+        var apiResponse = await response.Content.ReadFromJsonAsync<Response>();
         if (apiResponse.statusCode==200)
         {
             Toast.ShowSuccess("Profile Picture Updated");

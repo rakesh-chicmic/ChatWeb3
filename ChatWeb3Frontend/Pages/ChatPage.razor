@@ -221,7 +221,7 @@
         {
             await socket.Connect();
         }
-        hub!.On("RecievedChats", (APIResponse a) =>
+        hub!.On("RecievedChats", (Response a) =>
         {
             Console.WriteLine(a.message);
             Console.WriteLine(a.data);
@@ -242,7 +242,7 @@
 
     public void GetChatList()
     {
-        var response = hub!.InvokeAsync<APIResponse>("GetChats",1,20);
+        var response = hub!.InvokeAsync<Response>("GetChats",1,20);
     }
 
     private string getChatTabClass()

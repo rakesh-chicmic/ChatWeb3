@@ -22,11 +22,11 @@ namespace ChatWeb3Frontend.Services
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
         }
 
-        public async Task<APIResponse> GetAsync()
+        public async Task<Response> GetAsync()
         {
             try
             {           
-                var apiResponse = await _httpClient.GetFromJsonAsync<APIResponse>($"api/v1/users/getYourself/");
+                var apiResponse = await _httpClient.GetFromJsonAsync<Response>($"api/v1/users/getYourself/");
                 return apiResponse;                
             }
             catch (Exception)
@@ -35,7 +35,7 @@ namespace ChatWeb3Frontend.Services
             }
         }
 
-        public async Task<APIResponse> UpdateAsync(UpdateUser update)
+        public async Task<Response> UpdateAsync(UpdateUser update)
         {
             try
             {
@@ -47,10 +47,10 @@ namespace ChatWeb3Frontend.Services
 
                 if (!result.IsSuccessStatusCode)
                 {
-                    var message = await result.Content.ReadFromJsonAsync<APIResponse>();
-                    return new APIResponse { statusCode = 0, message = message!.message };
+                    var message = await result.Content.ReadFromJsonAsync<Response>();
+                    return new Response { statusCode = 0, message = message!.message };
                 }
-                var resultContent = await result.Content.ReadFromJsonAsync<APIResponse>();
+                var resultContent = await result.Content.ReadFromJsonAsync<Response>();
                 Console.WriteLine(resultContent.ToString());
                 return resultContent!;
             }
@@ -60,11 +60,11 @@ namespace ChatWeb3Frontend.Services
             }
         }
 
-        public async  Task<APIResponse> ValidateUsernameAsync(string username)
+        public async  Task<Response> ValidateUsernameAsync(string username)
         {
             try
             {
-                var apiResponse = await _httpClient.GetFromJsonAsync<APIResponse>($"api/v1/users/validateUsername/?username={username}");
+                var apiResponse = await _httpClient.GetFromJsonAsync<Response>($"api/v1/users/validateUsername/?username={username}");
                 return apiResponse;
             }
             catch (Exception)
