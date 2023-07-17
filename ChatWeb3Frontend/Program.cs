@@ -5,6 +5,7 @@ using MetaMask.Blazor;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Tewr.Blazor.FileReader;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -15,4 +16,5 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://
 builder.Services.AddMetaMaskBlazor();
 builder.Services.AddFileReaderService();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddAuthorizationCore();
 await builder.Build().RunAsync();
