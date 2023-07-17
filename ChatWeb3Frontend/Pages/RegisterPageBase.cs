@@ -13,17 +13,19 @@ namespace ChatWeb3Frontend.Pages
     {
         [Inject]
         public IUserService UserService { get; set; }
-
         [Inject]
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public IToastService Toast {  get ; set; }
+        [Inject]
+        public IFileUploadService FileUploadService { get; set; }
 
         public UpdateUser updateUser = new UpdateUser();
         public Response response = new Response();
         public ValidateUsernameModel validateUsername = new ValidateUsernameModel();
-
         public Action<ChangeEventArgs> onInputDebounced;
+        public FileResponseData fileUpload = new FileResponseData();  
+        public ElementReference elementReference = new ElementReference();
 
         protected override void OnInitialized()
         {
@@ -98,7 +100,25 @@ namespace ChatWeb3Frontend.Pages
                     throw;
                 }
             }
+        }
 
+        protected async Task UploadProfileImage_Click(ElementReference elementReference)
+        {
+            try
+            {
+                response = await FileUploadService.UploadFileAsync(elementReference);
+                if (response.statusCode == 200)
+                {
+                    Toast.ShowSuccess("Profile Picture Uploaded");
+                }
+                var resData = JsonSerializer.Serialize(response.data);
+                fileUpload = JsonSerializer.Deserialize<FileResponseData>(resData);
+                updateUser.pathToProfilePic = fileUpload.pathToPic;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

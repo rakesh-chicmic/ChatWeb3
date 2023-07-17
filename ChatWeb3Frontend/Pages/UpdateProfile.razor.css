@@ -17,16 +17,10 @@ body {
 #main {
     font-family: 'Agdasima', sans-serif;
     background-color: #116149;
-    /*background-image: url('https://img.freepik.com/free-photo/medium-shot-man-wearing-vr-glasses_23-2149126949.jpg?w=1380&t=st=1689226413~exp=1689227013~hmac=3dab9d47a60107f7dea6346662fa753fc815f9aeb7f742a98d73a703e0b17175');*/
+    background-image: url(https://img.freepik.com/free-vector/color-seamless-space-pattern_102902-2360.jpg?w=826&t=st=1689573256~exp=1689573856~hmac=17db97ecbe3c5da10153f2583571361072a2bbf6ad1d22cf6f157c27fe43976c);
     width: 100vw;
     height: 100vh;
-   /* background-size: cover; 
-    background-position: center;*/
-}
-
-
-h1 {
-    text-align: center;
+    padding-top: 60px;
 }
 
 form {
@@ -59,7 +53,7 @@ input[type="submit"] {
     display: block;
     width: 100%;
     padding: 10px;
-    background-color: #4CAF50;
+    background-color: darkslateblue;
     color: white;
     border: none;
     border-radius: 4px;
@@ -68,7 +62,7 @@ input[type="submit"] {
 }
 
     input[type="submit"]:hover {
-        background-color: #45a049;
+        background-color: #13243E;
     }
 
 /* Animation effect */
