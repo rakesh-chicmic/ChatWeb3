@@ -19,10 +19,14 @@ namespace ChatWeb3Frontend.Pages
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public IToastService Toast { get; set; }
+        [Inject]
+        public IFileUploadService FileUploadService { get; set; }
         public UpdateUser updateUser= new UpdateUser();
         public ResponseUser userResponse = new ResponseUser();
         public Response response = new Response();
         public string imagePath = null;
+        public FileResponseData fileUpload = new FileResponseData();
+        public ElementReference elementReference = new ElementReference();
         protected override async Task OnInitializedAsync()
         {      
              response = await UserService.GetAsync();
@@ -50,5 +54,26 @@ namespace ChatWeb3Frontend.Pages
                 throw;
             }
         }
+
+        protected async Task UploadProfileImage_Click(ElementReference elementReference)
+        {
+            try
+            {
+                response = await FileUploadService.UploadFileAsync(elementReference);
+                if (response.statusCode == 200)
+                {
+                    Toast.ShowSuccess("Profile Picture Updated");
+                }
+                var resData = JsonSerializer.Serialize(response.data);
+                fileUpload = JsonSerializer.Deserialize<FileResponseData>(resData);
+                updateUser.pathToProfilePic = fileUpload.pathToPic;
+                imagePath = $"http://192.180.0.192:4545/{updateUser.pathToProfilePic}";
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
     }
 }

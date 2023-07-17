@@ -17,15 +17,19 @@ body {
 
 #main {
     font-family: 'Agdasima', sans-serif;
-     background-color: #116149;
+    /* background-color: #116149;*/
+    background-image: url(https://img.freepik.com/free-vector/color-seamless-space-pattern_102902-2360.jpg?w=826&t=st=1689573256~exp=1689573856~hmac=17db97ecbe3c5da10153f2583571361072a2bbf6ad1d22cf6f157c27fe43976c);
     height: 100vh;
     width: 100vw;
+    padding-top: 70px;
+   
 }
 
-h1 {
-    text-align: center;
+h1{
+    text-align:center;
+    color: white;
+    background-color: #13243E;
 }
-
 form {
     max-width: 600px;
     margin: 0 auto;
@@ -56,7 +60,7 @@ input[type="submit"] {
     display: block;
     width: 100%;
     padding: 10px;
-    background-color: #4CAF50;
+    background-color: darkslateblue;
     color: white;
     border: none;
     border-radius: 4px;
@@ -65,7 +69,7 @@ input[type="submit"] {
 }
 
     input[type="submit"]:hover {
-        background-color: #45a049;
+        background-color: #13243E;
     }
 
 /* Animation effect */
