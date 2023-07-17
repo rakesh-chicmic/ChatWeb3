@@ -1,5 +1,6 @@
 ﻿@using System.Net.Http
 @using System.Net.Http.Json
+@using ChatWeb3Frontend.Services.Contracts;
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
@@ -19,6 +20,7 @@
 @using Blazored.Toast;
 @using Blazored.Toast.Services;
 @using Blazored.Toast.Configuration;
-
+@inject IAuthentication _authService;
+@inject AuthenticationStateProvider authProvider;
 @using ChatWeb3Frontend.Services;
 @inject Socket socket;
