@@ -26,6 +26,7 @@ namespace ChatWeb3Frontend.Pages
         public Action<ChangeEventArgs> onInputDebounced;
         public FileResponseData fileUpload = new FileResponseData();
         public ElementReference elementReference = new ElementReference();
+        public string imagePath = "https://cdn-icons-png.flaticon.com/512/1177/1177568.png?w=740&t=st=1689596149~exp=1689596749~hmac=8fc514c8173c4865f99e94e36b1cb77422c6fad5651f4726eab0c29ea4bf8a49";
 
         protected override void OnInitialized()
         {
@@ -136,6 +137,7 @@ namespace ChatWeb3Frontend.Pages
                 var resData = JsonSerializer.Serialize(response.data);
                 fileUpload = JsonSerializer.Deserialize<FileResponseData>(resData);
                 updateUser.pathToProfilePic = fileUpload.pathToPic;
+                imagePath = $"http://192.180.0.192:4545/{updateUser.pathToProfilePic}";
             }
             catch (Exception)
             {

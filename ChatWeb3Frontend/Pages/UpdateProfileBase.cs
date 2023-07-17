@@ -24,7 +24,7 @@ namespace ChatWeb3Frontend.Pages
         public UpdateUser updateUser= new UpdateUser();
         public ResponseUser userResponse = new ResponseUser();
         public Response response = new Response();
-        public string imagePath = null;
+        public string imagePath = "https://cdn-icons-png.flaticon.com/512/1177/1177568.png?w=740&t=st=1689596149~exp=1689596749~hmac=8fc514c8173c4865f99e94e36b1cb77422c6fad5651f4726eab0c29ea4bf8a49";
         public FileResponseData fileUpload = new FileResponseData();
         public ElementReference elementReference = new ElementReference();
         protected override async Task OnInitializedAsync()
