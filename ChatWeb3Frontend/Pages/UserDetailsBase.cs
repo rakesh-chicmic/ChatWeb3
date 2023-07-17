@@ -13,7 +13,7 @@ namespace ChatWeb3Frontend.Pages
         public NavigationManager NavigationManager { get; set; }
 
         public UpdateUser updateUser = new UpdateUser();
-        public APIResponse response = new APIResponse();
+        public Response response = new Response();
         protected async Task UpdateUser_Click(UpdateUser update)
         {
             try

@@ -83,7 +83,7 @@ namespace ChatWeb3Frontend.Controllers
         }
 
         //-------------------------- to test for unique usernames while registring a new user --------------------------------------------//
-        [HttpPut, Authorize]
+        [HttpGet, Authorize]
         [Route("/api/v1/users/validateUsername")]
         public IActionResult ValidateUsername(string username)
         {

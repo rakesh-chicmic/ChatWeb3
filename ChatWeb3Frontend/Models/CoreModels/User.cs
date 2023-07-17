@@ -1,4 +1,5 @@
 ﻿
+
 namespace ChatWeb3Frontend.Models
 {
     public class User
