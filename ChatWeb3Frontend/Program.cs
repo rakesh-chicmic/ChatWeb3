@@ -21,6 +21,7 @@ builder.Services.AddBlazoredToast();
 builder.Services.AddFileReaderService();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<AuthenticationStateProvider, AuthProvider>();
+builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
