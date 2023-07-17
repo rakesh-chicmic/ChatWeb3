@@ -41,6 +41,16 @@ namespace ChatWeb3Frontend.Pages
 
         protected async Task UpdateUser_Click(UpdateUser update)
         {
+            if (update.firstName == null || update.firstName==string.Empty)
+            {
+                Toast.ShowInfo("Please enter Firstname");
+                return;
+            }
+            else if (update.lastName == null || update.lastName==string.Empty)
+            {
+                Toast.ShowInfo("Please enter Lastname");
+                return;
+            }
             try
             {
                 response = await UserService.UpdateAsync(update);

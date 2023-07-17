@@ -16,7 +16,7 @@ namespace ChatWeb3Frontend.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
         [Inject]
-        public IToastService Toast {  get ; set; }
+        public IToastService Toast { get; set; }
         [Inject]
         public IFileUploadService FileUploadService { get; set; }
 
@@ -24,7 +24,7 @@ namespace ChatWeb3Frontend.Pages
         public Response response = new Response();
         public ValidateUsernameModel validateUsername = new ValidateUsernameModel();
         public Action<ChangeEventArgs> onInputDebounced;
-        public FileResponseData fileUpload = new FileResponseData();  
+        public FileResponseData fileUpload = new FileResponseData();
         public ElementReference elementReference = new ElementReference();
 
         protected override void OnInitialized()
@@ -64,6 +64,26 @@ namespace ChatWeb3Frontend.Pages
         }
         protected async Task UpdateUser_Click(UpdateUser update)
         {
+            if (update.username == null)
+            {
+                Toast.ShowInfo("Please enter Username");
+                return;
+            }
+            else if (update.pathToProfilePic==null)
+            {
+                Toast.ShowInfo("Please Upload your Profile Picture");
+                return;
+            }
+            else if (update.firstName == null)
+            {
+                Toast.ShowInfo("Please enter Firstname");
+                return;
+            }
+            else if (update.lastName == null)
+            {
+                Toast.ShowInfo("Please enter Lastname");
+                return;
+            }
             try
             {
                 response = await UserService.UpdateAsync(update);
@@ -72,7 +92,7 @@ namespace ChatWeb3Frontend.Pages
                     Toast.ShowSuccess("User Details Updated");
                     NavigationManager.NavigateTo("/home");
                 }
-              
+
             }
             catch (Exception)
             {
@@ -93,6 +113,7 @@ namespace ChatWeb3Frontend.Pages
                     {
                         Toast.ShowInfo($"Username already exist. Suggested:{validateUsername.suggestedUsername}");
                     }
+                    Toast.ShowInfo($"Username available");
                     await InvokeAsync(StateHasChanged);
                 }
                 catch (Exception)
