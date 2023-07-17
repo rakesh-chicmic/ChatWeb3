@@ -6,6 +6,7 @@ using MetaMask.Blazor;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Tewr.Blazor.FileReader;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -17,6 +18,8 @@ builder.Services.AddMetaMaskBlazor();
 builder.Services.AddBlazoredToast();
 builder.Services.AddFileReaderService();
 builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddSingleton<Socket>();
 

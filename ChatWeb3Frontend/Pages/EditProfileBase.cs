@@ -3,7 +3,6 @@ using ChatWeb3Frontend.Models;
 using ChatWeb3Frontend.Services.Contracts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Http;
 using Nethereum.JsonRpc.Client;
 using System.IO.Pipelines;
 using System.Net.Http.Headers;
