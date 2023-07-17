@@ -1,74 +1,30 @@
 ﻿@page "/updateProfile"
 @using System.Text.Json;
 @inherits UpdateProfileBase
-@inject HttpClient client
-@inject IFileReaderService fileReader
 
 <div id="edit-profile">
     <div id="main">
         <div class="text-center" id="profile-image">
             <img src=@imagePath alt="...">
         </div>
+
         <form>
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" @bind-value="@updateUser.username" required disabled>
             <label for="profileImage">Profile Image:</label>
-            <input type="file" id="profileImage" name="profileImage" accept="image/*" @ref="elementReference" @onchange="async () => await OpenFileAsync()" required>
+            <input type="file" id="profileImage" name="profileImage" accept="image/*" @ref="@elementReference" @onchange="async () => await UploadProfileImage_Click(elementReference)" required>
+            
 
+            @* <label for="profileImage"><img width="64" height="64" src="https://img.icons8.com/external-kiranshastry-lineal-color-kiranshastry/64/external-image-multimedia-kiranshastry-lineal-color-kiranshastry-1.png" alt="external-image-multimedia-kiranshastry-lineal-color-kiranshastry-1" /></label>
+            <input type="file" id="profileImage" name="profileImage" accept="image/*" @ref="@elementReference" @onchange="async () => await UploadProfileImage_Click(elementReference)" style="display: none;" required>
+            *@
             <label for="firstName">First Name:</label>
             <input type="text" id="firstName" name="firstName" @bind-value="@updateUser.firstName" required>
 
             <label for="lastName">Last Name:</label>
             <input type="text" id="lastName" name="lastName" @bind-value="@updateUser.lastName">
 
-            <input type="submit" value="Continue" @onclick:preventDefault=true @onclick="()=>(UpdateUser_Click(updateUser))" />
+            <input type="submit" value="Update" @onclick:preventDefault=true @onclick="()=>(UpdateUser_Click(updateUser))" />
         </form>
     </div>
 </div>
-
-@code {
-    ElementReference elementReference;
-
-    string fileName = string.Empty;
-    string type = string.Empty;
-    string size = string.Empty;
-    Stream fileStream = null;
-    Models.FileResponseData fileUpload;
-    async Task OpenFileAsync()
-    {
-        var file = (await fileReader.CreateReference(elementReference).EnumerateFilesAsync()).FirstOrDefault();
-        if (file == null) return;
-        var fileInfo = await file.ReadFileInfoAsync();
-        fileName = fileInfo.Name;
-        size = $"{fileInfo.Size}b";
-        type = fileInfo.Type;
-
-        using (var memoryStream = await file.CreateMemoryStreamAsync((int)fileInfo.Size))
-        {
-            fileStream = new MemoryStream(memoryStream.ToArray());
-        }
-        await UploadFileAsync();
-    }
-
-    async Task UploadFileAsync()
-    {
-        string token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3ByaW1hcnlzaWQiOiJiYTRkNjBkZC0wMmJhLTQxODAtYjQ3Yy1jNjBlMDFiN2FjMjgiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoic2RzYSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3NpZCI6IjB4NmQ3NjM2NDg2YjBEZDJiMWEzNEJmOThBZDQwNzhBY0MxNzQxZkM3MiIsImV4cCI6MTY4OTQ4Mjg2Nn0.u7wconC_82oPBSypie2P3ZnrpRNvv-u70aZbVMtCDkLqgavRMdnf4qCwQGoT31SMFTR1jKF0ueigo9rf4I-tdA";
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        var content = new MultipartFormDataContent();
-        content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data");
-        content.Add(new StreamContent(fileStream, (int)fileStream.Length), "file", fileName);
-        var response = await client.PostAsync("api/v1/uploadProfilePic", content);
-        var apiResponse = await response.Content.ReadFromJsonAsync<Response>();
-        if (apiResponse.statusCode==200)
-        {
-            Toast.ShowSuccess("Profile Picture Updated");
-        }
-        var resData = JsonSerializer.Serialize(apiResponse.data);
-        fileUpload = JsonSerializer.Deserialize<FileResponseData>(resData);
-        updateUser.pathToProfilePic = fileUpload.pathToPic;
-        imagePath = $"http://192.180.0.192:4545/{updateUser.pathToProfilePic}";
-
-        Console.WriteLine(imagePath);
-        
-    }
-}
