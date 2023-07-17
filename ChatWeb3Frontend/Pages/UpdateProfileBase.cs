@@ -48,6 +48,7 @@ namespace ChatWeb3Frontend.Pages
                 {
                     Toast.ShowSuccess("Profile Updated");
                 }
+               
             }
             catch (Exception)
             {

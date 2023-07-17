@@ -72,6 +72,7 @@ namespace ChatWeb3Frontend.Pages
                     Toast.ShowSuccess("User Details Updated");
                     NavigationManager.NavigateTo("/home");
                 }
+              
             }
             catch (Exception)
             {

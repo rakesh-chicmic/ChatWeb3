@@ -8,7 +8,7 @@
             <img src=@imagePath alt="...">
         </div>
 
-        <form>
+        <form action="/submit" method="post" enctype="multipart/form-data">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" @bind-value="@updateUser.username" required disabled>
             <label for="profileImage">Profile Image:</label>
