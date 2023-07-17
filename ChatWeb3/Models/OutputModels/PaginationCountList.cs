@@ -1,5 +1,5 @@
-﻿namespace ChatWeb3.Models.OutputModels
-{
+﻿namespace ChatWeb3.Models
+{ 
     public class PaginationCountList<T>
     {
         public int count { get; set; } = 0;

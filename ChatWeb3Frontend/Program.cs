@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Tewr.Blazor.FileReader;
 using Microsoft.AspNetCore.Components.Authorization;
+using ChatWeb3Frontend.Auth;
+using Blazored.LocalStorage;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -18,9 +20,10 @@ builder.Services.AddMetaMaskBlazor();
 builder.Services.AddBlazoredToast();
 builder.Services.AddFileReaderService();
 builder.Services.AddScoped<IUserService, UserService>();
-
+builder.Services.AddScoped<AuthenticationStateProvider, AuthProvider>();
 builder.Services.AddAuthorizationCore();
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddBlazoredLocalStorage();
+//builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddSingleton<Socket>();
 
 await builder.Build().RunAsync();

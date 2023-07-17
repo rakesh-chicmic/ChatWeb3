@@ -1,6 +1,5 @@
 ﻿using ChatWeb3.Data;
 using ChatWeb3.Models;
-using ChatWeb3.Models.OutputModels;
 using ChatWeb3.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
