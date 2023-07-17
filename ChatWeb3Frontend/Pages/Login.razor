@@ -245,9 +245,10 @@
             isAnimating = true;
         }
     }
-    
+
     protected async Task LoginWithMetamask()
     {
+        Console.WriteLine("login fxn called");
         var res = await jsRuntime.InvokeAsync<object>("web3Login", null);
     }
 }
