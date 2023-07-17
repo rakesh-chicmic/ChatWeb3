@@ -4,6 +4,7 @@ namespace ChatWeb3Frontend.Services
 {
     public interface IApiCalling
     {
-        public Response getYourself();
+        public Task<ResponseUser> getYourself();
+        public Task<List<ResponseUser>> getUsers(string searchString);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Text.Json;
 
-namespace ChatWeb3.Auth
+namespace ChatWeb3Frontend.Auth
 {
     public static class JwtParser
     {

@@ -10,15 +10,17 @@ namespace ChatWeb3Frontend.Services
         public static HubConnection? hubConnection;
         protected NavigationManager _navMgr;
         private readonly IConfiguration _configuration;
+        private readonly ILocalStorageService _localStorage;
 
         public string baseUrl = "";
         //public string baseUrl = "http://192.180.0.192:5656/";
-        public Socket(NavigationManager NavigationManager, IConfiguration configuration)
+        public Socket(NavigationManager NavigationManager, IConfiguration configuration, ILocalStorageService localStorage)
         {
             _navMgr = NavigationManager;
             _configuration = configuration;
             //baseUrl = _configuration.GetSection("urls:baseUrlServer").Value!;
             baseUrl = "https://localhost:7218/";
+            _localStorage = localStorage;
         }
         public async Task Connect()
         {
@@ -34,7 +36,7 @@ namespace ChatWeb3Frontend.Services
                     options.AccessTokenProvider = async () =>
                     {
                         //AuthenticationStateProvider authState = authProvider;
-                        return "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3ByaW1hcnlzaWQiOiJiYTRkNjBkZC0wMmJhLTQxODAtYjQ3Yy1jNjBlMDFiN2FjMjgiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiUmFrZXNoIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvc2lkIjoiMHg2ZDc2MzY0ODZiMERkMmIxYTM0QmY5OEFkNDA3OEFjQzE3NDFmQzcyIiwiZXhwIjoxNjkwMTczMDY1fQ.ePP_wYReF8Zgm6ZSgICf9kUxKfr8Ll92aq0m_yt-FI3yWLRv8x4zNPCTavE-n1HHwA8Lz2bto4M7l1aXPyqlwA";
+                        return await _localStorage.GetItemAsync<string>("accessToken");
                     };
                 })
                 .Build();
