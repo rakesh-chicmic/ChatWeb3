@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 
-namespace ChatWeb3Frontend.Auth
+namespace ChatWeb3.Auth
 {
     public class AuthProvider : AuthenticationStateProvider
     {

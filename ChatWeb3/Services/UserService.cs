@@ -1,12 +1,11 @@
-﻿using ChatWeb3Frontend.Controllers;
-using ChatWeb3Frontend.Data;
-using ChatWeb3Frontend.Models;
-using ChatWeb3Frontend.Models.OutputModels;
+﻿using ChatWeb3.Controllers;
+using ChatWeb3.Data;
+using ChatWeb3.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace ChatWeb3Frontend.Services
+namespace ChatWeb3.Services
 {
     public class UserService: IUserService
     {

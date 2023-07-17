@@ -1,7 +1,7 @@
-﻿using ChatWeb3Frontend.Models;
+﻿using ChatWeb3.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ChatWeb3Frontend.Services
+namespace ChatWeb3.Services
 {
     public interface IHubService
     {

@@ -12,7 +12,7 @@ using System.Configuration;
 using System.Security.Claims;
 using System.Threading.Tasks.Dataflow;
 
-namespace ChatWeb3Frontend.Hubs
+namespace ChatWeb3.Hubs
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ChatHub : Hub

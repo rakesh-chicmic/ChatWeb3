@@ -1,6 +1,6 @@
-﻿using ChatWeb3Frontend.Models;
+﻿using ChatWeb3.Models;
 
-namespace ChatWeb3Frontend.Services
+namespace ChatWeb3.Services
 {
     public interface IUploadPicService
     {

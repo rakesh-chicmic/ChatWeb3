@@ -1,13 +1,13 @@
-﻿using ChatWeb3Frontend.Data;
-using ChatWeb3Frontend.Models;
-using ChatWeb3Frontend.Services;
+﻿using ChatWeb3.Data;
+using ChatWeb3.Models;
+using ChatWeb3.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Security.Claims;
 
-namespace ChatWeb3Frontend.Controllers
+namespace ChatWeb3.Controllers
 {
     //controller to handle file upload 
     [Route("api/v1/[controller]")]

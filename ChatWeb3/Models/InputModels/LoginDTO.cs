@@ -1,4 +1,4 @@
-﻿namespace ChatWeb3Frontend.Models
+﻿namespace ChatWeb3.Models
 {
     public class LoginDTO
     {

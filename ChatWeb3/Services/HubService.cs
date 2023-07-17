@@ -1,9 +1,8 @@
-﻿using ChatWeb3Frontend.Controllers;
-using ChatWeb3Frontend.Data;
-using ChatWeb3Frontend.Models;
-using ChatWeb3Frontend.Models.OutputModels;
+﻿using ChatWeb3.Controllers;
+using ChatWeb3.Data;
+using ChatWeb3.Models;
 
-namespace ChatWeb3Frontend.Services
+namespace ChatWeb3.Services
 {
     public class HubService : IHubService
     {

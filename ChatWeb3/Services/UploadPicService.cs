@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ChatWeb3Frontend.Models;
+using ChatWeb3.Models;
 using System.Text;
 using System.Text.Json;
-using ChatWeb3Frontend.Data;
+using ChatWeb3.Data;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System;
 
-namespace ChatWeb3Frontend.Services
+namespace ChatWeb3.Services
 {
     public class UploadPicService:IUploadPicService
     {
