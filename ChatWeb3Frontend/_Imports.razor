@@ -16,4 +16,11 @@
 @using Microsoft.AspNetCore.Components.Authorization;
 @inject NavigationManager _navMgr;
 @inject IJSRuntime jsRuntime
+@using Blazored.Toast;
+@using Blazored.Toast.Services;
+@using Blazored.Toast.Configuration;
 
+
+@using ChatWeb3.Models;
+@using ChatWeb3Frontend.Services;
+@inject Socket socket;

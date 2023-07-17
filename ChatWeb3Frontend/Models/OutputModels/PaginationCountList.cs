@@ -1,0 +1,14 @@
+﻿namespace ChatWeb3.Models.OutputModels
+{
+    public class PaginationCountList<T>
+    {
+        public int count { get; set; } = 0;
+        public List<T> list { get; set; } = new List<T>();
+        public PaginationCountList() { }
+        public PaginationCountList(int count, List<T> list)
+        {
+            this.count = count;
+            this.list = list;
+        }
+    }
+}
