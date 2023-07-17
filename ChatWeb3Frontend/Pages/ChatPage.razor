@@ -38,8 +38,11 @@
                     {
                         foreach (OutputChatMapping chat in ChatList)
                         {
-                            <div class="@GetClass(chat.chatId)" @onclick="() => {OnClickChatList(chat.chatId);}">
-                                <span class="message-badge"> @</span>
+                            <div class="@GetClass(chat.chatId)" @onclick="async () => {await OnClickChatList(chat.chatId,chat.firstName,chat.lastName);}">
+                                @if(chat.countOfUnseen != 0)
+                                {
+                                    <span class="message-badge"> @chat.countOfUnseen</span>
+                                }
                                 <div class="sendbuttonLogo">
                                     <img src="./logo.png" class="selfPicture" />
                                     @chat.firstName @chat.lastName
@@ -55,7 +58,7 @@
                     {
                         foreach (OutputGroups group in GroupList)
                         {
-                            <div class="@GetClass(group.id)" @onclick="() => {OnClickChatList(group.id);}">
+                            <div class="@GetClass(group.id)" @onclick="async () => {await OnClickChatList(group.chatId,group.name, true);}">
                                 <div class="sendbuttonLogo">
                                     <img src="./logo.png" class="selfPicture" />
                                     @group.name
@@ -78,7 +81,7 @@
             <div class="header">
                 <div class="tab">
                     <img src="./logo.png" class="chatPicture" />
-                    test subject
+                    @openChatName
                 </div>
                 <div>
                     <img src="./icons8-menu-vertical-96.png" class="imageicon" />
@@ -186,7 +189,9 @@
     List<OutputChatMapping> ChatList = new List<OutputChatMapping>();
     List<OutputGroups> GroupList = new List<OutputGroups>();
     List<OutputMessage> messages = new List<OutputMessage>();
-
+    string openChatName = string.Empty;
+    Guid openChatId = Guid.Empty;
+    bool isOpenChatGroup = false;
 
 
     protected async override Task OnInitializedAsync()
@@ -197,36 +202,56 @@
             await socket.Connect();
             hub = socket.GetHubConnection();
         }
-        await Task.Delay(1000);
-        GetChatList();
-        await socketFxn();
+        await GetChatList();
+        await ReceiveChatList();
         return;
     }
 
 
-    public async Task socketFxn()
+    public async Task ReceiveChatList()
     {
         hub = socket.GetHubConnection();
         if (hub == null)
         {
             await socket.Connect();
         }
-        hub!.On("ReceivedChats", (Response a) =>
+        hub!.On("ReceivedChats", (Response response) =>
         {
-            string data = JsonSerializer.Serialize(a.data);
+            string data = JsonSerializer.Serialize(response.data);
             PaginationCountList<OutputChatMapping> chatList = JsonSerializer.Deserialize<PaginationCountList<OutputChatMapping>>(data)!;
             ChatList = chatList.list;
+            StateHasChanged();
         });
     }
+
+    //public async Task receiveChatMessages()
+    //{
+    //    hub = socket.GetHubConnection();
+    //    if (hub == null)
+    //    {
+    //        await socket.Connect();
+    //    }
+    //    hub!.On("ReceivedChatMessages", (Response a) =>
+    //    {
+    //        string data = JsonSerializer.Serialize(a.data);
+    //        PaginationCountList<OutputMessage> _messages = JsonSerializer.Deserialize<PaginationCountList<OutputMessage>>(data)!;
+    //        messages = _messages.list;
+    //        StateHasChanged();
+    //    });
+    //}
 
     public void sendMessaege()
     {
 
     }
 
-    public void GetChatList()
+    public async Task GetChatList()
     {
-        var response = hub!.InvokeAsync<Response>("GetChats",1,20);
+        var response = await hub!.InvokeAsync<Response>("GetChats",1,20);
+        string data = JsonSerializer.Serialize(response.data);
+        PaginationCountList<OutputChatMapping> chatList = JsonSerializer.Deserialize<PaginationCountList<OutputChatMapping>>(data)!;
+        ChatList = chatList.list;
+        StateHasChanged();
     }
 
     private string getChatTabClass()
@@ -247,15 +272,26 @@
         return "normaltab";
     }
 
-    private void OnClickChatList(Guid chatId)
+    private async Task OnClickChatList(Guid chatId, string firstName,string lastName)
     {
-        tempGuid = chatId;
-        
+        await OnClickChatList(chatId, firstName + " " + lastName, false);
     }
+
+    private async Task OnClickChatList(Guid chatId, string name,bool isGroup)
+    {
+        openChatName = name;
+        openChatId = chatId;
+        isOpenChatGroup = isGroup;
+        var response = await hub!.InvokeAsync<Response>("GetChatMessages", chatId.ToString(), 1, 20);
+        string data = JsonSerializer.Serialize(response.data);
+        PaginationCountList<OutputMessage> _messages = JsonSerializer.Deserialize<PaginationCountList<OutputMessage>>(data)!;
+        messages = _messages.list;
+        StateHasChanged();
+    }
+
     private void OnClickGroup()
     {
         isGroups = true;
-        GetChatList();
     }
     /// <summary>
     /// A function to get the class of Chat entity div (after selecting a chat it is used to change selected div's class)
@@ -283,9 +319,18 @@
             newMessage.createdAt = DateTime.Now;
             newMessage.isSeen = false;
             messages.Add(newMessage);
+            
+            InputMessage msg = new InputMessage();
+            msg.isGroup = isOpenChatGroup;
+            msg.chatId = openChatId.ToString();
+            msg.content = textBoxValue;
+            msg.type = 0;
+            hub!.InvokeAsync<Task>("SendMessage", msg);
             textBoxValue = string.Empty;
         }
     }
+
+    
     private void pressEnter(KeyboardEventArgs e)
     {
         if (e.Key == "Enter")

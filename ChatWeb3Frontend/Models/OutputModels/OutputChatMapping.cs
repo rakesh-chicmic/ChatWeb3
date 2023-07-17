@@ -1,6 +1,6 @@
 ﻿namespace ChatWeb3Frontend.Models
 {
-    public class OutputChatMappings
+    public class OutputChatMapping
     {
         public Guid chatId { get; set; }
         public string id { get; set; } = string.Empty;
@@ -12,8 +12,8 @@
         public string pathToProfilePic { get; set; } = string.Empty;
         public int countOfUnseen { get; set; } = 0;
 
-        public OutputChatMappings() { }
-        public OutputChatMappings(User receiver, ChatMappings mapping, int countOfUnseen)
+        public OutputChatMapping() { }
+        public OutputChatMapping(User receiver, ChatMappings mapping, int countOfUnseen)
         {
             chatId = mapping.id;
             username = receiver.username;
