@@ -33,7 +33,7 @@
     string type = string.Empty;
     string size = string.Empty;
     Stream fileStream = null;
-    FileResponseData fileUpload;
+    Models.FileResponseData fileUpload;
     async Task OpenFileAsync()
     {
         var file = (await fileReader.CreateReference(elementReference).EnumerateFilesAsync()).FirstOrDefault();
@@ -59,8 +59,8 @@
         content.Add(new StreamContent(fileStream, (int)fileStream.Length), "file", fileName);
         var response = await client.PostAsync("api/v1/uploadProfilePic", content);
         var apiResponse = await response.Content.ReadFromJsonAsync<APIResponse>();
-        var resData = JsonSerializer.Serialize(apiResponse.data);
-        fileUpload = JsonSerializer.Deserialize<FileResponseData>(resData);
+        var resData = JsonSerializer.Serialize(apiResponse!.data);
+        fileUpload = JsonSerializer.Deserialize<Models.FileResponseData>(resData)!;
         updateUser.pathToProfilePic = fileUpload.pathToPic;
         imagePath = $"http://192.180.0.192:4545/{fileUpload.pathToPic}";
         Console.WriteLine(imagePath);

@@ -1,12 +1,12 @@
-﻿namespace ChatWeb3.Models
+﻿namespace ChatWeb3Frontend.Models
 {
     public class Group
     {
         public Guid id { get; set; } = Guid.Empty;
         public string name { get; set; } = string.Empty;
         public string description { get; set; } = string.Empty;
-        public DateTime? createdAt { get; set; } = DateTime.MinValue;
-        public DateTime? updatedAt { get; set; } = DateTime.MinValue;
+        public DateTime createdAt { get; set; } = DateTime.MinValue;
+        public DateTime updatedAt { get; set; } = DateTime.MinValue;
         public Guid adminId { get; set; } = Guid.Empty;
         public bool isDeleted { get; set; } = false;
         public string? pathToProfilePic { get; set; } = string.Empty;
@@ -27,3 +27,4 @@
         }
     }
 }
+// entity to create groups and stores basic group details

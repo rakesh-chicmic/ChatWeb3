@@ -1,4 +1,4 @@
-﻿namespace ChatWeb3.Models
+﻿namespace ChatWeb3Frontend.Models
 {
     public class ResponseGroup
     {
@@ -25,3 +25,5 @@
         }
     }
 }
+
+// response data for fetching a particular group details

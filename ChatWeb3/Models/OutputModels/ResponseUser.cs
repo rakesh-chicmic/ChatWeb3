@@ -1,4 +1,4 @@
-﻿namespace ChatWeb3.Models
+﻿namespace ChatWeb3Frontend.Models
 {
     public class ResponseUser
     {

@@ -1,7 +1,7 @@
-﻿using ChatWeb3.Data;
-using ChatWeb3.Models;
-using ChatWeb3.Models.OutputModels;
-using ChatWeb3.Services;
+﻿using ChatWeb3Frontend.Data;
+using ChatWeb3Frontend.Models;
+using ChatWeb3Frontend.Models.OutputModels;
+using ChatWeb3Frontend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -13,7 +13,7 @@ using System.Configuration;
 using System.Security.Claims;
 using System.Threading.Tasks.Dataflow;
 
-namespace ChatWeb3.Hubs
+namespace ChatWeb3Frontend.Hubs
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ChatHub : Hub

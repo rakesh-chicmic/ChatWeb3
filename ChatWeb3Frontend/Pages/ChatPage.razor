@@ -39,7 +39,7 @@
                         foreach (OutputChatMapping chat in ChatList)
                         {
                             <div class="@GetClass(chat.chatId)" @onclick="() => {OnClickChatList(chat.chatId);}">
-                                <span class="message-badge"> 2 </span>
+                                <span class="message-badge"> @</span>
                                 <div class="sendbuttonLogo">
                                     <img src="./logo.png" class="selfPicture" />
                                     @chat.firstName @chat.lastName
@@ -198,17 +198,7 @@
             hub = socket.GetHubConnection();
         }
         await Task.Delay(1000);
-
-        chat.chatId = Guid.NewGuid();
-        chat.isOnline = true;
-        chat.firstName = "ajay";
-        chat.lastName = "joshi";
-        ChatList.Add(chat);
-        chat2.chatId = Guid.NewGuid();
-        chat2.isOnline = false;
-        chat2.firstName = "test";
-        chat2.lastName = "Subject";
-        ChatList.Add(chat2);
+        GetChatList();
         await socketFxn();
         return;
     }
@@ -221,19 +211,13 @@
         {
             await socket.Connect();
         }
-        hub!.On("RecievedChats", (Response a) =>
+        hub!.On("ReceivedChats", (Response a) =>
         {
-            Console.WriteLine(a.message);
-            Console.WriteLine(a.data);
+            string data = JsonSerializer.Serialize(a.data);
+            PaginationCountList<OutputChatMapping> chatList = JsonSerializer.Deserialize<PaginationCountList<OutputChatMapping>>(data)!;
+            ChatList = chatList.list;
         });
     }
-
-
-
-
-
-
-
 
     public void sendMessaege()
     {

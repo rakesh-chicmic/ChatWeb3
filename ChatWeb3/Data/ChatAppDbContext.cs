@@ -1,7 +1,7 @@
-﻿using ChatWeb3.Models;
+﻿using ChatWeb3Frontend.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ChatWeb3.Data
+namespace ChatWeb3Frontend.Data
 {
     public class ChatAppDbContext : DbContext
     {

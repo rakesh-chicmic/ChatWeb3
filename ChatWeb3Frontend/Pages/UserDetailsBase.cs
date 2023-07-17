@@ -19,7 +19,7 @@ namespace ChatWeb3Frontend.Pages
             try
             {
                 response = await UserService.UpdateAsync(update);
-                if (response.Success)
+                if (response.success)
                 {
                     NavigationManager.NavigateTo("/home");
                 }

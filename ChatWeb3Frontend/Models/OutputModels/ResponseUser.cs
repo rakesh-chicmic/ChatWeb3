@@ -1,4 +1,4 @@
-﻿namespace ChatWeb3.Models
+﻿namespace ChatWeb3Frontend.Models
 {
     public class ResponseUser
     {
@@ -39,3 +39,5 @@
         }
     }
 }
+
+/// response data for sending user details in order to hide security/ inner user details

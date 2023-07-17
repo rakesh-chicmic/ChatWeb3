@@ -1,6 +1,6 @@
-using ChatWeb3.Data;
-using ChatWeb3.Hubs;
-using ChatWeb3.Services;
+using ChatWeb3Frontend.Data;
+using ChatWeb3Frontend.Hubs;
+using ChatWeb3Frontend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;

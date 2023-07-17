@@ -1,4 +1,4 @@
-﻿namespace ChatWeb3.Models.OutputModels
+﻿namespace ChatWeb3Frontend.Models
 {
     public class PaginationCountList<T>
     {
@@ -12,3 +12,5 @@
         }
     }
 }
+
+// generic model for various response models that involves pagination

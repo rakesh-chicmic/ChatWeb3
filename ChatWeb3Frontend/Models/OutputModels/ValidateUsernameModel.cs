@@ -1,4 +1,4 @@
-﻿namespace ChatWeb3Frontend.Models.OutputModels
+﻿namespace ChatWeb3Frontend.Models
 {
     public class ValidateUsernameModel
     {

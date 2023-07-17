@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ChatWeb3.Migrations
+namespace ChatWeb3Frontend.Migrations
 {
     /// <inheritdoc />
     public partial class Second : Migration

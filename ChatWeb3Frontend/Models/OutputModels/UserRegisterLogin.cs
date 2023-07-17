@@ -1,4 +1,4 @@
-﻿namespace ChatWeb3.Models
+﻿namespace ChatWeb3Frontend.Models
 {
     public class UserRegisterLogin
     {
@@ -14,3 +14,5 @@
         }
     }
 }
+
+//// response data when a user logins/register into the system

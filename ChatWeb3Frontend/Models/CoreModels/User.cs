@@ -1,4 +1,4 @@
-﻿
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace ChatWeb3.Models
 {
@@ -43,7 +43,7 @@ namespace ChatWeb3.Models
             this.createdAt = user.createdAt;
             this.updatedAt = DateTime.Now;
             this.lastActive = DateTime.Now;
-            this.isOnline = false;
+            this.isOnline = user.isOnline;
             this.isDeleted = false;
         }
     }

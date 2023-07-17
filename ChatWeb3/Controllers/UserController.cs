@@ -1,12 +1,12 @@
-﻿using ChatWeb3.Data;
-using ChatWeb3.Models;
-using ChatWeb3.Services;
+﻿using ChatWeb3Frontend.Data;
+using ChatWeb3Frontend.Models;
+using ChatWeb3Frontend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace ChatWeb3.Controllers
+namespace ChatWeb3Frontend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

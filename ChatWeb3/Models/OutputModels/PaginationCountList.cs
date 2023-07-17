@@ -1,4 +1,4 @@
-﻿namespace ChatWeb3.Models.OutputModels
+﻿namespace ChatWeb3Frontend.Models.OutputModels
 {
     public class PaginationCountList<T>
     {

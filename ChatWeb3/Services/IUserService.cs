@@ -1,6 +1,6 @@
-﻿using ChatWeb3.Models;
+﻿using ChatWeb3Frontend.Models;
 
-namespace ChatWeb3.Services
+namespace ChatWeb3Frontend.Services
 {
     public interface IUserService
     {
