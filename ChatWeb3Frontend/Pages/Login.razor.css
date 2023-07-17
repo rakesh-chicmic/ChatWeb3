@@ -35,7 +35,7 @@ body {
     background-color: #3e8e41;
     color: white;
     border-radius: 7px;
-    animation: fade 2s linear;
+    animation: fade 1s linear;
     font-family: 'Agdasima', sans-serif;
     font-size: 24px;
 }

@@ -1,6 +1,6 @@
-﻿@page "/details"
+﻿@page "/register"
 @using System.Text.Json;
-@inherits UserDetailsBase
+@inherits RegisterPageBase
 @inject HttpClient client
 @inject IFileReaderService fileReader
 
@@ -60,7 +60,7 @@
         content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data");
         content.Add(new StreamContent(fileStream, (int)fileStream.Length), "file", fileName);
         var response = await client.PostAsync("api/v1/uploadProfilePic", content);
-        var apiResponse = await response.Content.ReadFromJsonAsync<APIResponse>();
+        var apiResponse = await response.Content.ReadFromJsonAsync<Response>();
         var resData = JsonSerializer.Serialize(apiResponse.data);
         fileUpload = JsonSerializer.Deserialize<FileResponseData>(resData);
         updateUser.pathToProfilePic = fileUpload.pathToPic;

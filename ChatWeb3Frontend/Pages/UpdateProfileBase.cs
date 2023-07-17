@@ -11,7 +11,7 @@ using Tewr.Blazor.FileReader;
 
 namespace ChatWeb3Frontend.Pages
 {
-    public class EditProfileBase : ComponentBase
+    public class UpdateProfileBase : ComponentBase
     {
         [Inject]
         public IUserService UserService { get; set; }
@@ -20,18 +20,18 @@ namespace ChatWeb3Frontend.Pages
         [Inject]
         public IToastService Toast { get; set; }
         public UpdateUser updateUser= new UpdateUser();
-        public UserResponse userResponse = new UserResponse();
-        public APIResponse response = new APIResponse();
+        public ResponseUser userResponse = new ResponseUser();
+        public Response response = new Response();
         public string imagePath = null;
         protected override async Task OnInitializedAsync()
         {      
              response = await UserService.GetAsync();
              var resData = JsonSerializer.Serialize(response.data);
-             userResponse = JsonSerializer.Deserialize<UserResponse>(resData);
+             userResponse = JsonSerializer.Deserialize<ResponseUser>(resData)!;
              updateUser.username = userResponse.username;
              updateUser.firstName = userResponse.firstName;
              updateUser.lastName = userResponse.lastName;
-             updateUser.pathToProfilePic = userResponse.pathToProfilePic;
+             updateUser.pathToProfilePic = userResponse.pathToProfilePic!;
              imagePath = $"http://192.180.0.192:4545/{updateUser.pathToProfilePic}";
         }
 
