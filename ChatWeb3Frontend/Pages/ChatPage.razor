@@ -13,7 +13,7 @@
             <div class="sideBarGroup" >
                 <img src="./icons8-settings-512.png" class="imageicon" style="margin:10px; margin-bottom: 0px;" />
                 <img src="./icons8-logout-96.png" class="imageicon" style="margin:10px; margin-left:10px; margin-bottom: 0px;" @onclick="()=>{logOut();}" />
-                <img src="./logo.png" class="sideBarGroupPic" @onclick="()=>{showProfile();}" />
+                <img src="https://localhost:7218/Assets//Files//74105720230718171905209.jpg" class="sideBarGroupPic" @onclick="()=>{showProfile();}" />
             </div>
 
         </div>
@@ -21,10 +21,17 @@
     <div class="column middle">
         <div>
             <div class="chatlistHeader">
+                <div style="display: flex; flex-direction: row;">
+                    @if (isSearching)
+                    {
+                        <img src="./icons8-back-52.png" class="imageicon" @onclick="()=>{isSearching = false; searchText= string.Empty;}" />
+                    }
                     <div class="searchbox">
-                        <input class="textbox" @bind="@searchText" placeholder="message" @onkeyup="search" />
-                        <img src="./icons8-search-480.png" class="imageicon" onclick="" />
+                        <input class="textbox" @bind="@searchText" placeholder="message" @onkeyup="search" @oninput="@onInputDebounced" />
+                        <img src="./icons8-search-480.png" class="imageicon" @onclick="async ()=>{await Searching();}" />
                     </div>
+                </div>
+               
                 <div class="tab">
                     <div class="@getChatTabClass()" @onclick="() => {isGroups=false;}">
                         Chats
@@ -124,7 +131,7 @@
             {
                 <div class="header">
                     <div class="tab">
-                        <img src="./logo.png" class="chatPicture" />
+                        <img src="https://localhost:7218/Assets//Files//74105720230718171905209.jpg" class="chatPicture" />
                         <div style="flex-direction:column;">
                             @openChatName
                             <div style="font-size:12px">@openChatUsername</div>
@@ -140,13 +147,43 @@
                         <div style="display:flex; flex-direction:column; justify-content:flex-end; ">
                             @foreach (OutputMessage message in messages)
                             {
+                                if(lastMessageTime.Date != message.createdAt.Date)
+                                {
+                                    <div class="message-date-change">
+                                        <div class=" message-Date-Divider">
+                                        </div>
+                                        <div class="message-Date">@message.createdAt.Date.ToString("dd\\/MM\\/yyyy")</div>
+                                        <div class=" message-Date-Divider">
+                                        </div>
+                                    </div>
+                                }
                                 if (message.senderId == myId)
                                 {
                                     <div class="messageParent">
                                         <div class="message user">
-                                            <div>
-                                                @message.content
+                                            <div style="display:flex; flex-direction:column;">
+                                                @if(message.type == 1 )
+                                                {
+                                                    <img src="@message.pathToFileAttachment" style="height:200px; width:250px; border-radius:10px; margin-bottom: 5px;" onclick="" />
+                                                }
+                                                else if (message.type == 2)
+                                                {
+                                                    <div class="document-message">
+                                                        <div style="display:flex; flex-direction:row; align-items:center;">
+                                                            <img src="./icons8-document-480.png" class="imageicon" style="height:35px; margin: 0px;" onclick="" />
+                                                            <div>
+                                                                heheh
+                                                            </div>
+                                                        </div>
+                                                        <img src="./icons8-download-64.png" class="imageicon" style="height:20px; margin:10px; justify-self: right;" onclick="" />
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    @message.content
+                                                }
                                             </div>
+
                                             @if (message.isSeen)
                                             {
                                                 <div class="seen-badge">
@@ -158,29 +195,88 @@
                                             @GetTime(message.createdAt)
                                         </div>
                                     </div>
+                                    @if (message.type != 0 && message.content != string.Empty)
+                                    {
+                                        <div class="messageParent">
+                                            <div class="message user" style="border-start-end-radius: 0px; border-end-end-radius: 10px; ">
+                                                @message.content
+                                                @if (message.isSeen)
+                                                {
+                                                    <div class="seen-badge">
+                                                        <img src="./icons8-done-208.png" style="height:14px; width:18px" />
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="messageInfo">
+                                                @GetTime(message.createdAt)
+                                            </div>
+                                        </div>
+                                    }
                                 }
                                 else
                                 {
                                     <div class="messageParent2">
                                         <div class="message">
-                                            <div>
-                                                @message.content
+                                            <div style="display:flex; flex-direction:column;">
+                                                @if (message.type == 1)
+                                                {
+                                                    <img src="@message.pathToFileAttachment" style="height:200px; width:250px; border-radius:10px; margin-bottom: 5px;" onclick="" />
+                                                }
+                                                else if (message.type == 2)
+                                                {
+                                                    <div class="document-message" style="background-color: #636570;">
+                                                        <div style="display:flex; flex-direction:row; align-items:center;">
+                                                            <img src="./icons8-document-480.png" class="imageicon" style="height:35px; margin: 0px;" onclick="" />
+                                                            <div>
+                                                                heheh
+                                                            </div>
+                                                        </div>
+                                                        <img src="./icons8-download-64.png" class="imageicon" style="height:20px; margin:10px; justify-self: right;" onclick="" />
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    @message.content
+                                                }
                                             </div>
                                         </div>
                                         <div class="messageInfo2">
                                             @GetTime(message.createdAt)
                                         </div>
                                     </div>
+                                    @if (message.type != 0 && message.content!=string.Empty)
+                                    {
+                                        <div class="messageParent2">
+                                            <div class="message" style="border-start-start-radius: 0px; border-end-start-radius: 10px; ">
+                                                @message.content
+                                            </div>
+                                            <div class="messageInfo2">
+                                                @GetTime(message.createdAt)
+                                            </div>
+                                        </div>
+                                    }
                                 }
                             }
                         </div>
                     </div>
                 </div>
                 <div class="chatboxFooter">
+                    <div class="document-message" style="border-radius:60px; background-color: transparent; border:solid darkseagreen;">
+                        <div style="display:flex; flex-direction:row; align-items:center;">
+                            <img src="./icons8-document-480.png" class="imageicon" style="height:35px; margin: 0px;" onclick="" />
+                            <div>
+                                heheh
+                            </div>
+                        </div>
+                        <img src="./icons8-download-64.png" class="imageicon" style="height:20px; margin:10px; justify-self: right;" onclick="" />
+                    </div>
                     <div class="input-box">
                         <input class="textbox" type="text" @bind="@textBoxValue" placeholder="message" @onkeyup="pressEnter" />
                         <img src="./icons8-attach-90.png" class="imageicon" onclick="" />
-                        <img src="./icons8-image-96.png" class="imageicon" onclick="" />
+                        <label for="profileImage">
+                            <img src="./icons8-image-96.png"  class="imageicon" style="margin-bottom:10px;" @onclick="()=>{messagetype=1;}" />
+                        </label>
+                        <input type="file" id="profileImage" name="profileImage" accept="image/*"  @ref="@elementReference" hidden @onchange="async () => await UploadProfileImage_Click(elementReference,1)" required>
                         <img src="./icons8-microphone-96.png" class="imageicon" onclick="" />
                     </div>
                     <button class="sendbutton" @onclick="() => {sendbuttonEvent();}"><img src="./Sendbutton.png" class="sendbuttonLogo" /></button>
@@ -207,11 +303,11 @@
                     @if (editPermission)
                     {
 
-                        <input class="sidepanel-Username" type="text" @bind="@sidePanelUsername" placeholder="" @onkeyup="pressEnter" />
+                        <input class="sidepanel-Username" type="text" @bind="@sidePanelUsername" placeholder=""  />
                     }
                     else
                     {
-                        <input class="sidepanel-Username" type="text" @bind="@sidePanelUsername" disabled placeholder="" @onkeyup="pressEnter" />
+                        <input class="sidepanel-Username" type="text" @bind="@sidePanelUsername" disabled placeholder=""  />
                     }
                     <img src="./icons8-edit-480.png" class="imageicon" onclick="" />
                 </div>
@@ -221,12 +317,14 @@
 </div>
 
 @code {
+    int messagetype = 0;
+    string messagePicture = string.Empty;
     string searchText = string.Empty;
     static HubConnection? hub;
     bool sidePanel = false;
     bool editPermission = false;
     string sidePanelUsername = "";
-    private ElementReference containerRef;
+    private ElementReference elementReference;
     Guid currChatId = new Guid();
     string textBoxValue = string.Empty;
     Guid myId = new Guid();
@@ -243,8 +341,10 @@
     Guid openChatId = Guid.Empty;
     bool isOpenChatGroup = false;
     bool isSearching = false;
-
+    public Action<ChangeEventArgs> onInputDebounced;
     List<ResponseUser> searchChat = new List<ResponseUser>();
+    DateTime lastMessageTime;
+    ResponseUser myData = new ResponseUser();
 
     protected async override Task OnInitializedAsync()
     {
@@ -256,12 +356,68 @@
         }
         await GetChatList();
         await ReceiveChatList();
-        var mydata = await apiCalling.getYourself();
-        sidePanelUsername = mydata.username;
-        myId = mydata.id;
+        myData = await apiCalling.getYourself();
+        sidePanelUsername = myData.username;
+        myId = myData.id;
+        onInputDebounced = DebounceEvent<ChangeEventArgs>(e => searchText = (string)e.Value, TimeSpan.FromSeconds(1));
         return;
     }
 
+    public async Task clickImageIcon()
+    {
+    }
+
+    protected async Task UploadProfileImage_Click(ElementReference elementReference,int type)
+    {
+        try
+        {
+            var response = await apiCalling.UploadFileAsync(elementReference,type);
+            if (response.statusCode == 200)
+            {
+
+            }
+            var resData = JsonSerializer.Serialize(response.data);
+            Console.WriteLine(resData);
+            var fileUpload = JsonSerializer.Deserialize<FileUploadResponse>(resData);
+            Console.WriteLine(fileUpload!.pathToFile);
+            messagePicture = "https://localhost:7218/" + fileUpload!.pathToFile;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    Action<T> DebounceEvent<T>(Action<T> action, TimeSpan interval)
+    {
+        return Debounce<T>(arg =>
+        {
+            InvokeAsync(async () =>
+            {
+                action(arg);
+                await Searching();
+                StateHasChanged();
+            });
+        }, interval);
+    }
+
+    Action<T> Debounce<T>(Action<T> action, TimeSpan interval)
+    {
+        if (action == null) throw new ArgumentNullException(nameof(action));
+
+        var last = 0;
+        return arg =>
+        {
+            var current = System.Threading.Interlocked.Increment(ref last);
+            Task.Delay(interval).ContinueWith(task =>
+            {
+                if (current == last)
+                {
+                    action(arg);
+                }
+            });
+        };
+    }
 
     public async Task ReceiveChatList()
     {
@@ -287,24 +443,14 @@
             }
             StateHasChanged();
         });
+        hub!.On("ChatCreated", (Response response) =>
+        {
+            OutputChatMapping chat = JsonSerializer.Deserialize<OutputChatMapping>(JsonSerializer.Serialize(response.data))!;
+            OnClickChatList(chat.chatId, chat.firstName, chat.lastName, chat.username);
+            GetChatList();
+            StateHasChanged();
+        });
     }
-
-
-    //public async Task receiveChatMessages()
-    //{
-    //    hub = socket.GetHubConnection();
-    //    if (hub == null)
-    //    {
-    //        await socket.Connect();
-    //    }
-    //    hub!.On("ReceivedChatMessages", (Response a) =>
-    //    {
-    //        string data = JsonSerializer.Serialize(a.data);
-    //        PaginationCountList<OutputMessage> _messages = JsonSerializer.Deserialize<PaginationCountList<OutputMessage>>(data)!;
-    //        messages = _messages.list;
-    //        StateHasChanged();
-    //    });
-    //}
 
     public void sendMessaege()
     {
@@ -381,15 +527,21 @@
     public void sendbuttonEvent()
     {
         Console.WriteLine("textboxvalue = " + textBoxValue);
-        if (textBoxValue != string.Empty)
+        if (textBoxValue != string.Empty || messagetype !=0)
         {
             InputMessage msg = new InputMessage();
             msg.isGroup = isOpenChatGroup;
             msg.chatId = openChatId.ToString();
             msg.content = textBoxValue;
-            msg.type = 0;
+            msg.type = messagetype;
+            if (messagetype != 0)
+            {
+                msg.pathToFileAttachment = messagePicture;
+            }
             hub!.InvokeAsync<Task>("SendMessage", msg);
             textBoxValue = string.Empty;
+            messagePicture = string.Empty;
+            messagetype = 0;
         }
     }
 
@@ -412,21 +564,32 @@
 
     public async Task Searching()
     {
-        isSearching = true;
-        List<ResponseUser> _searchChat = await apiCalling.getUsers(searchText);
-        searchChat = _searchChat;
+        try
+        {
+            isSearching = true;
+            List<ResponseUser> _searchChat = await apiCalling.getUsers(searchText);
+            searchChat = _searchChat;
+        }
+        catch(Exception e)
+        {
+            searchChat.Clear();
+        }
+
     }
 
     private string GetTime(DateTime time)
     {
+        lastMessageTime = time;
         TimeSpan t = time.TimeOfDay;
 
         return time.ToString("hh\\:mm tt");
     }
+
     public void showProfile()
     {
         sidePanel = true;
     }
+
     public void collapseSidePanel()
     {
         sidePanel = false;
@@ -435,11 +598,6 @@
     public async Task onClickSearchList(Guid id,string firstName,string lastName,string username)
     {
         var response = await hub!.InvokeAsync<Response>("CreateChat", id.ToString());
-        string data = JsonSerializer.Serialize(response.data);
-        OutputChatMapping chat = JsonSerializer.Deserialize<OutputChatMapping>(data)!;
-        await OnClickChatList(id, firstName, lastName, username);
-        await GetChatList();
-        isSearching = false;
     }
 
     public void logOut()
