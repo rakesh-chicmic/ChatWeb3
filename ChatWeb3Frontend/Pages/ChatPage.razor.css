@@ -18,13 +18,13 @@ body {
 .left {
     position: relative;
     width: 5%;
-    background-color: #222327;
+    background-color: #171717;
     border-right-color: ghostwhite;
 }
 
 .middle {
     width: 20%;
-    background-color: #202123;
+    background-color: #171717;
     box-shadow: 5px 0px 5px -5px black inset;
     overflow: hidden;
 }
@@ -33,7 +33,7 @@ body {
 
 .right {
     width: 75%;
-    background-color: #015d57;
+    background-color: #171717;
     box-shadow: 5px 0px 5px 5px black;
 }
 
@@ -57,7 +57,7 @@ body {
     flex-direction: column;
     justify-content: space-between;
     align-items: stretch;
-    background-color: #202123;
+    background-color: #171717;
     margin: 10px;
     width: stretch;
     height: 100%;
@@ -101,7 +101,7 @@ body {
         position: relative;
         display:flex;
         flex-direction:column;
-        background-color: #015D57;
+        background-color: #DA0037;
         color: white;
         width:fit-content;
         height:fit-content;
@@ -120,7 +120,7 @@ body {
 .chatbox .input-box {
     display: flex;
     flex-direction: row;
-    border: solid darkseagreen;
+    border: solid #171717;
     color: white;
     font-size: 30px;
     border-radius: 60px;
@@ -155,7 +155,7 @@ body {
     display: flex;
     flex-direction: row;
     padding: 10px;
-    background: darkseagreen;
+    background: #171717;
     color: white;
     font-size: 24px;
     border-start-start-radius: 10px;
@@ -174,6 +174,7 @@ body {
     border-radius: 100%;
     margin: 10px;
     height: 80px;
+    width: 80px;
     z-index: 1;
 }
 
@@ -253,7 +254,7 @@ body {
     .scrollable-element::-webkit-scrollbar-thumb {
         border-radius: 50px;
         /*background-color: white;*/
-        background-color: darkseagreen;
+        background-color: #171717;
         cursor: pointer;
     }
 
@@ -270,34 +271,34 @@ body {
     align-items: center;
 
 }
-    .chatlist-item-active {
-        display: flex;
-        flex-direction: row;
-        padding: 10px;
-        cursor: pointer;
-        color: whitesmoke;
-        height: 50px;
-        justify-content: space-between;
-        align-items: center;
-        background-color: #444654;
-        color: whitesmoke;
-        box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
-    }
+.chatlist-item-active {
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    cursor: pointer;
+    color: whitesmoke;
+    height: 50px;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #074DEA;
+    color: whitesmoke;
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
+}
 
     /* Active chat list item */
-    .chatlist-item:hover {
-        display: flex;
-        flex-direction: row;
-        padding: 10px;
-        cursor: pointer;
-        color: whitesmoke;
-        height: 50px;
-        justify-content: space-between;
-        align-items: center;
-        background-color: #444654;
-        color: whitesmoke;
-        box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
-    }
+.chatlist-item:hover {
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    cursor: pointer;
+    color: whitesmoke;
+    height: 50px;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #074DEA;
+    color: whitesmoke;
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
+}
 
     /* Unread badge */
     .chatlist-item .unread-badge {
@@ -324,7 +325,7 @@ body {
 .searchbox {
     display: flex;
     flex-direction: row;
-    border: solid darkseagreen;
+    border: solid #171717;
     color: white;
     font-size: 30px;
     border-radius: 60px;
@@ -348,7 +349,7 @@ body {
     flex-direction: column;
     border-radius: 60px;
     color: white;
-    background-color: darkseagreen;
+    background-color: #171717;
     width: 50%;
     height: 100%;
     align-items: center;
@@ -373,7 +374,9 @@ body {
     height: fit-content;
 }
 .sideBarGroupPic {
-    width: 80%;
+    height: 40px;
+    border-radius:50%;
+    width: 40px;
     margin: 10px;
 }
 
@@ -381,7 +384,7 @@ body {
     display: flex;
     flex-direction: column;
     width: fit-content;
-    background-color: darkseagreen;
+    background-color: #171717;
     border-radius: 50px;
     align-content: center;
     justify-content: center;
@@ -399,7 +402,7 @@ body {
     display: flex;
     flex-direction: column;
     width: fit-content;
-    background-color: darkseagreen;
+    background-color: #171717;
     border-radius: 50px;
     align-content: center;
     justify-content: center;
@@ -449,8 +452,9 @@ body {
     width: 70%;
     height: fit-content;
     overflow: hidden;
-    margin-right: 20px; 
+    margin-right: 20px;
     align-self: end;
+    margin-bottom: 5px;
 }
 
 .messageParent2 {
@@ -464,6 +468,7 @@ body {
     overflow: hidden;
     margin-left: 20px;
     align-self: start;
+    margin-bottom:5px;
 }
 
 .messageInfo2 {
@@ -520,7 +525,7 @@ body {
     display: flex;
     flex-direction: column;
     width: fit-content;
-    background-color: darkseagreen;
+    background-color: #171717;
     border-radius: 50px;
     align-content: center;
     justify-content: center;
@@ -549,7 +554,7 @@ body {
     text-align: center;
     margin-left: 50px;
     width: 250px;
-    border-bottom: solid thin darkseagreen;
+    border-bottom: solid thin #171717;
 }
 
 
@@ -569,4 +574,56 @@ body {
 .textbox-container {
     position: relative;
     display: inline-block;
+}
+
+.message-Date-Divider {
+    width: 30%;
+    border-bottom: solid thin darkgrey;
+    margin-bottom: 2px;
+}
+.message-date-change {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+}
+
+.message-Date {
+    align-self: flex-end;
+    width: fit-content;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 12px;
+    color: lightgrey;
+}
+
+.document-message {
+    display: flex;
+    flex-direction: row;
+    background: #171717;
+    color: white;
+    font-size: 16px;
+    height: 50px;
+    align-items: center;
+    justify-content: space-between;
+    width: 250px;
+    border-radius: 6px;
+    background-color: #1B6460;
+}
+
+.fileUpload {
+    display: flex;
+    flex-direction: row;
+    color: white;
+    font-size: 16px;
+    align-items: center;
+    justify-content: space-between;
+    width: 250px;
+    border-radius: 60px;
+    background-color: transparent;
+    border: solid #171717;
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
+    margin-right: 5px;
+    padding: 8px;
 }

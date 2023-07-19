@@ -24,10 +24,10 @@
             isDeleted = false;
             isSeen = false;
         }
-        public Message(InputMessage inpMsg)
+        public Message(InputMessage inpMsg,Guid senderId)
         {
             id = Guid.NewGuid();
-            this.senderId = new Guid(inpMsg.senderId);
+            this.senderId = senderId;
             this.chatId = new Guid(inpMsg.chatId);
             this.content = inpMsg.content;
             this.type = inpMsg.type;

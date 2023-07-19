@@ -1,7 +1,6 @@
 ﻿using ChatWeb3.Controllers;
 using ChatWeb3.Data;
 using ChatWeb3.Models;
-using ChatWeb3.Models.OutputModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
