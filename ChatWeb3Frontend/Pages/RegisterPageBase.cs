@@ -92,6 +92,7 @@ namespace ChatWeb3Frontend.Pages
                     {
                         Toast.ShowInfo($"Username already exist. Suggested:{validateUsername.suggestedUsername}");
                     }
+                    Toast.ShowInfo($"Username available");
                     await InvokeAsync(StateHasChanged);
                 }
                 catch (Exception)

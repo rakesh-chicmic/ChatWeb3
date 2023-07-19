@@ -57,7 +57,7 @@ namespace ChatWeb3.Services
             {
               userss = userss.Where(s => (s.accountAddress == accountAddress));
             }
-            if (searchString != null) { userss = userss.Where(s => EF.Functions.Like(s.firstName, "%" + searchString + "%") || EF.Functions.Like(s.lastName, "%" + searchString + "%") || EF.Functions.Like(s.username, "%" + searchString + "%") || EF.Functions.Like(s.firstName+" "+s.lastName, "%" + searchString + "%")); }
+            if (searchString != null) { userss = userss.Where(s => (EF.Functions.Like(s.username, "%" + searchString + "%"))); }
 
             var users = userss.ToList();
 
@@ -66,10 +66,6 @@ namespace ChatWeb3.Services
             if (OrderBy == "userid" || OrderBy == "ID" || OrderBy == "Id")
             {
                 orderBy = x => x.id;
-            }
-            else if (OrderBy == "FirstName" || OrderBy == "Name" || OrderBy == "firstname")
-            {
-                orderBy = x => x.firstName;
             }
             else if (OrderBy == "accountAddress" || OrderBy == "AccountAddress" || OrderBy == "address")
             {
@@ -125,14 +121,6 @@ namespace ChatWeb3.Services
                         return response;
                     }
                     userLoggedIn.username = update.username;
-                }
-                if (update.firstName != "string" && update.firstName != string.Empty)
-                {
-                    userLoggedIn.firstName = update.firstName;
-                }
-                if (update.lastName != "string" && update.lastName != string.Empty)
-                {
-                    userLoggedIn.lastName = update.lastName;
                 }
                 if (update.pathToProfilePic != "string" && update.pathToProfilePic != string.Empty)
                 {
