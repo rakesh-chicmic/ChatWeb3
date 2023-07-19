@@ -5,8 +5,6 @@
         public Guid chatId { get; set; }
         public string id { get; set; } = string.Empty;
         public string username { get; set; } = string.Empty;
-        public string firstName { get; set; } = string.Empty;
-        public string lastName { get; set; } = string.Empty;
         public DateTime dateTime { get; set; } = DateTime.Now;
         public bool isOnline { get; set; } = false;
         public string pathToProfilePic { get; set; } = string.Empty;
@@ -18,8 +16,6 @@
             chatId = mapping.id;
             username = receiver.username;
             id = receiver.id.ToString();
-            firstName = receiver.firstName;
-            lastName = receiver.lastName;
             dateTime = mapping.datetime;
             isOnline = receiver.isOnline;
             pathToProfilePic = receiver.pathToProfilePic;

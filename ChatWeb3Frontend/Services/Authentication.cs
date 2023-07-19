@@ -33,7 +33,7 @@ namespace ChatWeb3Frontend.Services
             //baseUrl = "http://192.180.0.192:5656/";
         }
 
-        // returns int if 0 - error   1 - login redirects to login page 2 - firsttime user registers redirect to register page
+        // returns int if 0 - error   1 - redirect
         public async Task<int> Login(Response inp)
         {
             if (!inp.success)
@@ -49,28 +49,15 @@ namespace ChatWeb3Frontend.Services
             //var userResponse = JsonConvert.DeserializeObject<ResponseUser>((userLoginResponse.responseUser).ToString());
 
             await _localStorage.SetItemAsync("accessToken", userLoginResponse.token);
-            //await _localStorage.SetItemAsync("userId", userResponse.id);
-            //await _localStorage.SetItemAsync("userName", userResponse.username);
-            //await _localStorage.SetItemAsync("firstName", userResponse.firstName);
-            //await _localStorage.SetItemAsync("lastName", userResponse.lastName);
             token = userLoginResponse.token;
             ((Auth.AuthProvider)_authStateProvider).NotifyUserAuthentication(token);
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
-
-            if (userLoginResponse.isAlreadyRegistered)
-            {
-                return 1;
-            }
-            return 2;
+            return 1;
         }
 
         public async Task Logout()
         {
             await _localStorage.RemoveItemAsync("accessToken");
-            //await _localStorage.RemoveItemAsync("userId");
-            //await _localStorage.RemoveItemAsync("userName");
-            //await _localStorage.RemoveItemAsync("firstName");
-            //await _localStorage.RemoveItemAsync("lastName");
             token = "";
             ((Auth.AuthProvider)_authStateProvider).NotifyUserLogout();
             _httpClient.DefaultRequestHeaders.Authorization = null;

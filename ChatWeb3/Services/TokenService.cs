@@ -110,17 +110,17 @@ namespace ChatWeb3.Services
                     //user doesn't exist create new
                     var random = new Random();
                     string msg = random.Next(100000, 999999).ToString();
-                    User user = new User(login.signer, $"username{msg}", "firstName", "lastName", "");
+                    User user = new User(login.signer, $"username{msg}", "");
                     DbContext.Users.Add(user);
                     await DbContext.SaveChangesAsync();
                     ResponseUser responseUser = new ResponseUser(user);
-                    data = new UserRegisterLogin(responseUser, false);
+                    data = new UserRegisterLogin(responseUser);
                 }
                 else
                 {
                     //user already exists
                     ResponseUser responseUser = new ResponseUser(user1);
-                    data = new UserRegisterLogin(responseUser, true);
+                    data = new UserRegisterLogin(responseUser);
                 }
                 response = new Response(200, "Authentication successful", data, true);
                 return response;
@@ -135,7 +135,6 @@ namespace ChatWeb3.Services
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.PrimarySid, user.id.ToString()),
-                new Claim(ClaimTypes.Name, user.firstName),
                 new Claim(ClaimTypes.Sid, user.accountAddress),
             };
 
