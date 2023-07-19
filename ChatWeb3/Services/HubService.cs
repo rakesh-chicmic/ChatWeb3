@@ -1,7 +1,6 @@
 ﻿using ChatWeb3.Controllers;
 using ChatWeb3.Data;
 using ChatWeb3.Models;
-using ChatWeb3.Models.OutputModels;
 
 namespace ChatWeb3.Services
 {

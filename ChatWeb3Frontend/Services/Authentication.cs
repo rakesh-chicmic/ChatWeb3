@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using ChatWeb3Frontend.Models;
+using ChatWeb3Frontend.Auth;
 using ChatWeb3Frontend.Services.Contracts;
 using Microsoft.AspNetCore.Components.Authorization;
 using Newtonsoft.Json;

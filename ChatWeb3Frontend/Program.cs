@@ -1,5 +1,4 @@
 using Blazored.Toast;
-using ChatWeb3Frontend;
 using ChatWeb3Frontend.Services;
 using ChatWeb3Frontend.Services.Contracts;
 using MetaMask.Blazor;
@@ -9,6 +8,7 @@ using Tewr.Blazor.FileReader;
 using Microsoft.AspNetCore.Components.Authorization;
 using ChatWeb3Frontend.Auth;
 using Blazored.LocalStorage;
+using ChatWeb3Frontend;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -20,13 +20,14 @@ builder.Services.AddMetaMaskBlazor();
 builder.Services.AddBlazoredToast();
 builder.Services.AddFileReaderService();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IApiCalling, ApiCalling>();
 builder.Services.AddScoped<AuthenticationStateProvider, AuthProvider>();
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 builder.Services.AddScoped<IAuthentication, Authentication>();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddScoped<Socket>();
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-builder.Services.AddSingleton<Socket>();
 
 await builder.Build().RunAsync();
 
