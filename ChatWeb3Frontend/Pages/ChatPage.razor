@@ -56,7 +56,7 @@
                                     }
                                     <div class="sendbuttonLogo">
                                         <img src="./logo.png" class="selfPicture" />
-                                        @chat.firstName @chat.lastName
+                                        @chat.username
                                     </div>
                                     @if (chat.isOnline)
                                     {
@@ -133,8 +133,9 @@
                     <div class="tab">
                         <img src="https://localhost:7218/Assets//Files//74105720230718171905209.jpg" class="chatPicture" />
                         <div style="flex-direction:column;">
-                            @openChatName
-                            <div style="font-size:12px">@openChatUsername</div>
+                            <h5>
+                                @openChatUsername
+                            </h5>
                         </div>
                     </div>
                     <div>
@@ -487,7 +488,7 @@
 
     private async Task OnClickChatList(Guid chatId, string firstName,string lastName,string username)
     {
-        openChatUsername = "@"+username;
+        openChatUsername = username;
         await OnClickChatList(chatId, firstName + " " + lastName, false);
     }
 

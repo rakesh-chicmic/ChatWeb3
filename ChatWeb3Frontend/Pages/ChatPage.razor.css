@@ -18,13 +18,13 @@ body {
 .left {
     position: relative;
     width: 5%;
-    background-color: #171717;
+    background-color: #272A37;
     border-right-color: ghostwhite;
 }
 
 .middle {
     width: 20%;
-    background-color: #171717;
+    background-color: #272A37;
     box-shadow: 5px 0px 5px -5px black inset;
     overflow: hidden;
 }
@@ -33,7 +33,7 @@ body {
 
 .right {
     width: 75%;
-    background-color: #171717;
+    background-color: #272A37;
     box-shadow: 5px 0px 5px 5px black;
 }
 
@@ -57,7 +57,7 @@ body {
     flex-direction: column;
     justify-content: space-between;
     align-items: stretch;
-    background-color: #171717;
+    background-color: transparent;
     margin: 10px;
     width: stretch;
     height: 100%;
@@ -81,7 +81,7 @@ body {
     padding: 10px;
     display: flex;
     flex-direction: column;
-    background-color: #444654;
+    background-color: #323644;
     color: white;
     width: fit-content;
     display: flex;
@@ -92,19 +92,19 @@ body {
     box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
     height: fit-content;
     border-end-start-radius: 2px;
-    align-self:start;
+    align-self: start;
     justify-content: flex-end;
 }
 
         /* User message */
     .chatbox .message.user {
         position: relative;
-        display:flex;
-        flex-direction:column;
-        background-color: #DA0037;
+        display: flex;
+        flex-direction: column;
+        background-color: #1D90F5;
         color: white;
-        width:fit-content;
-        height:fit-content;
+        width: fit-content;
+        height: fit-content;
         padding: 10px;
         margin: 2px 0px;
         margin-left: 20px;
@@ -113,7 +113,7 @@ body {
         transition: height 0.3s ease-in-out;
         text-align: left;
         border-end-end-radius: 2px;
-        align-self:end;
+        align-self: end;
     }
 
     /* Chat input box */
@@ -138,14 +138,14 @@ body {
     margin: 5px;
     margin-bottom: 5px;
     border-radius: 60px;
-    background-color: #202123;
+    background-color: #272A37;
     justify-content: space-between;
     border: none;
     outline: none;
     padding: 10px;
     font-size: 18px;
     color: whitesmoke;
-    width: 85% ;
+    width: 85%;
 }
     .textbox:focus {
         border: none;
@@ -201,7 +201,7 @@ body {
     display: flex;
     flex-direction: column;
     padding: 10px;
-    background: #202123;
+    background: #272A37;
     color: white;
     height: 120px;
     box-shadow: 5px 0px 5px -5px black inset;
@@ -295,9 +295,12 @@ body {
     height: 50px;
     justify-content: space-between;
     align-items: center;
-    background-color: #074DEA;
+    background-color: #323644;
     color: whitesmoke;
     box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
+    border-start-end-radius: 50px;
+    border-end-end-radius: 50px;
+    margin-right: 10px;
 }
 
     /* Unread badge */
@@ -325,7 +328,7 @@ body {
 .searchbox {
     display: flex;
     flex-direction: row;
-    border: solid #171717;
+    border: solid #1D90F5;
     color: white;
     font-size: 30px;
     border-radius: 60px;
@@ -333,7 +336,7 @@ body {
     width: fit-content;
     box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
     margin: 10px;
-    padding: 5px ;
+    padding: 5px;
 }
 
 .tab {
@@ -349,7 +352,7 @@ body {
     flex-direction: column;
     border-radius: 60px;
     color: white;
-    background-color: #171717;
+    background-color: #1D90F5;
     width: 50%;
     height: 100%;
     align-items: center;
@@ -380,29 +383,12 @@ body {
     margin: 10px;
 }
 
-.addGroupbutton {
-    display: flex;
-    flex-direction: column;
-    width: fit-content;
-    background-color: #171717;
-    border-radius: 50px;
-    align-content: center;
-    justify-content: center;
-    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
-    font-size: 30px;
-    margin: 10px;
-    padding: 10px;
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    z-index: 9999;
-}
 
 .addGroupbutton {
     display: flex;
     flex-direction: column;
     width: fit-content;
-    background-color: #171717;
+    background-color: #1D90F5;
     border-radius: 50px;
     align-content: center;
     justify-content: center;
@@ -525,7 +511,7 @@ body {
     display: flex;
     flex-direction: column;
     width: fit-content;
-    background-color: #171717;
+    background-color: #1D90F5;
     border-radius: 50px;
     align-content: center;
     justify-content: center;
@@ -621,8 +607,8 @@ body {
     justify-content: space-between;
     width: 250px;
     border-radius: 60px;
-    background-color: transparent;
-    border: solid #171717;
+    background-color: #1D90F5;
+    border: solid #1D90F5;
     box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
     margin-right: 5px;
     padding: 8px;
