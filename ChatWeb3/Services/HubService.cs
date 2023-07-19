@@ -295,14 +295,13 @@ namespace ChatWeb3.Services
         // function invoked to get previous chat between two users
         public Response GetChatMessagesService(string chatId, int pageNumber, int skipLimit)
         {
-            var messages = DbContext.Messages.ToList();
             Guid chatGuid = new Guid(chatId);
-            messages = messages.Where(m => (m.chatId == chatGuid)).ToList();
+            var messages = DbContext.Messages.Where(m => (m.chatId == chatGuid)).ToList();
 
             int totalCount = messages.Count;
-            messages = messages.Skip((pageNumber - 1) * skipLimit).Take(skipLimit).ToList();
             messages = messages.OrderByDescending(m => m.createdAt).Select(m => m).ToList();
-
+            messages = messages.Skip((pageNumber - 1) * skipLimit).Take(skipLimit).ToList();
+            messages = messages.OrderBy(m => m.createdAt).Select(s => s).ToList();
             List<OutputMessage> res = new List<OutputMessage>();
 
             foreach (var msg in messages)
