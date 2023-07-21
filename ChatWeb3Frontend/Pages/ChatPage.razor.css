@@ -269,7 +269,8 @@ body {
     height: 50px;
     justify-content: space-between;
     align-items: center;
-
+    border-top: solid thin #595b631b;
+    border-bottom: solid thin #595b631b;
 }
 .chatlist-item-active {
     display: flex;
@@ -530,7 +531,7 @@ body {
 .sidepanel-Username {
     margin: 5px;
     margin-bottom: 5px;
-    background-color: #202123;
+    background-color: #272A37;
     justify-content: space-between;
     border: none;
     outline: none;
@@ -540,7 +541,7 @@ body {
     text-align: center;
     margin-left: 50px;
     width: 250px;
-    border-bottom: solid thin #171717;
+    border-bottom: solid thin #1D90F5;
 }
 
 
@@ -564,7 +565,7 @@ body {
 
 .message-Date-Divider {
     width: 30%;
-    border-bottom: solid thin darkgrey;
+    border-bottom: solid thin #70737e7e;
     margin-bottom: 2px;
 }
 .message-date-change {
@@ -630,11 +631,12 @@ body {
     display: flex;
     flex-direction: column;
     height: 95vh;
-    width: 500px;
+    width: 400px;
     background-color: #272A37;
     font-size: 10px;
     position: absolute;
     align-self: center;
+    align-items: center;
     box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
     z-index: 12;
     transition: height 0.2s ease-in-out;
