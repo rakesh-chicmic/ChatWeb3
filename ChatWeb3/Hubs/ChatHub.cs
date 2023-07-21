@@ -145,14 +145,15 @@ namespace ChatWeb3.Hubs
             await Clients.Clients(ReceiverId).SendAsync("ChatCreated", res);
             await Clients.Caller.SendAsync("ChatCreated", res);
         }
-        public async Task CreateGroup(string name, string description,string pathToPic)
+        public async Task<Response> CreateGroup(string name, string description,string pathToPic)
         {
             Console.WriteLine("createGroup fxn called");
             string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
             
             var res = await _hubService.AddGroup(userId, name, description, pathToPic);
+            return res;
             //await Clients.Client(ReceiverId).SendAsync("GroupCreated", res);
-            await Clients.Caller.SendAsync("GroupCreated", res);
+            //await Clients.Caller.SendAsync("GroupCreated", res);
         }
 
         public async Task AddMemberToGroup(string groupId, string userToAdd)
