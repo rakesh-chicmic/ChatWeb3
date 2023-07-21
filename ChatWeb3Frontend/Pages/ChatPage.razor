@@ -341,25 +341,85 @@
     {
         <div class="addGroupBackground">
             <div class="addGroup">
-                <div style=" padding: 10px;">
-                    <img src="./icons8-close-480.png" class="imageicon" @onclick="()=>{collapseAddGroupPanel();}" />
-                </div>
-                <div style=" display: flex; flex-direction: row; align-items:center; justify-content:center;">
-                    <div>
-                        <input class="sidepanel-Username" type="text" @bind="@newGroupName" placeholder="" />
-                        <img src="./icons8-edit-480.png" class="imageicon" onclick="" />
+                @if(nextPage)
+                {
+                    <div style="width:100%;">
+                        <div style=" padding: 10px; display:flex; flex-direction: row; justify-content:flex-start;">
+                            <img src="./icons8-back-52.png" class="imageicon" @onclick="()=>{nextPage = false;}" />
+
+                            <div class="tab">
+                                <div class="normaltab" style="align-self:center">
+                                    <h6 style="font-size:18px; margin:5px;"> Add Description </h6>
+                                </div>
+                            </div>
+                            <img src="./icons8-close-480.png" class="imageicon" @onclick="()=>{collapseAddGroupPanel();}" />
+                        </div>
                     </div>
-                </div>
+                    <div class="sidePanel-rowDiv">
+                        <img src="./icon-192.png" class="sidePanel-ProfilePic" onclick="">
+                        <div class="buttonPosition">
+                            <div class="editButton">
+                                <img src="./icons8-edit-480.png" class="imageicon" onclick="" />
+                            </div>
+                        </div>
+                    </div>
+                    <div style=" display: flex; flex-direction: row; align-items:center; justify-content:center; margin:10px;">
+                        <div>
+                            <input class="sidepanel-Username" type="text" @bind="@newGroupName" placeholder="" />
+                            <img src="./icons8-edit-480.png" class="imageicon" onclick="" />
+                        </div>
+                    </div>
+                    <div class="addGroupbutton" @onclick="()=>{nextPage = false;}">
+                        <img src="./icons8-done-208.png" class="imageicon" @onclick="async ()=> {await submitNewGroup();}" />
+                    </div>
+                }
+                else
+                {
+                    <div style="width:100%;">
+                        <div style=" padding: 10px; display:flex; flex-direction: row; justify-content:flex-start;">
+                            <div class="tab">
+                                <div class="normaltab" style="align-self:center">
+                                    <h6 style="font-size:18px; margin:5px;"> Add Participants </h6>
+                                </div>
+                            </div>
+                            <img src="./icons8-close-480.png" class="imageicon" @onclick="()=>{collapseAddGroupPanel();}" />
+                        </div>
+                    </div>
+
+                    <div class="searchbox">
+                        <input class="textbox" @bind="@groupSearchText" placeholder="message" @onkeyup="search" @oninput="@onInputDebounced" />
+                        <img src="./icons8-search-480.png" class="imageicon" @onclick="async ()=>{await Searching();}" />
+                    </div>
+
+                    <div class="chatlist">
+                        <div class="scrollable-element">
+                            @foreach (OutputChatMapping chat in ChatList)
+                            {
+                                <div class="@GetClass(chat.chatId)">
+                                    <div class="sendbuttonLogo" @onclick="()=>{ onClickAddGroupparticipantList(chat.id); }">
+                                        <img src="./logo.png" class="selfPicture" />
+                                        <h6 style="font-size:14px">@chat.username</h6>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="addGroupbutton" @onclick="()=>{nextPage = true;}">
+                        <img src="./icons8-back-52.png" class="imageicon" style="transform: rotate(180deg)" />
+                    </div>
+                }
             </div>
         </div>
     }
-    
 </div>
 
 
 
 
 @code {
+    bool nextPage = false;
+    string groupSearchText = string.Empty;
+    List<string> newGroupParticipantId = new List<string>();
     string newGroupName = string.Empty;
     bool addGroup = false;
     int messagetype = 0;
@@ -653,11 +713,34 @@
     public void collapseAddGroupPanel()
     {
         addGroup = false;
+        nextPage = false;
+        newGroupName = string.Empty;
     }
 
     public async Task onClickSearchList(Guid id,string username)
     {
         var response = await hub!.InvokeAsync<Response>("CreateChat", id.ToString());
+    }
+
+    public void onClickAddGroupparticipantList(string userId)
+    {
+        newGroupParticipantId.Add(userId);
+    }
+
+
+    public async Task submitNewGroup()
+    {
+        var response = await hub!.InvokeAsync<Response>("CreateGroup", newGroupName,string.Empty,string.Empty);
+        ResponseGroup groupResponse = JsonSerializer.Deserialize<ResponseGroup>(JsonSerializer.Serialize(response.data))!;
+        foreach(var member in newGroupParticipantId)
+        {
+            var res = await hub!.InvokeAsync<Response>("AddMemberToGroup", groupResponse.id.ToString(), member);
+        }
+        addGroup = false;
+        await Task.Delay(100);
+        nextPage = false;
+        //collapseAddGroupPanel();
+        return;
     }
 
     public void logOut()
