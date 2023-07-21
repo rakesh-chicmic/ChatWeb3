@@ -47,7 +47,7 @@ namespace ChatWeb3.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("datetime")
+                    b.Property<DateTime>("datetime")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("isDeleted")
@@ -76,7 +76,7 @@ namespace ChatWeb3.Migrations
                     b.Property<Guid>("adminId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("createdAt")
+                    b.Property<DateTime>("createdAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("description")
@@ -96,7 +96,7 @@ namespace ChatWeb3.Migrations
                     b.Property<string>("pathToProfilePic")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("updatedAt")
+                    b.Property<DateTime>("updatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("id");
@@ -137,7 +137,7 @@ namespace ChatWeb3.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("createdAt")
+                    b.Property<DateTime>("createdAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("isDeleted")
@@ -173,10 +173,6 @@ namespace ChatWeb3.Migrations
                     b.Property<DateTime>("createdAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("firstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("isDeleted")
                         .HasColumnType("bit");
 
@@ -185,10 +181,6 @@ namespace ChatWeb3.Migrations
 
                     b.Property<DateTime>("lastActive")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("lastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("pathToProfilePic")
                         .IsRequired()

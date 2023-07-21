@@ -5,7 +5,7 @@
         public Guid id { get; set; } = Guid.Empty;
         public Guid senderId { get; set; } = Guid.Empty;
         public Guid receiverId { get; set; } = Guid.Empty;
-        public DateTime? datetime { get; set; } = DateTime.MinValue;
+        public DateTime datetime { get; set; } = DateTime.MinValue;
         public bool isGroup { get; set; } = false;
         public bool isDeleted { get; set; } = false;
 

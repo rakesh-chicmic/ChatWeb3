@@ -1,7 +1,6 @@
 ﻿using ChatWeb3.Controllers;
 using ChatWeb3.Data;
 using ChatWeb3.Models;
-using ChatWeb3.Models.OutputModels;
 
 namespace ChatWeb3.Services
 {
@@ -300,9 +299,9 @@ namespace ChatWeb3.Services
             Guid chatGuid = new Guid(chatId);
             messages = messages.Where(m => (m.chatId == chatGuid)).ToList();
 
-            messages = messages.OrderByDescending(m => m.createdAt).Select(m => m).ToList();
             int totalCount = messages.Count;
             messages = messages.Skip((pageNumber - 1) * skipLimit).Take(skipLimit).ToList();
+            messages = messages.OrderByDescending(m => m.createdAt).Select(m => m).ToList();
 
             List<OutputMessage> res = new List<OutputMessage>();
 

@@ -5,7 +5,8 @@ async function web3Login() {
         data = ""
         success = false
     }
-    baseUrl = "https://localhost:7218"
+    //baseUrl = "https://localhost:7218"
+    baseUrl = "http://192.180.0.192:4545"
     if (!window.ethereum) {
         //alert("MetaMask not detected. Please install MetaMask first.");
         let res = new customResponse();

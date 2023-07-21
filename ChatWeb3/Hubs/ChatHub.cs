@@ -233,11 +233,21 @@ namespace ChatWeb3.Hubs
             return res;
         }
 
-        public async Task SeenMessage(string chatId,string messageId)
+        public async Task<Response> SeenMessage(string chatId,string messageId)
         {
             Console.WriteLine("Seen Message fxn called");
             string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
             var res = await SeenMessageService(userId, chatId, messageId);
+            return res;
+            //await Clients.Client(ReceiverId).SendAsync("GroupCreated", res);
+            //await Clients.Caller.SendAsync("SeenMessage", res);
+        }
+
+        public async Task SeenAllMessagesOfChat(string chatId)
+        {
+            Console.WriteLine("Seen all Messages fxn called");
+            string userId = Context.User!.FindFirstValue(ClaimTypes.PrimarySid)!;
+            var res = await SeenAllMessagesOfChatService(userId, chatId);
             //await Clients.Client(ReceiverId).SendAsync("GroupCreated", res);
             //await Clients.Caller.SendAsync("SeenMessage", res);
         }
@@ -408,6 +418,69 @@ namespace ChatWeb3.Hubs
                     Guid receiverId = (chatMap.receiverId != new Guid(userId)) ? chatMap.receiverId : chatMap.senderId;
                     string temp = GetConnectionIdByUser(receiverId.ToString());
                     await Clients.Client(temp).SendAsync("SeenMessage", response);
+                }
+            }
+            return response;
+        }
+
+        public async Task<Response> SeenAllMessagesOfChatService(string userId, string chatId)
+        {
+            Console.WriteLine("seen all fxn service reaached");
+            Guid userGuid = new Guid(userId);
+            Guid chatGuid = new Guid(chatId);
+            List<Message> msgs = DbContext.Messages.Where(s => s.chatId==chatGuid && s.isSeen == false && s.senderId != userGuid).ToList();
+            ChatMappings? chatMap = DbContext.ChatMappings.Find(chatGuid);
+
+            if (chatMap != null)
+            {
+                if (chatMap.isGroup)
+                {
+                    Guid groupId = chatMap.receiverId;
+                    foreach (Message msg in msgs)
+                    {
+                        var exists = DbContext.GroupSeenMessageMappings.Where(s => (s.groupId == groupId && s.userId == userGuid && s.messageId==msg.id)).FirstOrDefault();
+                        if (exists == null)
+                        {
+                            GroupSeenMessageMappings seenMapping = new GroupSeenMessageMappings(msg.id, groupId, userGuid);
+                            await DbContext.GroupSeenMessageMappings.AddAsync(seenMapping);
+                            await DbContext.SaveChangesAsync();
+                        }
+                        var listOfSeens = DbContext.GroupSeenMessageMappings.Where(s => (s.groupId == groupId && s.messageId == msg.id)).ToList();
+                        int countOfSeen = listOfSeens.Count();
+                        Group? grp = DbContext.Groups.Find(groupId);
+                        if (grp != null && msg != null && grp.noOfParticipants <= (countOfSeen + 1))
+                        {
+                            msg.isSeen = true;
+                            response = new Response(200, "Message Seen", msg, true);
+                            foreach (var item in listOfSeens)
+                            {
+                                Guid receiverId = item.userId;
+                                string temp = GetConnectionIdByUser(receiverId.ToString());
+                                await Clients.Client(temp).SendAsync("SeenMessage", response);
+                                DbContext.GroupSeenMessageMappings.Remove(item);
+                            }
+                            await DbContext.SaveChangesAsync();
+                            Guid senderId = msg.senderId;
+                            string tempId = GetConnectionIdByUser(senderId.ToString());
+                            await Clients.Client(tempId).SendAsync("SeenMessage", response);
+                        }
+                    }
+                }
+                else
+                {
+                    if (msgs != null)
+                    {
+                        foreach (var msg in msgs)
+                        {
+                            msg.isSeen = true;
+                        }
+                    }
+                    await DbContext.SaveChangesAsync();
+                    response = new Response(200, "All Messages Seen", chatMap, true);
+                    Guid receiverId = (chatMap.receiverId != userGuid) ? chatMap.receiverId : chatMap.senderId;
+                    string temp = GetConnectionIdByUser(receiverId.ToString());
+                    //Console.WriteLine("sending to user res");
+                    await Clients.Client(temp).SendAsync("SeenAllMessagesOfChat", response);
                 }
             }
             return response;

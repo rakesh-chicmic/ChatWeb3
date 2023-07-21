@@ -88,7 +88,7 @@
                                 else
                                 {
 
-                                    <button id="signin-button" class="@((isAnimating) ? "display-button" : "")" @onclick="(()=>LoginWithMetamask())"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/512px-MetaMask_Fox.svg.png?20220831120339" style="object-fit:cover;width:40px;height:40px;" />Login/Signup With MetaMask</button>
+                                    <button id="signin-button" class="@((isAnimating) ? "display-button" : "")" @onclick="(()=>LoginWithMetamask())"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/512px-MetaMask_Fox.svg.png?20220831120339" style="object-fit:cover;width:40px;height:40px;" />Sign In With MetaMask</button>
                                 }
                             </div>
                         </div>
@@ -270,13 +270,9 @@
             {
                 Toast.ShowSuccess("Something went wrong");
             }
-            else if(redirect == 1)
-            {
-                _navMgr.NavigateTo("/chatpage", true);
-            }
             else
             {
-                _navMgr.NavigateTo("/register", true);
+                _navMgr.NavigateTo("/chatpage", true);
             }
         }
         //Console.WriteLine(res);
