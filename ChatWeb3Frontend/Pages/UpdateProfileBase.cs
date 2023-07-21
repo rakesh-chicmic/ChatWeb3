@@ -1,5 +1,6 @@
 ﻿using Blazored.Toast.Services;
 using ChatWeb3Frontend.Models;
+using ChatWeb3Frontend.Models.InputModels;
 using ChatWeb3Frontend.Services.Contracts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -33,24 +34,12 @@ namespace ChatWeb3Frontend.Pages
              var resData = JsonSerializer.Serialize(response.data);
              userResponse = JsonSerializer.Deserialize<ResponseUser>(resData)!;
              updateUser.username = userResponse.username;
-             updateUser.firstName = userResponse.firstName;
-             updateUser.lastName = userResponse.lastName;
              updateUser.pathToProfilePic = userResponse.pathToProfilePic!;
              imagePath = $"http://192.180.0.192:4545/{updateUser.pathToProfilePic}";
         }
 
         protected async Task UpdateUser_Click(UpdateUser update)
         {
-            if (update.firstName == null || update.firstName==string.Empty)
-            {
-                Toast.ShowInfo("Please enter Firstname");
-                return;
-            }
-            else if (update.lastName == null || update.lastName==string.Empty)
-            {
-                Toast.ShowInfo("Please enter Lastname");
-                return;
-            }
             try
             {
                 response = await UserService.UpdateAsync(update);

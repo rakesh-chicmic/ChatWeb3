@@ -1,5 +1,6 @@
 ﻿using Blazored.Toast.Services;
 using ChatWeb3Frontend.Models;
+using ChatWeb3Frontend.Models.InputModels;
 using ChatWeb3Frontend.Services.Contracts;
 using Microsoft.AspNetCore.Components;
 using System.Runtime.CompilerServices;
@@ -70,19 +71,9 @@ namespace ChatWeb3Frontend.Pages
                 Toast.ShowInfo("Please enter Username");
                 return;
             }
-            else if (update.pathToProfilePic==null)
+            else if (update.pathToProfilePic == null)
             {
                 Toast.ShowInfo("Please Upload your Profile Picture");
-                return;
-            }
-            else if (update.firstName == null)
-            {
-                Toast.ShowInfo("Please enter Firstname");
-                return;
-            }
-            else if (update.lastName == null)
-            {
-                Toast.ShowInfo("Please enter Lastname");
                 return;
             }
             try

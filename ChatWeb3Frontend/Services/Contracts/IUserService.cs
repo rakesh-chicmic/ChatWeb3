@@ -1,4 +1,5 @@
 ﻿using ChatWeb3Frontend.Models;
+using ChatWeb3Frontend.Models.InputModels;
 
 namespace ChatWeb3Frontend.Services.Contracts
 {

@@ -18,8 +18,6 @@
             chatId = mapping.id;
             username = receiver.username;
             id = receiver.id.ToString();
-            firstName = receiver.firstName;
-            lastName = receiver.lastName;
             dateTime = mapping.datetime;
             isOnline = receiver.isOnline;
             pathToProfilePic = receiver.pathToProfilePic;

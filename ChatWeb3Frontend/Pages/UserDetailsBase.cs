@@ -1,4 +1,5 @@
 ﻿using ChatWeb3Frontend.Models;
+using ChatWeb3Frontend.Models.InputModels;
 using ChatWeb3Frontend.Services.Contracts;
 using Microsoft.AspNetCore.Components;
 
