@@ -8,11 +8,16 @@
             <img src=@imagePath alt="...">
         </div>
 
-        <form action="/submit" method="post" enctype="multipart/form-data">
+        <form>
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" @bind-value="@updateUser.username" required disabled>
-            <label for="profileImage">Profile Image:</label>
-            <input type="file" id="profileImage" name="profileImage" accept="image/*" @ref="@elementReference" @onchange="async () => await UploadProfileImage_Click(elementReference)" required> 
+           @* <label for="profileImage">Profile Image:</label>
+            <input type="file" id="profileImage" name="profileImage" accept="image/*" @ref="@elementReference" @onchange="async () => await UploadProfileImage_Click(elementReference)" required>
+            *@
+
+            <label for="profileImage"><img width="64" height="64" src="https://img.icons8.com/external-kiranshastry-lineal-color-kiranshastry/64/external-image-multimedia-kiranshastry-lineal-color-kiranshastry-1.png" alt="external-image-multimedia-kiranshastry-lineal-color-kiranshastry-1" /></label>
+            <input type="file" id="profileImage" name="profileImage" accept="image/*" @ref="@profileImageReference" @onchange="async () => await UploadImage_Click(profileImageReference)" style="display: none;" required>
+            
             <input type="submit" value="Update" @onclick:preventDefault=true @onclick="()=>(UpdateUser_Click(updateUser))" />
         </form>
     </div>
