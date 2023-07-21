@@ -76,10 +76,9 @@
                                     </div>
                                 </div>
                             }
-                            @if (isGroups)
                             {
                                 <div class="addGroupbutton">
-                                    <img src="./icons8-plus-90.png" class="imageicon" onclick="" />
+                                    <img src="./icons8-plus-90.png" class="imageicon" @onclick="()=>{addGroup=true;}" />
                                 </div>
                             }
                         }
@@ -143,7 +142,7 @@
                     </div>
                 </div>
 
-                <div class="messagebox">
+                <div class="messagebox" id="myDiv">
                     <div class="scrollable-element">
                         <div style="display:flex; flex-direction:column; justify-content:flex-end; ">
                             @foreach (OutputMessage message in messages)
@@ -161,40 +160,44 @@
                                 if (message.senderId == myId)
                                 {
                                     <div class="messageParent">
-                                        <div class="message user">
-                                            <div style="display:flex; flex-direction:column;">
-                                                @if(message.type == 1 )
-                                                {
-                                                    <img src="@message.pathToFileAttachment" style="height:200px; width:250px; border-radius:10px; margin-bottom: 5px;" onclick="" />
-                                                }
-                                                else if (message.type == 2)
-                                                {
+                                            @if (message.type == 1)
+                                            {
+                                                <div class="message user " style="padding:0px;">
+                                                    <img src="@message.pathToFileAttachment" style="height:200px; width:250px; border-radius: 3px" onclick="" />
+                                                </div>
+                                                
+                                            }
+                                            else if (message.type == 2)
+                                            {
+                                                <div class="message user">
                                                     <div class="document-message">
                                                         <div style="display:flex; flex-direction:row; align-items:center;">
                                                             <img src="./icons8-document-480.png" class="imageicon" style="height:35px; margin: 0px;" onclick="" />
-                                                            <div>
-                                                                heheh
+                                                            <div style="width: 150px; overflow: hidden;">
+                                                                @message.pathToFileAttachment!.Split("\\").Last()
                                                             </div>
                                                         </div>
                                                         <img src="./icons8-download-64.png" class="imageicon" style="height:20px; margin:10px; justify-self: right;" onclick="" />
                                                     </div>
-                                                }
-                                                else
-                                                {
-                                                    @message.content
-                                                }
-                                            </div>
-
+                                                </div>
+                                                
+                                            }
+                                            else
+                                            {
+                                                <div class="message user">
+                                                @message.content
+                                                </div>
+                                            }
                                             @if (message.isSeen)
                                             {
                                                 <div class="seen-badge">
                                                     <img src="./icons8-done-208.png" style="height:14px; width:18px" />
                                                 </div>
                                             }
-                                        </div>
-                                        <div class="messageInfo">
-                                            @GetTime(message.createdAt)
-                                        </div>
+                                  
+                                    <div class="messageInfo">
+                                        @GetTime(message.createdAt)
+                                    </div>
                                     </div>
                                     @if (message.type != 0 && message.content != string.Empty)
                                     {
@@ -262,21 +265,30 @@
                     </div>
                 </div>
                 <div class="chatboxFooter">
-                    <div class="fileUpload">
-                        <div style="display:flex; flex-direction:row; align-items:center;">
-                            
-                            <img src="./icons8-document-480.png" class="imageicon" style="height:35px; margin: 0px;" onclick="" />
-                            <div>
-                                heheh
+                    @if (isFileUpload)
+                    {
+                        <div class="fileUpload">
+                            <div style="display:flex; flex-direction:row; align-items:center;">
+                                @if(messagetype ==2){
+                                    <img src="./icons8-document-480.png" class="imageicon" style="height:35px; margin: 3px;"  />
+                                }
+                                else
+                                {
+                                    <img src="./icons8-image-96.png" class="imageicon" style="height:35px; margin: 3px;"  />
+                                }
+                                <div style="width: 100px; overflow: hidden;">
+                                    @uploadFileName
+                                </div>
                             </div>
+                            <img src="./icons8-close-480.png" class="imageicon" style="height:20px; margin:10px; justify-self: right;" @onclick="()=>{messagePicture = string.Empty; isFileUpload = false; messagetype = 0;}" />
                         </div>
-                        <img src="./icons8-close-480.png" class="imageicon" style="height:20px; margin:10px; justify-self: right;" onclick="" />
-                    </div>
+                    }
                     <div class="input-box">
                         <input class="textbox" type="text" @bind="@textBoxValue" placeholder="message" @onkeyup="pressEnter" />
-                        <img src="./icons8-attach-90.png" class="imageicon" onclick="" />
-                        <label for="profileImage">
-                            <img src="./icons8-image-96.png"  class="imageicon" style="margin-bottom:10px;" @onclick="()=>{messagetype=1;}" />
+
+                        <label for="profileImage" style="display: flex; flex-direction: row; align-items:center; width:10%;">
+                            <img src="./icons8-attach-90.png" class="imageicon" @onclick="()=>{messagetype=2;}" />
+                            <img src="./icons8-image-96.png"  class="imageicon"  @onclick="()=>{messagetype=1;}" />
                         </label>
                         <input type="file" id="profileImage" name="profileImage" accept="image/*"  @ref="@elementReference" hidden @onchange="async () => await UploadProfileImage_Click(elementReference,1)" required>
                         <img src="./icons8-microphone-96.png" class="imageicon" onclick="" />
@@ -316,11 +328,35 @@
             </div>
         </div>
     }
+    @if (addGroup)
+    {
+        <div class="addGroupBackground">
+            <div class="addGroup">
+                <div style=" padding: 10px;">
+                    <img src="./icons8-close-480.png" class="imageicon" @onclick="()=>{collapseAddGroupPanel();}" />
+                </div>
+                <div style=" display: flex; flex-direction: row; align-items:center; justify-content:center;">
+                    <div>
+                        <input class="sidepanel-Username" type="text" @bind="@newGroupName" placeholder="" />
+                        <img src="./icons8-edit-480.png" class="imageicon" onclick="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    
 </div>
 
+
+
+
 @code {
+    string newGroupName = string.Empty;
+    bool addGroup = false;
     int messagetype = 0;
     string messagePicture = string.Empty;
+    string uploadFileName = string.Empty;
+    bool isFileUpload = false;
     string searchText = string.Empty;
     static HubConnection? hub;
     bool sidePanel = false;
@@ -365,6 +401,11 @@
         return;
     }
 
+    private async Task ScrollToBottom()
+    {
+        await jsRuntime.InvokeVoidAsync("scrollToBottom", "myDiv");
+    }
+
     public async Task clickImageIcon()
     {
     }
@@ -383,6 +424,8 @@
             var fileUpload = JsonSerializer.Deserialize<FileUploadResponse>(resData);
             Console.WriteLine(fileUpload!.pathToFile);
             messagePicture = "https://localhost:7218/" + fileUpload!.pathToFile;
+            uploadFileName = fileUpload!.pathToFile.Split("\\").Last();
+            isFileUpload = true;
         }
         catch (Exception)
         {
@@ -490,6 +533,7 @@
     {
         openChatUsername = username;
         await OnClickChatList(chatId, firstName + " " + lastName, false);
+        await ScrollToBottom();
     }
 
     private async Task OnClickChatList(Guid chatId, string name,bool isGroup)
@@ -543,6 +587,7 @@
             hub!.InvokeAsync<Task>("SendMessage", msg);
             textBoxValue = string.Empty;
             messagePicture = string.Empty;
+            isFileUpload = false;
             messagetype = 0;
         }
     }
@@ -595,6 +640,10 @@
     public void collapseSidePanel()
     {
         sidePanel = false;
+    }
+    public void collapseAddGroupPanel()
+    {
+        addGroup = false;
     }
 
     public async Task onClickSearchList(Guid id,string firstName,string lastName,string username)
