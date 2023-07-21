@@ -98,3 +98,13 @@ async function web3Login() {
     //console.log(data);
     return data;
 }
+
+function scrollToBottom() {
+    console.log("heyy")
+    var myDiv = document.getElementById("myDiv");
+    console.log("heyy")
+    myDiv.scrollTop = myDiv.scrollHeight - myDiv.clientHeight;
+}
+
+// Call the scrollToBottom function when needed
+scrollToBottom();
