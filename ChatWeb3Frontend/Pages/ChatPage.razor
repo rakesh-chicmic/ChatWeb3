@@ -3,17 +3,19 @@
 @using Microsoft.AspNetCore.SignalR.Client;
 @inject IJSRuntime JsRuntime
 @inject IApiCalling apiCalling
+@inherits UpdateProfileBase
 
 <div class="row">
     <div class="column left">
         <div class="sideBar">
             <div class="body">
+
                 <img src="./logo.png" class="sideBarGroupPic"/>
             </div>
             <div class="sideBarGroup" >
                 <img src="./icons8-settings-512.png" class="imageicon" style="margin:10px; margin-bottom: 0px;" />
                 <img src="./icons8-logout-96.png" class="imageicon" style="margin:10px; margin-left:10px; margin-bottom: 0px;" @onclick="()=>{logOut();}" />
-                <img src="https://localhost:7218/Assets//Files//74105720230718171905209.jpg" class="sideBarGroupPic" @onclick="()=>{showProfile();}" />
+                <img src=@imagePath class="sideBarGroupPic" @onclick="()=>{showProfile();}" />
             </div>
 
         </div>
@@ -49,7 +51,7 @@
                         {
                             foreach (OutputChatMapping chat in ChatList)
                             {
-                                <div class="@GetClass(chat.chatId)" @onclick="async () => {await OnClickChatList(chat.chatId,chat.firstName,chat.lastName,chat.username);}">
+                                <div class="@GetClass(chat.chatId)" @onclick="async () => {await OnClickChatList(chat.chatId,chat.username);}">
                                     @if (chat.countOfUnseen != 0)
                                     {
                                         <span class="message-badge"> @chat.countOfUnseen</span>
@@ -93,7 +95,7 @@
                         {
                             foreach (ResponseUser chat in searchChat)
                             {
-                                <div class="@GetClass(chat.id)" @onclick="async () => {await onClickSearchList(chat.id,chat.firstName,chat.lastName,chat.username);}">
+                                <div class="@GetClass(chat.id)" @onclick="async () => {await onClickSearchList(chat.id,chat.username);}">
                                     <div class="sendbuttonLogo">
                                         <img src="./logo.png" class="selfPicture" />
                                         @chat.username
@@ -300,31 +302,38 @@
     </div>
     @if (sidePanel)
     {
-        <div class="sidePanel">
+        <div class="sidePanel" style="background-color:#424656">
             <div style=" padding: 10px;">
                 <img src="./icons8-close-480.png" class="imageicon" @onclick="()=>{collapseSidePanel();}" />
             </div>
             <div class="sidePanel-rowDiv">
-                <img src="./icon-192.png" class="sidePanel-ProfilePic" onclick="">
+                <img src=@imagePath class="sidePanel-ProfilePic">
+                <input type="file" id="uploadImage" name="uploadImage" accept="image/*" @ref="@profileImageReference" @onchange="async () => await UploadImage_Click(profileImageReference)" style="display: none;" required>
                 <div class="buttonPosition">
                     <div class="editButton">
-                        <img src="./icons8-edit-480.png" class="imageicon" onclick="" />
+                       <label for="uploadImage"><img src="./icons8-edit-480.png" class="imageicon" /></label>
                     </div>
                 </div>
             </div>
-            <div class="sidePanel-rowDiv" style="align-items: center">
+            <div class="sidePanel-rowDiv" style="align-items: center;">
                 <div>
                     @if (editPermission)
                     {
-
-                        <input class="sidepanel-Username" type="text" @bind="@sidePanelUsername" placeholder=""  />
+                        <input class="sidepanel-Username" type="text" @bind="@updateUser.username" @oninput="@isUsernameExists" disabled=@isInputDisabled />
                     }
                     else
                     {
-                        <input class="sidepanel-Username" type="text" @bind="@sidePanelUsername" disabled placeholder=""  />
+                        <input class="sidepanel-Username" type="text" @bind="@sidePanelUsername"  placeholder="" disabled />
                     }
-                    <img src="./icons8-edit-480.png" class="imageicon" onclick="" />
-                </div>
+                    @if (@isInputDisabled)
+                    {
+                        <img src="./icons8-edit-480.png" class="imageicon" @onclick:preventDefault=true @onclick="()=>(EnableInput())" />
+                    }
+                    else
+                    {
+                        <img src="https://img.icons8.com/?size=512&id=81427&format=png" class="imageicon" @onclick:preventDefault=true @onclick="()=>(UpdateUser_Click(updateUser))" />
+                    }
+                    </div>
             </div>
         </div>
     }
@@ -457,7 +466,9 @@
         myData = await apiCalling.getYourself();
         sidePanelUsername = myData.username;
         myId = myData.id;
-        onInputDebounced = DebounceEvent<ChangeEventArgs>(e => searchText = (string)e.Value, TimeSpan.FromSeconds(1));
+        updateUser.username = myData.username;
+        updateUser.pathToProfilePic = myData.pathToProfilePic;
+        imagePath = $"http://192.180.0.192:4545/{updateUser.pathToProfilePic}";
         return;
     }
 
@@ -466,9 +477,7 @@
         await jsRuntime.InvokeVoidAsync("scrollToBottom", "myDiv");
     }
 
-    public async Task clickImageIcon()
-    {
-    }
+    
 
     protected async Task UploadProfileImage_Click(ElementReference elementReference,int type)
     {
@@ -551,7 +560,7 @@
         hub!.On("ChatCreated", (Response response) =>
         {
             OutputChatMapping chat = JsonSerializer.Deserialize<OutputChatMapping>(JsonSerializer.Serialize(response.data))!;
-            OnClickChatList(chat.chatId, chat.firstName, chat.lastName, chat.username);
+            OnClickChatList(chat.chatId, chat.username);
             GetChatList();
             StateHasChanged();
         });
@@ -589,10 +598,10 @@
         return "normaltab";
     }
 
-    private async Task OnClickChatList(Guid chatId, string firstName,string lastName,string username)
+    private async Task OnClickChatList(Guid chatId,string username)
     {
         openChatUsername = username;
-        await OnClickChatList(chatId, firstName + " " + lastName, false);
+        await OnClickChatList(chatId, username, false);
         await ScrollToBottom();
     }
 
@@ -708,7 +717,7 @@
         newGroupName = string.Empty;
     }
 
-    public async Task onClickSearchList(Guid id,string firstName,string lastName,string username)
+    public async Task onClickSearchList(Guid id,string username)
     {
         var response = await hub!.InvokeAsync<Response>("CreateChat", id.ToString());
     }

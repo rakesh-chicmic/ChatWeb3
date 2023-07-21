@@ -1,5 +1,6 @@
 ﻿using Blazored.Toast.Services;
 using ChatWeb3Frontend.Models;
+using ChatWeb3Frontend.Models.InputModels;
 using ChatWeb3Frontend.Services.Contracts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -24,23 +25,29 @@ namespace ChatWeb3Frontend.Pages
         public UpdateUser updateUser= new UpdateUser();
         public ResponseUser userResponse = new ResponseUser();
         public Response response = new Response();
-        public string imagePath = null;
+        public string imagePath = "https://cdn-icons-png.flaticon.com/512/1177/1177568.png?w=740&t=st=1689596149~exp=1689596749~hmac=8fc514c8173c4865f99e94e36b1cb77422c6fad5651f4726eab0c29ea4bf8a49";
         public FileResponseData fileUpload = new FileResponseData();
-        public ElementReference elementReference = new ElementReference();
+        public ElementReference profileImageReference = new ElementReference();
+        public bool isInputDisabled = true;
+        public Action<ChangeEventArgs> isUsernameExists;
         protected override async Task OnInitializedAsync()
         {      
              response = await UserService.GetAsync();
              var resData = JsonSerializer.Serialize(response.data);
              userResponse = JsonSerializer.Deserialize<ResponseUser>(resData)!;
              updateUser.username = userResponse.username;
-             updateUser.firstName = userResponse.firstName;
-             updateUser.lastName = userResponse.lastName;
              updateUser.pathToProfilePic = userResponse.pathToProfilePic!;
              imagePath = $"http://192.180.0.192:4545/{updateUser.pathToProfilePic}";
         }
 
+        protected async Task EnableInput()
+        {
+            isInputDisabled = false;
+        }
+
         protected async Task UpdateUser_Click(UpdateUser update)
         {
+            isInputDisabled = true;
             try
             {
                 response = await UserService.UpdateAsync(update);
@@ -48,6 +55,7 @@ namespace ChatWeb3Frontend.Pages
                 {
                     Toast.ShowSuccess("Profile Updated");
                 }
+               
             }
             catch (Exception)
             {
@@ -55,11 +63,11 @@ namespace ChatWeb3Frontend.Pages
             }
         }
 
-        protected async Task UploadProfileImage_Click(ElementReference elementReference)
+        protected async Task UploadImage_Click(ElementReference profileImageReference)
         {
             try
             {
-                response = await FileUploadService.UploadFileAsync(elementReference);
+                response = await FileUploadService.UploadFileAsync(profileImageReference);
                 if (response.statusCode == 200)
                 {
                     Toast.ShowSuccess("Profile Picture Updated");

@@ -1,5 +1,6 @@
 ﻿using Blazored.Toast.Services;
 using ChatWeb3Frontend.Models;
+using ChatWeb3Frontend.Models.InputModels;
 using ChatWeb3Frontend.Services.Contracts;
 using Microsoft.AspNetCore.Components;
 using System.Runtime.CompilerServices;
@@ -16,7 +17,7 @@ namespace ChatWeb3Frontend.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
         [Inject]
-        public IToastService Toast {  get ; set; }
+        public IToastService Toast { get; set; }
         [Inject]
         public IFileUploadService FileUploadService { get; set; }
 
@@ -24,8 +25,9 @@ namespace ChatWeb3Frontend.Pages
         public Response response = new Response();
         public ValidateUsernameModel validateUsername = new ValidateUsernameModel();
         public Action<ChangeEventArgs> onInputDebounced;
-        public FileResponseData fileUpload = new FileResponseData();  
+        public FileResponseData fileUpload = new FileResponseData();
         public ElementReference elementReference = new ElementReference();
+        public string imagePath = "https://cdn-icons-png.flaticon.com/512/1177/1177568.png?w=740&t=st=1689596149~exp=1689596749~hmac=8fc514c8173c4865f99e94e36b1cb77422c6fad5651f4726eab0c29ea4bf8a49";
 
         protected override void OnInitialized()
         {
@@ -64,6 +66,16 @@ namespace ChatWeb3Frontend.Pages
         }
         protected async Task UpdateUser_Click(UpdateUser update)
         {
+            if (update.username == null)
+            {
+                Toast.ShowInfo("Please enter Username");
+                return;
+            }
+            else if (update.pathToProfilePic == null)
+            {
+                Toast.ShowInfo("Please Upload your Profile Picture");
+                return;
+            }
             try
             {
                 response = await UserService.UpdateAsync(update);
@@ -72,6 +84,7 @@ namespace ChatWeb3Frontend.Pages
                     Toast.ShowSuccess("User Details Updated");
                     NavigationManager.NavigateTo("/home");
                 }
+
             }
             catch (Exception)
             {
@@ -115,6 +128,7 @@ namespace ChatWeb3Frontend.Pages
                 var resData = JsonSerializer.Serialize(response.data);
                 fileUpload = JsonSerializer.Deserialize<FileResponseData>(resData);
                 updateUser.pathToProfilePic = fileUpload.pathToPic;
+                imagePath = $"http://192.180.0.192:4545/{updateUser.pathToProfilePic}";
             }
             catch (Exception)
             {

@@ -5,7 +5,10 @@
 <div id="details-page">
     <div id="main">
         <h1>Fill Your Details</h1>
-        <form>
+        <div class="text-center" id="profile-image">
+            <img src=@imagePath alt="...">
+        </div>
+        <form action="/submit" method="post" enctype="multipart/form-data">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" @bind-value="@updateUser.username" @oninput="@onInputDebounced"
                    required />
@@ -14,16 +17,9 @@
 
             <input type="file" id="profileImage" name="profileImage" accept="image/*" @ref="@elementReference" @onchange="async () => await UploadProfileImage_Click(elementReference)"  required>
 
-            <label for="firstName">First Name:</label>
-            <input type="text" id="firstName" name="firstName" @bind-value="@updateUser.firstName" required>
-
-            <label for="lastName">Last Name:</label>
-            <input type="text" id="lastName" name="lastName" @bind-value="@updateUser.lastName">
-
             <input type="submit" value="Continue" @onclick:preventDefault=true @onclick="()=>(UpdateUser_Click(updateUser))" />
 
         </form>
     </div>
 </div>
-
 

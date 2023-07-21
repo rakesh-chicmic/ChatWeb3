@@ -11,6 +11,11 @@ body {
     
 }
 
+h1 {
+    text-align: center;
+    color: white;
+    background-color: #13243E;
+}
 #details-page {
     overflow: hidden;
 }
@@ -21,15 +26,10 @@ body {
     background-image: url(https://img.freepik.com/free-vector/color-seamless-space-pattern_102902-2360.jpg?w=826&t=st=1689573256~exp=1689573856~hmac=17db97ecbe3c5da10153f2583571361072a2bbf6ad1d22cf6f157c27fe43976c);
     height: 100vh;
     width: 100vw;
-    padding-top: 70px;
+    padding-top: 40px;
    
 }
 
-h1{
-    text-align:center;
-    color: white;
-    background-color: #13243E;
-}
 form {
     max-width: 600px;
     margin: 0 auto;
@@ -85,4 +85,33 @@ input[type="submit"] {
 
 form {
     animation: fadeIn 0.5s ease-in;
+}
+
+#profile-image img {
+    height: 120px;
+    width: 120px;
+    color: red;
+    border-radius: 50%;
+    margin-top: 10px;
+    object-fit: cover;
+}
+
+#profile-image {
+    margin-bottom: -50px;
+}
+
+    #profile-image img:hover {
+        animation: spin 1s infinite;
+        transition: transform 0.2s;
+    }
+
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+
+    100% {
+        transform: rotate(360deg) scale(1.1);
+    }
 }
