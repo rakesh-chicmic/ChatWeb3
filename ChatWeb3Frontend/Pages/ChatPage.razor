@@ -3,17 +3,19 @@
 @using Microsoft.AspNetCore.SignalR.Client;
 @inject IJSRuntime JsRuntime
 @inject IApiCalling apiCalling
+@inherits UpdateProfileBase
 
 <div class="row">
     <div class="column left">
         <div class="sideBar">
             <div class="body">
+
                 <img src="./logo.png" class="sideBarGroupPic"/>
             </div>
             <div class="sideBarGroup" >
                 <img src="./icons8-settings-512.png" class="imageicon" style="margin:10px; margin-bottom: 0px;" />
                 <img src="./icons8-logout-96.png" class="imageicon" style="margin:10px; margin-left:10px; margin-bottom: 0px;" @onclick="()=>{logOut();}" />
-                <img src="https://localhost:7218/Assets//Files//74105720230718171905209.jpg" class="sideBarGroupPic" @onclick="()=>{showProfile();}" />
+                <img src=@imagePath class="sideBarGroupPic" @onclick="()=>{showProfile();}" />
             </div>
 
         </div>
@@ -49,7 +51,7 @@
                         {
                             foreach (OutputChatMapping chat in ChatList)
                             {
-                                <div class="@GetClass(chat.chatId)" @onclick="async () => {await OnClickChatList(chat.chatId,chat.firstName,chat.lastName,chat.username);}">
+                                <div class="@GetClass(chat.chatId)" @onclick="async () => {await OnClickChatList(chat.chatId,chat.username);}">
                                     @if (chat.countOfUnseen != 0)
                                     {
                                         <span class="message-badge"> @chat.countOfUnseen</span>
@@ -93,10 +95,10 @@
                         {
                             foreach (ResponseUser chat in searchChat)
                             {
-                                <div class="@GetClass(chat.id)" @onclick="async () => {await onClickSearchList(chat.id,chat.firstName,chat.lastName,chat.username);}">
+                                <div class="@GetClass(chat.id)" @onclick="async () => {await onClickSearchList(chat.id,chat.username);}">
                                     <div class="sendbuttonLogo">
                                         <img src="./logo.png" class="selfPicture" />
-                                        @chat.firstName @chat.lastName
+                                        @chat.username
                                     </div>
                                 </div>
                             }
@@ -300,12 +302,12 @@
     </div>
     @if (sidePanel)
     {
-        <div class="sidePanel">
+        <div class="sidePanel" style="background-color:red">
             <div style=" padding: 10px;">
                 <img src="./icons8-close-480.png" class="imageicon" @onclick="()=>{collapseSidePanel();}" />
             </div>
             <div class="sidePanel-rowDiv">
-                <img src="./icon-192.png" class="sidePanel-ProfilePic" onclick="">
+                <img src=@imagePath class="sidePanel-ProfilePic" onclick="">
                 <div class="buttonPosition">
                     <div class="editButton">
                         <img src="./icons8-edit-480.png" class="imageicon" onclick="" />
@@ -491,7 +493,7 @@
         hub!.On("ChatCreated", (Response response) =>
         {
             OutputChatMapping chat = JsonSerializer.Deserialize<OutputChatMapping>(JsonSerializer.Serialize(response.data))!;
-            OnClickChatList(chat.chatId, chat.firstName, chat.lastName, chat.username);
+            OnClickChatList(chat.chatId, chat.username);
             GetChatList();
             StateHasChanged();
         });
@@ -529,10 +531,10 @@
         return "normaltab";
     }
 
-    private async Task OnClickChatList(Guid chatId, string firstName,string lastName,string username)
+    private async Task OnClickChatList(Guid chatId,string username)
     {
         openChatUsername = username;
-        await OnClickChatList(chatId, firstName + " " + lastName, false);
+        await OnClickChatList(chatId, username, false);
         await ScrollToBottom();
     }
 
@@ -646,7 +648,7 @@
         addGroup = false;
     }
 
-    public async Task onClickSearchList(Guid id,string firstName,string lastName,string username)
+    public async Task onClickSearchList(Guid id,string username)
     {
         var response = await hub!.InvokeAsync<Response>("CreateChat", id.ToString());
     }
